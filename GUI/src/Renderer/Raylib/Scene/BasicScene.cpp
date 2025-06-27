@@ -6,6 +6,7 @@
 */
 
 #include "BasicScene.hpp"
+#include <raylib.h>
 
 zappy::gui::raylib::BasicScene::BasicScene(const std::shared_ptr<game::GameState> &gameState) :
     AScene::AScene(gameState)
@@ -20,6 +21,9 @@ void zappy::gui::raylib::BasicScene::init()
         auto model = std::make_unique<zappy::gui::raylib::BasicResourceModel>(-1, type); // ou AResourceModel si tu préfères
         _mapRenderer->addResourceModel(type, std::move(model));
     }
+
+    // Init le background
+    _bgImage = LoadTexture(zappy::gui::raylib::assets::BASIC_BG_PATH.c_str());
 }
 
 void zappy::gui::raylib::BasicScene::handleInput(InputManager &inputManager)
@@ -34,6 +38,7 @@ void zappy::gui::raylib::BasicScene::update()
 
 void zappy::gui::raylib::BasicScene::render() const
 {
+    DrawTexture(_bgImage, 0, 0, WHITE);
     BeginMode3D(getCamera());
 
     _mapRenderer->render();

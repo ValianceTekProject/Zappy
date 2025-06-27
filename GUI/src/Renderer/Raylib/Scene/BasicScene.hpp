@@ -38,6 +38,7 @@ namespace zappy {
                     void endGame(const std::string &teamName) override;
 
                 private:
+                    Texture2D _bgImage;
             };
         } // namespace raylib
     } // namespace gui

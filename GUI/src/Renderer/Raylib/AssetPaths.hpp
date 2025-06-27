@@ -25,6 +25,8 @@ namespace zappy {
 
                 inline std::string BASIC_EGG_PATH = BASIC_SCENE_PATH + "egg.glb";
 
+                inline std::string BASIC_BG_PATH = BASIC_SCENE_PATH + "bg.png";
+
                 // Basic Scene resources assets
                 inline std::string BASIC_SCENE_RESOURCES_PATH = std::string(BASIC_SCENE_PATH) + "Resources/";
 
