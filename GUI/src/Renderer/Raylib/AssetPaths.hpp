@@ -30,7 +30,7 @@ namespace zappy {
                 // Basic skybox assets
                 inline std::string BASIC_SKYBOX_PATH = std::string(BASIC_SCENE_PATH) + "Skybox/";
 
-                inline std::string BASIC_SKYBOX_MODEL_PATH = BASIC_SKYBOX_PATH + "Cubemap_Cratered_01-512x512.png";
+                inline std::string BASIC_SKYBOX_MODEL_PATH = BASIC_SKYBOX_PATH + "Cubemap_Tropical_01-512x512.png";
 
                 inline std::string BASIC_SKYBOX_VS_PATH = BASIC_SKYBOX_PATH + "skybox.vs";
 
