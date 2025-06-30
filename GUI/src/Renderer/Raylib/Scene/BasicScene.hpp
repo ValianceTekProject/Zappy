@@ -8,12 +8,15 @@
 #pragma once
 
 #include "AScene.hpp"
+#include "AssetPaths.hpp"
 #include "BasicPlayerModel.hpp"
 #include "BasicEggModel.hpp"
 #include "BasicResourceModel.hpp"
 
 #include <raylib.h>
 #include <unordered_map>
+#include <rlgl.h>
+#include "ASkybox.hpp"
 
 namespace zappy {
     namespace gui {
@@ -38,7 +41,7 @@ namespace zappy {
                     void endGame(const std::string &teamName) override;
 
                 private:
-                    Texture2D _bgImage;
+                    ASkybox _skybox;
             };
         } // namespace raylib
     } // namespace gui

@@ -6,10 +6,15 @@
 */
 
 #include "BasicScene.hpp"
-#include <raylib.h>
 
-zappy::gui::raylib::BasicScene::BasicScene(const std::shared_ptr<game::GameState> &gameState) :
-    AScene::AScene(gameState)
+zappy::gui::raylib::BasicScene::BasicScene(const std::shared_ptr<game::GameState> &gameState)
+    : AScene::AScene(gameState),
+    _skybox(
+        zappy::gui::raylib::assets::BASIC_SKYBOX_MODEL_PATH,
+        zappy::gui::raylib::assets::BASIC_SKYBOX_VS_PATH,
+        zappy::gui::raylib::assets::BASIC_SKYBOX_FS_PATH,
+        zappy::gui::raylib::assets::BASIC_SKYBOX_CUBEMAP_VS_PATH,
+        zappy::gui::raylib::assets::BASIC_SKYBOX_CUBEMAP_FS_PATH)
 {}
 
 void zappy::gui::raylib::BasicScene::init()
@@ -23,7 +28,7 @@ void zappy::gui::raylib::BasicScene::init()
     }
 
     // Init le background
-    _bgImage = LoadTexture(zappy::gui::raylib::assets::BASIC_BG_PATH.c_str());
+    _skybox.load();
 }
 
 void zappy::gui::raylib::BasicScene::handleInput(InputManager &inputManager)
@@ -34,13 +39,14 @@ void zappy::gui::raylib::BasicScene::handleInput(InputManager &inputManager)
 void zappy::gui::raylib::BasicScene::update()
 {
     AScene::update();
+    _skybox.update();
 }
 
 void zappy::gui::raylib::BasicScene::render() const
 {
-    DrawTexture(_bgImage, 0, 0, WHITE);
     BeginMode3D(getCamera());
 
+    _skybox.render();
     _mapRenderer->render();
 
     EndMode3D();
