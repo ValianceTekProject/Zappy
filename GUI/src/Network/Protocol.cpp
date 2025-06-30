@@ -57,7 +57,7 @@ void zappy::network::Protocol::initHandlers()
         {GP::EGG_HATCH,              [this](auto &p){ handleEggHatch(p); }},
         {GP::EGG_DESTROYED,          [this](auto &p){ handleEggDeath(p); }},
         {GP::TIME_UNIT_REQUEST,      [this](auto &p){ handleTimeUnit(p); }},
-        {GP::TIME_UNIT_MODIFICATION, [this](auto &p){ setTimeUnit(std::stoi(p)); }},
+        {GP::TIME_UNIT_MODIFICATION, [this](auto &p){ handleTimeUnit(p); }},
         {GP::GAME_END,               [this](auto &p){ handleGameEnd(p); }},
         {GP::SERVER_MESSAGE,         [this](auto &p){ handleServerMessage(p); }},
         {GP::UNKNOWN_COMMAND,        [this](auto &p){ handleUnknownCommand(p); }},
@@ -660,7 +660,8 @@ void zappy::network::Protocol::handleTimeUnit(const std::string &params)
 
     iss >> timeUnit;
 
-    _gameState->setFrequency(timeUnit);
+    if (_gameState->getFrequency() != timeUnit)
+        _gameState->setFrequency(timeUnit);
     printDebug("Time unit set to " + std::to_string(timeUnit));
 }
 

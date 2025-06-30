@@ -15,6 +15,8 @@ set(GAME_DIR ${SRC_DIR}/Game)
 set(RENDERER_DIR ${SRC_DIR}/Renderer)
 set(RAYLIB_DIR ${RENDERER_DIR}/Raylib)
 
+set(RAYLIB_MENU_DIR ${RAYLIB_DIR}/Menu)
+
 set(RAYLIB_SCENE_DIR ${RAYLIB_DIR}/Scene)
 
 set(RAYLIB_EFFECT_DIR ${RAYLIB_SCENE_DIR}/Effect)
@@ -48,6 +50,9 @@ include_directories(
     ${GAME_DIR}
     ${RENDERER_DIR}
     ${RAYLIB_DIR}
+
+    ${RAYLIB_MENU_DIR}
+
     ${RAYLIB_SCENE_DIR}
 
     ${RAYLIB_EFFECT_DIR}
@@ -93,7 +98,9 @@ set(SOURCES
     ${RENDERER_DIR}/NcursesRenderer.cpp
 
     ${RAYLIB_DIR}/RaylibRenderer.cpp
-    ${RAYLIB_SCENE_DIR}/InputManager.cpp
+
+    ${RAYLIB_MENU_DIR}/Menu.cpp
+    ${RAYLIB_MENU_DIR}/InputManager.cpp
 
     ${RAYLIB_SCENE_DIR}/AScene.cpp
 
