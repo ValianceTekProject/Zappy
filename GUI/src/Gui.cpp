@@ -103,6 +103,12 @@ void zappy::gui::Gui::run()
             continue;
         }
 
+        if (!_protocol->isConnected()) {
+            running = false;
+            std::cerr << "Connection lost" << std::endl;
+            continue;
+        }
+
         _renderer->render();
     }
 

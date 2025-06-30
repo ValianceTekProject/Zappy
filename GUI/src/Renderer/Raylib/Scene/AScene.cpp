@@ -10,79 +10,82 @@
 zappy::gui::raylib::AScene::AScene(const std::shared_ptr<game::GameState> &gameState) :
     _camera(Camera()),
     _gameState(gameState),
-    _mapRenderer(std::make_unique<MapRenderer>(_gameState->getMap()))
+    _mapRenderer(std::make_unique<MapRenderer>(this->_gameState->getMap()))
 {}
 
 void zappy::gui::raylib::AScene::init()
 {
-    // Initialize Camera
-    _camera.position = Vector3{ 0, 10.0f, 10.0f };
-    _camera.target = Vector3{ 0.0f, 0.0f, 0.0f };
-    _camera.up = Vector3{ 0.0f, 0.45f, 0.0f };
-    _camera.fovy = 45.0f;
-    _camera.projection = CAMERA_PERSPECTIVE;
+    Vector3 position = { 0, 10.0f, 10.0f };
+    Vector3 target = { 0.0f, 0.0f, 0.0f };
+    Vector3 up = { 0.0f, 0.45f, 0.0f };
+    float fovy = 45.0f;
 
-    _mapRenderer->init();
+    this->_camera.position = position;
+    this->_camera.target = target;
+    this->_camera.up = up;
+    this->_camera.fovy = fovy;
+    this->_camera.projection = CAMERA_PERSPECTIVE;
+
+    this->_mapRenderer->init();
 }
 
 void zappy::gui::raylib::AScene::update()
 {
-    _mapRenderer->update(_gameState->getFrequency());
+    this->_mapRenderer->update(this->_gameState->getFrequency());
 }
 
 void zappy::gui::raylib::AScene::handleInput(InputManager &inputManager)
 {
-    // Gérer les entrées de l'utilisateur
     (void)inputManager;
 }
 
 void zappy::gui::raylib::AScene::addEgg(const int &id)
 {
     // Egg supposed to be added to the map
-    game::Egg egg = _gameState->getEggById(id);
+    game::Egg egg = this->_gameState->getEggById(id);
 
-    _mapRenderer->setEggPosition(id, egg.x, egg.y);
+    this->_mapRenderer->setEggPosition(id, egg.x, egg.y);
 }
 
 void zappy::gui::raylib::AScene::addPlayer(const int &id)
 {
     // Player supposed to be added to the map
-    game::Player player = _gameState->getPlayerById(id);
+    game::Player player = this->_gameState->getPlayerById(id);
 
-    _mapRenderer->setPlayerPosition(id, player.x, player.y, player.orientation);
+    this->_mapRenderer->setPlayerPosition(id, player.x, player.y, player.orientation);
 }
 
 void zappy::gui::raylib::AScene::updatePlayerPosition(const int &id, const int &x, const int &y, const game::Orientation &orientation)
 {
-    game::Player player = _gameState->getPlayerById(id);
+    game::Player player = this->_gameState->getPlayerById(id);
 
     if (player.orientation != orientation) {
         if (orientation == player.orientation - 1)
-            _mapRenderer->playerLookLeft(player.getId());
+            this->_mapRenderer->playerLookLeft(player.getId());
         else if (orientation == player.orientation + 1)
-            _mapRenderer->playerLookRight(player.getId());
+            this->_mapRenderer->playerLookRight(player.getId());
         else
-            _mapRenderer->playerLook(player.getId(), orientation);
+            this->_mapRenderer->playerLook(player.getId(), orientation);
     } else {
         // determine if the player go forward
         if (player.x == x && player.y == y)
             return;
 
-        int mapWidth = (_gameState->getMap()->getWidth());
-        int mapHeight = (_gameState->getMap()->getHeight());
+        int mapWidth = (this->_gameState->getMap()->getWidth());
+        int mapHeight = (this->_gameState->getMap()->getHeight());
 
         if (player.x == x) {
             if ((y == (player.y - 1 + mapHeight) % mapHeight && player.orientation == game::Orientation::NORTH) ||
                 (y == (player.y + 1) % mapHeight && player.orientation == game::Orientation::SOUTH)) {
-                    _mapRenderer->playerForward(player.getId(), x, y);
+                    this->_mapRenderer->playerForward(player.getId(), x, y);
             }
         } else if (player.y == y) {
             if ((x == (player.x + 1) % mapWidth && player.orientation == game::Orientation::EAST) ||
                 (x == (player.x - 1 + mapWidth) % mapWidth && player.orientation == game::Orientation::WEST)) {
-                    _mapRenderer->playerForward(player.getId(), x, y);
+                    this->_mapRenderer->playerForward(player.getId(), x, y);
             }
         } else {
-            _mapRenderer->setPlayerPosition(player.getId(), x, y, orientation);
+            this->_mapRenderer->setPlayerPosition(player.getId(), x, y, orientation);
         }
     }
 }
@@ -103,10 +106,10 @@ void zappy::gui::raylib::AScene::updatePlayerInventory(const int &id, const game
 
 void zappy::gui::raylib::AScene::playerExpulsion(const int &id)
 {
-    game::Player &playerThatExpelled = _gameState->getPlayerById(id);
+    game::Player &playerThatExpelled = this->_gameState->getPlayerById(id);
     game::Orientation orientation = playerThatExpelled.orientation;
 
-    auto expelledPlayers = _gameState->getPlayersByCoord(
+    auto expelledPlayers = this->_gameState->getPlayersByCoord(
         playerThatExpelled.x, playerThatExpelled.y
     );
 
@@ -120,18 +123,18 @@ void zappy::gui::raylib::AScene::playerExpulsion(const int &id)
 
         if (orientation == game::Orientation::EAST || orientation == game::Orientation::WEST)
             newX = (newX + (1 * (orientation == game::Orientation::WEST ? -1 : 1)))
-                % _gameState->getMap()->getWidth();
+                % this->_gameState->getMap()->getWidth();
         if (orientation == game::Orientation::NORTH || orientation == game::Orientation::SOUTH)
             newY = (newY + (1 * (orientation == game::Orientation::SOUTH ? -1 : 1)))
-                % _gameState->getMap()->getHeight();
+                % this->_gameState->getMap()->getHeight();
 
-        _mapRenderer->playerExpulsion(p.getId(), newX, newY);
+        this->_mapRenderer->playerExpulsion(p.getId(), newX, newY);
     }
 }
 
 void zappy::gui::raylib::AScene::playerBroadcast(const int &id, const std::string &message)
 {
-    _mapRenderer->playerBroadcast(id);
+    this->_mapRenderer->playerBroadcast(id);
     (void)message;
 }
 
@@ -140,29 +143,26 @@ void zappy::gui::raylib::AScene::startIncantation(
     const int &level,
     const std::vector<int> &playerIds
 ) {
-    _mapRenderer->startIncantation(x, y, playerIds);
+    this->_mapRenderer->startIncantation(x, y, playerIds);
     (void)level;
-    (void)playerIds;
 }
 
 void zappy::gui::raylib::AScene::endIncantation(const int &x, const int &y, const bool &result)
 {
-    _mapRenderer->endIncantation(x, y, result);
-    (void)result;
+    this->_mapRenderer->endIncantation(x, y, result);
 }
 
 void zappy::gui::raylib::AScene::hatchEgg(const int &id)
 {
-    // Incuber un œuf
     (void)id;
 }
 
 void zappy::gui::raylib::AScene::removeEgg(const int &id)
 {
-    _mapRenderer->removeEgg(id);
+    this->_mapRenderer->removeEgg(id);
 }
 
 void zappy::gui::raylib::AScene::removePlayer(const int &id)
 {
-    _mapRenderer->removePlayer(id);
+    this->_mapRenderer->removePlayer(id);
 }

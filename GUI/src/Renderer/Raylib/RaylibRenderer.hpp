@@ -8,6 +8,9 @@
 #pragma once
 
 #include "ARenderer.hpp"
+
+#include "Menu.hpp"
+
 #include "BasicScene.hpp"
 
 namespace zappy {
@@ -60,6 +63,8 @@ namespace zappy {
                 void endGame(const std::string &teamName) override;
 
             private:
+                std::unique_ptr<raylib::Menu> _menu;
+
                 std::unique_ptr<raylib::IScene> _scene;
 
                 raylib::InputManager _inputManager;

@@ -9,18 +9,22 @@
 
 zappy::gui::RaylibRenderer::RaylibRenderer() :
     ARenderer::ARenderer(),
-    _scene(nullptr)
+    _menu(nullptr),
+    _scene(nullptr),
+    _inputManager()
 {
     SetTraceLogLevel(LOG_NONE);
 }
 
 void zappy::gui::RaylibRenderer::init()
 {
-    // Initialisation Raylib ici
     InitWindow(1280, 720, "Zappy");
     // ToggleFullscreen();
     SetTargetFPS(60);
     DisableCursor();
+
+    _menu = std::make_unique<raylib::Menu>();
+    _menu->init();
 
     _scene = std::make_unique<raylib::BasicScene>(_gameState);
     _scene->init();
@@ -29,11 +33,14 @@ void zappy::gui::RaylibRenderer::init()
 void zappy::gui::RaylibRenderer::handleInput()
 {
     _inputManager.update();
+
+    _menu->handleInput(_inputManager);
     _scene->handleInput(_inputManager);
 }
 
 void zappy::gui::RaylibRenderer::update()
 {
+    _menu->update();
     _scene->update();
 }
 
@@ -45,6 +52,7 @@ void zappy::gui::RaylibRenderer::render() const
     ClearBackground(SKYBLUE);
 
     _scene->render();
+    _menu->render();
 
     EndDrawing();
 }
@@ -100,6 +108,10 @@ void zappy::gui::RaylibRenderer::playerBroadcast(const int &id, const std::strin
 {
     ARenderer::playerBroadcast(id, message);
     _scene->playerBroadcast(id, message);
+
+    std::string playerTeam = this->_gameState->getPlayerById(id).teamName;
+
+    _menu->playerBroadcast(id, message, playerTeam);
 }
 
 void zappy::gui::RaylibRenderer::startIncantation(

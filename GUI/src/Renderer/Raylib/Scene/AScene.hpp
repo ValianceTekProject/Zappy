@@ -12,6 +12,7 @@
 
 #include <memory>
 #include <unordered_map>
+#include <list>
 
 namespace zappy {
     namespace gui {
