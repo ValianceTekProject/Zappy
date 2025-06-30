@@ -2,34 +2,25 @@
 ** EPITECH PROJECT, 2024
 ** zappy
 ** File description:
-** ASkybox.cpp
+** Skybox.cpp
 */
 
-#include "ASkybox.hpp"
+#include "Skybox.hpp"
+#include "AssetPaths.hpp"
 
-zappy::gui::raylib::ASkybox::ASkybox(const std::string &imagePath,
-                                        const std::string &skyboxVS,
-                                        const std::string &skyboxFS,
-                                        const std::string &cubemapVS,
-                                        const std::string &cubemapFS)
-    : _imagePath(imagePath),
-    _skyboxVS(skyboxVS),
-    _skyboxFS(skyboxFS),
-    _cubemapVS(cubemapVS),
-    _cubemapFS(cubemapFS)
+zappy::gui::raylib::Skybox::Skybox(const std::string &imagePath)
+    : _imagePath(imagePath)
 {}
 
-bool zappy::gui::raylib::ASkybox::load()
+bool zappy::gui::raylib::Skybox::load()
 {
     _mesh = GenMeshCube(1.0f, 1.0f, 1.0f);
     _model = LoadModelFromMesh(_mesh);
 
-    if (_model.materialCount == 0) {
-        std::cerr << "[Skybox] Failed to load model materials\n";
+    if (_model.materialCount == 0)
         return false;
-    }
 
-    _model.materials[0].shader = LoadShader(_skyboxVS.c_str(), _skyboxFS.c_str());
+    _model.materials[0].shader = LoadShader(zappy::gui::raylib::assets::BASIC_SKYBOX_VS_PATH.c_str(), zappy::gui::raylib::assets::BASIC_SKYBOX_FS_PATH.c_str());
 
     int cubemapMapType = MATERIAL_MAP_CUBEMAP;
     SetShaderValue(_model.materials[0].shader,
@@ -51,13 +42,11 @@ bool zappy::gui::raylib::ASkybox::load()
                 GetShaderLocation(_shaderCubemap, "equirectangularMap"),
                 &equirectangularMap, SHADER_UNIFORM_INT);
 
-    _shaderCubemap = LoadShader(TextFormat(_cubemapVS.c_str(), GLSL_VERSION),
-                                TextFormat(_cubemapFS.c_str(), GLSL_VERSION));
+    _shaderCubemap = LoadShader(TextFormat(zappy::gui::raylib::assets::BASIC_SKYBOX_CUBEMAP_VS_PATH.c_str(), GLSL_VERSION),
+                                TextFormat(zappy::gui::raylib::assets::BASIC_SKYBOX_CUBEMAP_FS_PATH.c_str(), GLSL_VERSION));
 
-    if (_shaderCubemap.id == 0) {
-        std::cerr << "[Skybox] Failed to load cubemap shader\n";
+    if (_shaderCubemap.id == 0)
         return false;
-    }
 
     _skyboxFileName = _imagePath;
     Image img = LoadImage(_imagePath.c_str());
@@ -67,7 +56,7 @@ bool zappy::gui::raylib::ASkybox::load()
     return true;
 }
 
-void zappy::gui::raylib::ASkybox::update()
+void zappy::gui::raylib::Skybox::update()
 {
     if (IsFileDropped()) {
         FilePathList droppedFiles = LoadDroppedFiles();
@@ -86,7 +75,7 @@ void zappy::gui::raylib::ASkybox::update()
     }
 }
 
-void zappy::gui::raylib::ASkybox::render() const
+void zappy::gui::raylib::Skybox::render() const
 {
     rlDisableBackfaceCulling();
     rlDisableDepthMask();
@@ -95,13 +84,13 @@ void zappy::gui::raylib::ASkybox::render() const
     rlEnableDepthMask();
 }
 
-void zappy::gui::raylib::ASkybox::renderInfo() const
+void zappy::gui::raylib::Skybox::renderInfo() const
 {
     DrawText(TextFormat("Skybox image: %s", GetFileName(_skyboxFileName.c_str())),
     10, GetScreenHeight() - 20, 10, BLACK);
 }
 
-void zappy::gui::raylib::ASkybox::unload()
+void zappy::gui::raylib::Skybox::unload()
 {
     if (_model.materialCount > 0)
         UnloadShader(_model.materials[0].shader);

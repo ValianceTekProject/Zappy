@@ -2,40 +2,41 @@
 ** EPITECH PROJECT, 2024
 ** zappy
 ** File description:
-** ASkybox.hpp
+** Skybox.hpp
 */
 
 #pragma once
-#include "ISkybox.hpp"
+#include "raylib.h"
+#include "rlgl.h"
+#include "raymath.h"
+#include <string>
+
+#if defined(PLATFORM_DESKTOP)
+    #define GLSL_VERSION 330
+#else
+    #define GLSL_VERSION 100
+#endif
 
 namespace zappy {
     namespace gui {
         namespace raylib {
-            class ASkybox : public ISkybox {
+            class Skybox {
                 public:
-                    ASkybox(const std::string &imagePath,
-                            const std::string &skyboxVS,
-                            const std::string &skyboxFS,
-                            const std::string &cubemapVS,
-                            const std::string &cubemapFS);
-                    virtual ~ASkybox() = default;
+                    Skybox(const std::string &imagePath);
+                    ~Skybox() = default;
 
-                    virtual bool load() override;
+                    bool load();
 
-                    virtual void update() override;
+                    void update();
 
-                    virtual void render() const override;
+                    void render() const;
 
-                    virtual void renderInfo() const override;
+                    void renderInfo() const;
 
-                    virtual void unload() override;
+                    void unload();
 
-                protected:
+                private:
                     std::string _imagePath;
-                    std::string _skyboxVS;
-                    std::string _skyboxFS;
-                    std::string _cubemapVS;
-                    std::string _cubemapFS;
                     std::string _skyboxFileName;
                     Shader _shaderCubemap = {};
                     Model _model = {};

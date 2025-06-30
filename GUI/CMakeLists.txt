@@ -18,7 +18,6 @@ set(RAYLIB_DIR ${RENDERER_DIR}/Raylib)
 set(RAYLIB_SCENE_DIR ${RAYLIB_DIR}/Scene)
 
 set(RAYLIB_EFFECT_DIR ${RAYLIB_SCENE_DIR}/Effect)
-set(RAYLIB_SKYBOX_DIR ${RAYLIB_SCENE_DIR}/Skybox)
 set(RAYLIB_BROADCAST_EFFECT_DIR ${RAYLIB_EFFECT_DIR}/Broadcast)
 set(RAYLIB_INCANTATION_EFFECT_DIR ${RAYLIB_EFFECT_DIR}/Incantation)
 
@@ -52,7 +51,6 @@ include_directories(
     ${RAYLIB_SCENE_DIR}
 
     ${RAYLIB_EFFECT_DIR}
-    ${RAYLIB_SKYBOX_DIR}
     ${RAYLIB_BROADCAST_EFFECT_DIR}
     ${RAYLIB_INCANTATION_EFFECT_DIR}
 
@@ -97,12 +95,12 @@ set(SOURCES
     ${RAYLIB_DIR}/RaylibRenderer.cpp
     ${RAYLIB_SCENE_DIR}/InputManager.cpp
 
+    ${RAYLIB_SCENE_DIR}/Skybox.cpp
+
     ${RAYLIB_SCENE_DIR}/AScene.cpp
 
     ${RAYLIB_EFFECT_DIR}/AEffect.cpp
     ${RAYLIB_EFFECT_DIR}/EffectFactory.cpp
-
-    ${RAYLIB_SKYBOX_DIR}/ASkybox.cpp
 
     ${RAYLIB_BROADCAST_EFFECT_DIR}/WaveBroadcastEffect.cpp
     ${RAYLIB_INCANTATION_EFFECT_DIR}/SpiralIncantationEffect.cpp

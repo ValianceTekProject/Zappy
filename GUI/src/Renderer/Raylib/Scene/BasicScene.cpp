@@ -10,11 +10,7 @@
 zappy::gui::raylib::BasicScene::BasicScene(const std::shared_ptr<game::GameState> &gameState)
     : AScene::AScene(gameState),
     _skybox(
-        zappy::gui::raylib::assets::BASIC_SKYBOX_MODEL_PATH,
-        zappy::gui::raylib::assets::BASIC_SKYBOX_VS_PATH,
-        zappy::gui::raylib::assets::BASIC_SKYBOX_FS_PATH,
-        zappy::gui::raylib::assets::BASIC_SKYBOX_CUBEMAP_VS_PATH,
-        zappy::gui::raylib::assets::BASIC_SKYBOX_CUBEMAP_FS_PATH)
+        zappy::gui::raylib::assets::BASIC_SKYBOX_MODEL_PATH)
 {}
 
 void zappy::gui::raylib::BasicScene::init()
