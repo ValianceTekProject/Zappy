@@ -27,7 +27,6 @@ void zappy::game::MapServer::setEggsonMap(
             size_t x = std::rand() % this->getWidth();
             size_t y = std::rand() % this->getHeight();
             zappy::game::Egg newEgg(this->_idEggTot, SERVER_FATHER_ID, x, y);
-            this->_idEggTot += 1;
             this->addNewEgg(SERVER_FATHER_ID, x, y);
         }
     }

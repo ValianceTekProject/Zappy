@@ -52,8 +52,8 @@ void zappy::server::Server::_handleClientCommand(const std::string &command, str
                         }
                     }
                     for (auto &eggs : this->_game->getMap().getEggList())
-                        this->_game->getCommandHandler().messageToGUI("enw #" + std::to_string(eggs.getId()) + " -1 " + std::to_string(eggs.x) + " " +
-                            std::to_string(eggs.y) + "\n");
+                        this->sendMessage(std::string("enw #" + std::to_string(eggs.getId()) + " -1 " + std::to_string(eggs.x) + " " +
+                            std::to_string(eggs.y) + "\n"), teamsGui->getPlayerList().back()->getClient().getSocket());
                     return;
                 }
                 return;

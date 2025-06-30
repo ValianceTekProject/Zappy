@@ -34,7 +34,7 @@ namespace zappy {
             std::chrono::steady_clock::time_point _lastResourceRespawn = std::chrono::steady_clock::now();
 
            private:
-            int _idEggTot = 0;
+            int _idEggTot = 1;
             void _placeResources();
             std::list<Egg> _eggList;
 

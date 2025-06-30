@@ -147,14 +147,14 @@ void zappy::game::CommandHandlerGui::handleSst(zappy::game::ServerPlayer &player
 {
     std::stringstream stream;
     int freq;
-    std::string msg = "sst ";
+    std::string msg = "sgt ";
 
     stream << arg;
     stream >> freq;
 
     this->_freq = freq;
 
-    player.getClient().sendMessage(std::string("sgt ") + std::to_string(this->_freq) + "\n");
+    player.getClient().sendMessage(msg + std::to_string(this->_freq) + "\n");
 }
 
 void zappy::game::CommandHandlerGui::initCommandMap()
@@ -195,6 +195,13 @@ void zappy::game::CommandHandlerGui::processClientInput(std::string &input, zapp
     auto it = this->_commandMapGui.find(cmd);
     if (it != this->_commandMapGui.end()) {
         it->second(player, args);
-    } else
+        if (!player.getClient().queueMessage.empty())
+            player.getClient().queueMessage.pop();
+
+    } else {
         player.getClient().sendMessage("suc\n");
+        if (!player.getClient().queueMessage.empty())
+            player.getClient().queueMessage.pop();
+    }
+
 }

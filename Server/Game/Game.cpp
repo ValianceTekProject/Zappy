@@ -45,8 +45,9 @@ void zappy::game::Game::_addPlayerToTeam(
             }
         }
     } else {
+        user.setState(zappy::server::ClientState::CONNECTED);
         auto newPlayer = std::make_shared<zappy::game::ServerPlayer>(
-            std::move(user), _idPlayerTot, -1, -1, orientation, *team, 1);
+            std::move(user), -1, -1, -1, orientation, *team, 1);
         newPlayer->teamName = team->getName();
         team->addPlayer(newPlayer);
         this->_playerList.push_back(newPlayer);
@@ -157,7 +158,6 @@ void zappy::game::Game::runGame()
                     if (player->teamName.compare("GRAPHIC") == 0) {
                         this->_commandHandlerGui.processClientInput(
                             player->getClient().queueMessage.front(), *player);
-                        player->getClient().queueMessage.pop();
                     } else
                         this->_commandHandler.processClientInput(
                             player->getClient().queueMessage.front(), *player);

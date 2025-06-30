@@ -61,7 +61,7 @@ namespace zappy {
             zappy::game::CommandHandlerGui &getCommandHandlerGui() { return _commandHandlerGui; }
 
            private:
-            int _idPlayerTot = 0;
+            int _idPlayerTot = 1;
             MapServer _map;
             zappy::game::CommandHandlerGui _commandHandlerGui;
             zappy::game::CommandHandler _commandHandler;
