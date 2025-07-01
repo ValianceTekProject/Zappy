@@ -30,6 +30,7 @@ set(RAYLIB_GLOBEFLOOR_DIR ${RAYLIB_FLOOR_DIR}/GlobeFloor)
 
 set(RAYLIB_MODEL_DIR ${RAYLIB_DIR}/Model)
 set(RAYLIB_MODEL_BASIC_DIR ${RAYLIB_MODEL_DIR}/Basic)
+set(RAYLIB_MODEL_POKEMON_DIR ${RAYLIB_MODEL_DIR}/Pokemon)
 
 set(DATA_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../Data)
 set(DATA_ERRORS_DIR ${DATA_DIR}/Errors)
@@ -63,6 +64,7 @@ include_directories(
 
     ${RAYLIB_MODEL_DIR}
     ${RAYLIB_MODEL_BASIC_DIR}
+    ${RAYLIB_MODEL_POKEMON_DIR}
 )
 
 # === Fichiers sources ===
@@ -126,6 +128,11 @@ set(SOURCES
     ${RAYLIB_MODEL_BASIC_DIR}/BasicPlayerModel.cpp
     ${RAYLIB_MODEL_BASIC_DIR}/BasicEggModel.cpp
     ${RAYLIB_MODEL_BASIC_DIR}/BasicResourceModel.cpp
+
+    ${RAYLIB_SCENE_DIR}/PokemonScene.cpp
+    ${RAYLIB_MODEL_POKEMON_DIR}/PokemonPlayerModel.cpp
+    ${RAYLIB_MODEL_POKEMON_DIR}/PokemonEggModel.cpp
+    ${RAYLIB_MODEL_POKEMON_DIR}/PokemonResourceModel.cpp
 )
 
 # === Exécutable principal ===
