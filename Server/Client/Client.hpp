@@ -14,6 +14,7 @@
 #include <string>
 #include <unistd.h>
 #include <vector>
+#include <cstring>
 #include <sys/socket.h>
 
 #include "Inventory.hpp"
@@ -45,7 +46,18 @@ namespace zappy {
 
             void setState(ClientState state) { this->_state = state; }
 
-            void sendMessage(const std::string &buf) { send(this->_socket, buf.c_str(), buf.size(), 0); }
+            void sendMessage(const std::string &buf) {
+                ssize_t bytesSent = send(this->_socket, buf.c_str(), buf.size(), 0);
+
+                if (bytesSent == -1) {
+                    if (errno == EPIPE)
+                        std::cerr << "Send failed: client disconnected (EPIPE)" << std::endl;
+                    else
+                        std::cerr << "Send failed: " << std::strerror(errno) << std::endl;
+
+                    throw std::runtime_error("sendMessage: send() failed");
+                } 
+            }
 
             std::queue<std::string> queueMessage;
             std::shared_ptr<std::mutex> queueMutex = nullptr;
