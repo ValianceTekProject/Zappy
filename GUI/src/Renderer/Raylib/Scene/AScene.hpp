@@ -31,6 +31,8 @@ namespace zappy {
                     virtual void handleInput(InputManager &inputManager) override;
                     virtual void update() override;
 
+                    virtual void render() const override;
+
                     virtual void addEgg(const int &id) override;
                     virtual void addPlayer(const int &id) override;
 

@@ -15,10 +15,10 @@ zappy::gui::raylib::AScene::AScene(const std::shared_ptr<game::GameState> &gameS
 
 void zappy::gui::raylib::AScene::init()
 {
-    Vector3 position = { 0, 10.0f, 10.0f };
-    Vector3 target = { 0.0f, 0.0f, 0.0f };
-    Vector3 up = { 0.0f, 0.45f, 0.0f };
-    float fovy = 45.0f;
+    constexpr Vector3 position = { 0, 10.0f, 10.0f };
+    constexpr Vector3 target = { 0.0f, 0.0f, 0.0f };
+    constexpr Vector3 up = { 0.0f, 0.45f, 0.0f };
+    constexpr float fovy = 45.0f;
 
     this->_camera.position = position;
     this->_camera.target = target;
@@ -32,6 +32,15 @@ void zappy::gui::raylib::AScene::init()
 void zappy::gui::raylib::AScene::update()
 {
     this->_mapRenderer->update(this->_gameState->getFrequency());
+}
+
+void zappy::gui::raylib::AScene::render() const
+{
+    BeginMode3D(getCamera());
+
+    _mapRenderer->render();
+
+    EndMode3D();
 }
 
 void zappy::gui::raylib::AScene::handleInput(InputManager &inputManager)

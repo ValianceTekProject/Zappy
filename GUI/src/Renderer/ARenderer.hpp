@@ -24,6 +24,10 @@ namespace zappy {
                 void setGameState(std::shared_ptr<game::GameState> gameState) override
                     { _gameState = gameState; }
 
+                virtual void setFrequency(const size_t &frequency) override;
+                virtual size_t getFrequency() const override { return this->_gameState->getFrequency(); }
+                virtual bool hasFrequencyChanged() const override { return false; }
+
                 virtual void handleInput() override = 0;
                 virtual void update() override = 0;
 

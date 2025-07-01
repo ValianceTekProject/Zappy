@@ -23,6 +23,10 @@ namespace zappy {
 
                 virtual void setGameState(std::shared_ptr<game::GameState> gameState) = 0;
 
+                virtual void setFrequency(const size_t &frequency) = 0;
+                virtual size_t getFrequency() const = 0;
+                virtual bool hasFrequencyChanged() const = 0;
+
                 virtual void handleInput() = 0;
                 virtual void update() = 0;
 

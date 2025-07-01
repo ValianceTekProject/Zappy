@@ -34,11 +34,7 @@ void zappy::gui::raylib::BasicScene::update()
 
 void zappy::gui::raylib::BasicScene::render() const
 {
-    BeginMode3D(getCamera());
-
-    _mapRenderer->render();
-
-    EndMode3D();
+    AScene::render();
 }
 
 bool zappy::gui::raylib::BasicScene::shouldClose() const

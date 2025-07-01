@@ -22,6 +22,10 @@ namespace zappy {
 
                 void init() override;
 
+                void setFrequency(const size_t &frequency) override;
+                size_t getFrequency() const override { return this->_menu->getFrequency(); }
+                bool hasFrequencyChanged() const override { return this->_menu->hasFrequencyChanged(); }
+
                 void handleInput() override;
                 void update() override;
 
