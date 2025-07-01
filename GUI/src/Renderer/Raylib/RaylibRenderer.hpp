@@ -9,6 +9,7 @@
 
 #include "ARenderer.hpp"
 #include "BasicScene.hpp"
+#include "PokemonScene.hpp"
 
 namespace zappy {
     namespace gui {

@@ -25,6 +25,13 @@ namespace zappy {
 
                 inline std::string BASIC_EGG_PATH = BASIC_SCENE_PATH + "egg.glb";
 
+                // Pokemon Scene assets
+                inline std::string POKEMON_SCENE_PATH = std::string(ASSETS_PATH) + "Pokemon/";
+
+                inline std::string POKEMON_PLAYER_PATH = POKEMON_SCENE_PATH + "player.glb";
+
+                inline std::string POKEMON_EGG_PATH = POKEMON_SCENE_PATH + "egg.glb";
+
                 // Basic Scene resources assets
                 inline std::string BASIC_SCENE_RESOURCES_PATH = std::string(BASIC_SCENE_PATH) + "Resources/";
 
@@ -35,6 +42,17 @@ namespace zappy {
                 inline std::string BASIC_MENDIANE_PATH = BASIC_SCENE_RESOURCES_PATH + "mendiane.glb";
                 inline std::string BASIC_PHIRAS_PATH = BASIC_SCENE_RESOURCES_PATH + "phiras.glb";
                 inline std::string BASIC_THYSTAME_PATH = BASIC_SCENE_RESOURCES_PATH + "thystame.glb";
+
+                // Pokemon Scene resources assets
+                inline std::string POKEMON_SCENE_RESOURCES_PATH = std::string(POKEMON_SCENE_PATH) + "Resources/";
+
+                inline std::string POKEMON_FOOD_PATH = POKEMON_SCENE_RESOURCES_PATH + "food.glb";
+                inline std::string POKEMON_LINEMATE_PATH = POKEMON_SCENE_RESOURCES_PATH + "linemate.glb";
+                inline std::string POKEMON_DERAUMERE_PATH = POKEMON_SCENE_RESOURCES_PATH + "deraumere.glb";
+                inline std::string POKEMON_SIBUR_PATH = POKEMON_SCENE_RESOURCES_PATH + "sibur.glb";
+                inline std::string POKEMON_MENDIANE_PATH = POKEMON_SCENE_RESOURCES_PATH + "mendiane.glb";
+                inline std::string POKEMON_PHIRAS_PATH = POKEMON_SCENE_RESOURCES_PATH + "phiras.glb";
+                inline std::string POKEMON_THYSTAME_PATH = POKEMON_SCENE_RESOURCES_PATH + "thystame.glb";
 
                 // Pokemon Scene assets
             }
