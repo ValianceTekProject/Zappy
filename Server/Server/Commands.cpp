@@ -28,9 +28,8 @@ void zappy::server::Server::_handleClientCommand(const std::string &command, str
             if (hasJoin) {
                 auto teamsPlayer = std::dynamic_pointer_cast<zappy::game::TeamsPlayer>(team);
                 if (teamsPlayer) {
-                    std::string msg = std::to_string(teamsPlayer->getClientNb() - teamsPlayer->getPlayerList().size());
-                    this->_socket->sendMessage(pfd.fd, msg);
-                    msg = std::to_string(this->_width) + " " + std::to_string(this->_height);
+                    std::string msg = std::to_string(teamsPlayer->getClientNb() - teamsPlayer->getPlayerList().size()) + "\n";
+                    msg += std::to_string(this->_width) + " " + std::to_string(this->_height);
                     this->_socket->sendMessage(pfd.fd, msg);
                     return;
                 }
