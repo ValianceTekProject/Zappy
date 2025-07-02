@@ -25,14 +25,14 @@ void zappy::gui::RaylibRenderer::init()
     this->_scene = std::make_unique<raylib::BasicScene>(this->_gameState);
     this->_scene->init();
 
-    for (int id = 0; id < 11; ++id) {
-        game::Player p(id, std::rand() % 10, std::rand() % 10);
-        p.teamName = "Team " + std::to_string(id % 2);
-        this->addPlayer(p);
-        game::Inventory inv;
-        inv.addResource(game::Resource::FOOD, 10);
-        this->updatePlayerInventory(id, inv);
-    }
+    // for (int id = 0; id < 11; ++id) {
+    //     game::Player p(id, std::rand() % 10, std::rand() % 10);
+    //     p.teamName = "Team " + std::to_string(id % 2);
+    //     this->addPlayer(p);
+    //     game::Inventory inv;
+    //     inv.addResource(game::Resource::FOOD, 10);
+    //     this->updatePlayerInventory(id, inv);
+    // }
 }
 
 void zappy::gui::RaylibRenderer::setFrequency(const size_t &frequency)
