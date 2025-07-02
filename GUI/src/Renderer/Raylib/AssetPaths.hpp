@@ -13,7 +13,7 @@ namespace zappy {
     namespace gui {
         namespace raylib {
             namespace assets {
-                constexpr const char *ASSETS_PATH = "src/Renderer/Raylib/Assets/";
+                constexpr const char *ASSETS_PATH = "GUI/src/Renderer/Raylib/Assets/";
 
                 // Basic Scene assets
                 inline std::string BASIC_SCENE_PATH = std::string(ASSETS_PATH) + "Basic/";
