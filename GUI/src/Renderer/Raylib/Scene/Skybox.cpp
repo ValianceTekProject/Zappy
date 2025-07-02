@@ -10,47 +10,56 @@
 
 bool zappy::gui::raylib::Skybox::init(const std::string &imagePath)
 {
-    this->_imagePath = imagePath;
+    this->_mesh = GenMeshCube(1.0f, 1.0f, 1.0f);
+    this->_model = LoadModelFromMesh(this->_mesh);
 
-    _mesh = GenMeshCube(1.0f, 1.0f, 1.0f);
-    _model = LoadModelFromMesh(_mesh);
-
-    if (_model.materialCount == 0)
+    if (this->_model.materialCount == 0)
         return false;
 
-    _model.materials[0].shader = LoadShader(zappy::gui::raylib::assets::BASIC_SKYBOX_VS_PATH.c_str(), zappy::gui::raylib::assets::BASIC_SKYBOX_FS_PATH.c_str());
+    this->_shaderCubemap = LoadShader(
+        TextFormat(assets::BASIC_SKYBOX_CUBEMAP_VS_PATH.c_str(), GLSL_VERSION),
+        TextFormat(assets::BASIC_SKYBOX_CUBEMAP_FS_PATH.c_str(), GLSL_VERSION)
+    );
 
-    int cubemapMapType = MATERIAL_MAP_CUBEMAP;
-    SetShaderValue(_model.materials[0].shader,
-                GetShaderLocation(_model.materials[0].shader, "environmentMap"),
-                &cubemapMapType, SHADER_UNIFORM_INT);
-
-    int doGammaValue = 0;
-    SetShaderValue(_model.materials[0].shader,
-                GetShaderLocation(_model.materials[0].shader, "doGamma"),
-                &doGammaValue, SHADER_UNIFORM_INT);
-
-    int vflippedValue = 0;
-    SetShaderValue(_model.materials[0].shader,
-                GetShaderLocation(_model.materials[0].shader, "vflipped"),
-                &vflippedValue, SHADER_UNIFORM_INT);
+    if (this->_shaderCubemap.id == 0)
+        return false;
 
     int equirectangularMap = 0;
-    SetShaderValue(_shaderCubemap,
-                GetShaderLocation(_shaderCubemap, "equirectangularMap"),
-                &equirectangularMap, SHADER_UNIFORM_INT);
+    SetShaderValue(
+        this->_shaderCubemap,
+        GetShaderLocation(this->_shaderCubemap, "equirectangularMap"),
+        &equirectangularMap, SHADER_UNIFORM_INT
+    );
 
-    _shaderCubemap = LoadShader(TextFormat(zappy::gui::raylib::assets::BASIC_SKYBOX_CUBEMAP_VS_PATH.c_str(), GLSL_VERSION),
-                                TextFormat(zappy::gui::raylib::assets::BASIC_SKYBOX_CUBEMAP_FS_PATH.c_str(), GLSL_VERSION));
+    Shader baseShader = LoadShader(
+        assets::BASIC_SKYBOX_VS_PATH.c_str(),
+        assets::BASIC_SKYBOX_FS_PATH.c_str()
+    );
+    this->_model.materials[0].shader = baseShader;
 
-    if (_shaderCubemap.id == 0)
-        return false;
+    int cubemapMapType = MATERIAL_MAP_CUBEMAP;
+    SetShaderValue(baseShader,
+        GetShaderLocation(baseShader, "environmentMap"),
+        &cubemapMapType, SHADER_UNIFORM_INT
+    );
+    int doGammaValue = 0;
+    SetShaderValue(baseShader,
+        GetShaderLocation(baseShader, "doGamma"),
+        &doGammaValue, SHADER_UNIFORM_INT
+    );
+    int vflippedValue = 0;
+    SetShaderValue(baseShader,
+        GetShaderLocation(baseShader, "vflipped"),
+        &vflippedValue, SHADER_UNIFORM_INT
+    );
 
-    _skyboxFileName = _imagePath;
-    Image img = LoadImage(_imagePath.c_str());
-    _model.materials[0].maps[MATERIAL_MAP_CUBEMAP].texture = LoadTextureCubemap(img, CUBEMAP_LAYOUT_AUTO_DETECT);
+    Image img = LoadImage(imagePath.c_str());
+    TextureCubemap cubemap = LoadTextureCubemap(img, CUBEMAP_LAYOUT_AUTO_DETECT);
     UnloadImage(img);
 
+    this->_model.materials[0].maps[MATERIAL_MAP_CUBEMAP].texture = cubemap;
+
+    this->_skyboxFileName = imagePath;
     return true;
 }
 
@@ -61,13 +70,13 @@ void zappy::gui::raylib::Skybox::update()
         if (droppedFiles.count == 1 &&
             IsFileExtension(droppedFiles.paths[0], ".png;.jpg;.hdr;.bmp;.tga")) {
 
-            UnloadTexture(_model.materials[0].maps[MATERIAL_MAP_CUBEMAP].texture);
+            UnloadTexture(this->_model.materials[0].maps[MATERIAL_MAP_CUBEMAP].texture);
 
             Image img = LoadImage(droppedFiles.paths[0]);
-            _model.materials[0].maps[MATERIAL_MAP_CUBEMAP].texture = LoadTextureCubemap(img, CUBEMAP_LAYOUT_AUTO_DETECT);
+            this->_model.materials[0].maps[MATERIAL_MAP_CUBEMAP].texture = LoadTextureCubemap(img, CUBEMAP_LAYOUT_AUTO_DETECT);
             UnloadImage(img);
 
-            _skyboxFileName = droppedFiles.paths[0];
+            this->_skyboxFileName = droppedFiles.paths[0];
         }
         UnloadDroppedFiles(droppedFiles);
     }
@@ -77,21 +86,21 @@ void zappy::gui::raylib::Skybox::render() const
 {
     rlDisableBackfaceCulling();
     rlDisableDepthMask();
-    DrawModel(_model, { 0, 0, 0 }, 1.0f, WHITE);
+    DrawModel(this->_model, { 0, 0, 0 }, 1.0f, WHITE);
     rlEnableBackfaceCulling();
     rlEnableDepthMask();
 }
 
 void zappy::gui::raylib::Skybox::renderInfo() const
 {
-    DrawText(TextFormat("Skybox image: %s", GetFileName(_skyboxFileName.c_str())),
+    DrawText(TextFormat("Skybox image: %s", GetFileName(this->_skyboxFileName.c_str())),
     10, GetScreenHeight() - 20, 10, BLACK);
 }
 
 void zappy::gui::raylib::Skybox::unload()
 {
-    if (_model.materialCount > 0)
-        UnloadShader(_model.materials[0].shader);
-    UnloadTexture(_model.materials[0].maps[MATERIAL_MAP_CUBEMAP].texture);
-    UnloadModel(_model);
+    if (this->_model.materialCount > 0)
+        UnloadShader(this->_model.materials[0].shader);
+    UnloadTexture(this->_model.materials[0].maps[MATERIAL_MAP_CUBEMAP].texture);
+    UnloadModel(this->_model);
 }

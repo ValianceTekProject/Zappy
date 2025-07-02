@@ -209,12 +209,15 @@ void zappy::gui::raylib::GameMenu::_handlePlayersInput(const InputManager &input
             this->_numberPlayerDisplayed = MIN_PLAYERS_DISPLAYED;
     } else if (inputManager.isKeyPressed(KEY_LEFT)) {
         this->_displayedPlayersIndex -= this->_numberPlayerDisplayed;
-        if (this->_displayedPlayersIndex < 0)
-            this->_displayedPlayersIndex = this->_displayedPlayersIndex % this->_playersInfos.size();
+        if (this->_displayedPlayersIndex < 0) {
+            this->_displayedPlayersIndex = this->_numberPlayerDisplayed * (this->_playersInfos.size() / this->_numberPlayerDisplayed);
+            if (this->_displayedPlayersIndex == static_cast<int>(this->_playersInfos.size()))
+                this->_displayedPlayersIndex -= this->_numberPlayerDisplayed - 1;
+        }
     } else if (inputManager.isKeyPressed(KEY_RIGHT)) {
         this->_displayedPlayersIndex += this->_numberPlayerDisplayed;
         if (this->_displayedPlayersIndex >= static_cast<int>(this->_playersInfos.size()))
-            this->_displayedPlayersIndex %= this->_playersInfos.size();
+            this->_displayedPlayersIndex = 0;
     }
 }
 
@@ -333,13 +336,13 @@ void zappy::gui::raylib::GameMenu::_renderPlayersInfos(const int &screenWidth, c
     const float scaleX = static_cast<float>(screenWidth) / DEFAULT_SCREEN_WIDTH;
     const float scaleY = static_cast<float>(screenHeight) / DEFAULT_SCREEN_HEIGHT;
 
-    const int paddingX = 20 * scaleX;
-    const int paddingY = 20 * scaleY;
+    const int paddingX = 10 * scaleX;
+    const int paddingY = 10 * scaleY;
     const int spacingX = 5 * scaleX;
     const int spacingY = 5 * scaleY;
     const int textSize = static_cast<int>(this->_fontSize * scaleY);
     const int boxWidth = textSize * 10;
-    const int totalLines = 4 + game::RESOURCE_QUANTITY;
+    const int totalLines = 5 + game::RESOURCE_QUANTITY;
     const int boxHeight = totalLines * textSize + (totalLines - 1) * spacingY;
 
     const int x = screenWidth - paddingX;
@@ -362,10 +365,7 @@ void zappy::gui::raylib::GameMenu::_renderPlayersInfos(const int &screenWidth, c
         int col = i % columns;
         int row = i / columns;
 
-        int x = screenWidth
-              - paddingX
-              - (columns - 1 - col) * (boxWidth + spacingX);
-
+        int x = screenWidth - paddingX - (columns - 1 - col) * (boxWidth + spacingX);
         int y = paddingY + row * (boxHeight + spacingY);
 
         _renderPlayerInfo(
@@ -392,10 +392,10 @@ void zappy::gui::raylib::GameMenu::_renderPlayerInfo(
 
     const int boxX = screenWidth - boxWidth;
 
-    DrawRectangle(boxX, y - 10, boxWidth, boxHeight + 20, Fade(GRAY, 0.5f));
+    DrawRectangle(boxX, y, boxWidth, boxHeight, Fade(GRAY, 0.5f));
 
     const int centerX = boxX + boxWidth / 2;
-    int currentY = y;
+    int currentY = y + textSize / 2;
 
     auto drawCentered = [&](const std::string &str) {
         int textWidth = MeasureText(str.c_str(), textSize);

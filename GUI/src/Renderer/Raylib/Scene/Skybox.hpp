@@ -36,7 +36,6 @@ namespace zappy {
                     void unload();
 
                 private:
-                    std::string _imagePath;
                     std::string _skyboxFileName;
                     Shader _shaderCubemap = {};
                     Model _model = {};

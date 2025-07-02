@@ -24,7 +24,7 @@ namespace zappy {
             constexpr int MAX_FREQ = 1000;
 
             constexpr int MIN_PLAYERS_DISPLAYED = 1;
-            constexpr int MAX_PLAYERS_DISPLAYED = 4;
+            constexpr int MAX_PLAYERS_DISPLAYED = 6;
 
             enum class MenuState {
                 HELP,

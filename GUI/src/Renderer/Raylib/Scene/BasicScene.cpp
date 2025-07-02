@@ -22,7 +22,7 @@ void zappy::gui::raylib::BasicScene::init()
     }
 
     // Init le background
-    this->_skybox.init(zappy::gui::raylib::assets::BASIC_SKYBOX_MODEL_PATH);
+    // this->_skybox.init(zappy::gui::raylib::assets::BASIC_SKYBOX_MODEL_PATH);
 }
 
 bool zappy::gui::raylib::BasicScene::shouldClose() const
@@ -42,6 +42,13 @@ void zappy::gui::raylib::BasicScene::addEgg(const int &id)
 void zappy::gui::raylib::BasicScene::addPlayer(const int &id)
 {
     auto player = std::make_unique<BasicPlayerModel>(id);
+
+    player->setColor(Color{
+        static_cast<uint8_t>(GetRandomValue(0, 255)),
+        static_cast<uint8_t>(GetRandomValue(0, 255)),
+        static_cast<uint8_t>(GetRandomValue(0, 255)),
+        255
+    });
 
     _mapRenderer->addPlayer(std::move(player));
 
