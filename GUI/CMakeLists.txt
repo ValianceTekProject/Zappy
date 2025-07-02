@@ -134,12 +134,7 @@ add_executable(zappy_gui ${SOURCES})
 # === Dépendances ===
 
 # Raylib via pkg-config
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(RAYLIB REQUIRED raylib)
-
-include_directories(${RAYLIB_INCLUDE_DIRS})
-link_directories(${RAYLIB_LIBRARY_DIRS})
-target_link_libraries(zappy_gui PRIVATE ${RAYLIB_LIBRARIES})
+target_link_libraries(zappy_gui PRIVATE raylib)
 
 ## Ncurses
 find_package(Curses REQUIRED)
