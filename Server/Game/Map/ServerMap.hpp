@@ -25,7 +25,7 @@ namespace zappy {
             ~MapServer() = default;
 
             void setEggsonMap(std::vector<std::shared_ptr<ITeams>> &teamList, int clientNb);
-            void addNewEgg(int teamId, int x, int y);
+            int addNewEgg(int teamId, int x, int y);
             zappy::game::Egg popEgg();
             void replaceResources();
 

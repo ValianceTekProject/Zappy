@@ -33,11 +33,12 @@ void zappy::game::MapServer::setEggsonMap(
     }
 }
 
-void zappy::game::MapServer::addNewEgg(int teamId, int x, int y)
+int zappy::game::MapServer::addNewEgg(int teamId, int x, int y)
 {
     zappy::game::Egg newEgg(this->_idEggTot, teamId, x, y);
     this->_idEggTot += 1;
     this->_eggList.push_back(newEgg);
+    return this->_idEggTot - 1;
 }
 
 zappy::game::Egg zappy::game::MapServer::popEgg()

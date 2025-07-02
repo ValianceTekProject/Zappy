@@ -417,13 +417,15 @@ void zappy::game::CommandHandler::handleFork(zappy::game::ServerPlayer &player)
     auto playerTeam =
         dynamic_cast<zappy::game::TeamsPlayer *>(&player.getTeam());
     if (playerTeam) {
+        std::cout << "Fork for player: " << player.getId() << std::endl;
         playerTeam->allowNewPlayer();
-        this->_map.addNewEgg(playerTeam->getTeamId(), player.x, player.y);
+        auto eggId = this->_map.addNewEgg(playerTeam->getTeamId(), player.x, player.y);
         player.setInAction(false);
         player.getClient().sendMessage("ok\n");
+        std::cout << "Egg id" << eggId << std::endl;
         this->messageToGUI(
             "enw #" + std::to_string(player.getTeam().getTeamId()) + " #" +
-            std::to_string(player.getId()) + " " + std::to_string(player.x) +
+            std::to_string(eggId) + " " + std::to_string(player.x) +
             " " + std::to_string(player.y) + "\n");
     }
 }
@@ -694,7 +696,6 @@ void zappy::game::CommandHandler::_executeCommand(
     std::function<void(ServerPlayer &, const std::string &)> function,
     const std::string &args)
 {
-    std::cout << "Socket:" << player.getClient().getSocket() << std::endl; 
     std::thread commandThread([&player, function, args]() {
         if (player.isInAction()) {
             std::cout << "Déjà dans une action pour le player lvl " << player.level << std::endl;
