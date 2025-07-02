@@ -7,6 +7,7 @@
 
 #include "ServerMap.hpp"
 #include <chrono>
+#include <mutex>
 
 zappy::game::MapServer::MapServer(int width, int height)
 {
@@ -52,6 +53,7 @@ void zappy::game::MapServer::_placeResources()
     auto mapWidth = this->_width;
     auto mapHeight = this->_height;
 
+    std::lock_guard<std::mutex> lock(this->_resourceMutex);
     for (size_t resourceIdx = 0; resourceIdx < nbResources; resourceIdx += 1) {
         int totalResources = coeff[resourceIdx] * mapWidth * mapHeight;
 
@@ -71,6 +73,7 @@ void zappy::game::MapServer::replaceResources()
 {
     size_t nbResources = zappy::game::coeff.size();
 
+    std::lock_guard<std::mutex> lock(this->_resourceMutex);
     for (size_t resourceIdx = 0; resourceIdx < nbResources; resourceIdx += 1) {
 
         int totResources = coeff[resourceIdx] * this->_width * this->_height;

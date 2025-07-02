@@ -32,6 +32,7 @@ namespace zappy {
             std::list<Egg> &getEggList() { return _eggList; }
 
             std::chrono::steady_clock::time_point _lastResourceRespawn = std::chrono::steady_clock::now();
+            std::mutex _resourceMutex;
 
            private:
             int _idEggTot = 1;

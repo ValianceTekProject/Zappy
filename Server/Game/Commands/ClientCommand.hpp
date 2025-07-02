@@ -136,7 +136,6 @@ namespace zappy {
 
             std::pair<size_t, size_t> _normalizeCoords(size_t x, size_t y);
             void _getDirectionVector(const Player &player, int &dx, int &dy);
-            std::mutex _resourceMutex;
         };
     }  // namespace game
 

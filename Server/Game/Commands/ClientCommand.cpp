@@ -434,7 +434,7 @@ void zappy::game::CommandHandler::handleTake(
     if (objectTake == names.end())
         return player.getClient().sendMessage("ko\n");
 
-    std::lock_guard<std::mutex> lock(this->_resourceMutex);
+    std::lock_guard<std::mutex> lock(this->_map._resourceMutex);
     zappy::game::Resource resource = getResource(arg);
 
     auto &tile = this->_map.getTile(player.x, player.y);
@@ -470,7 +470,7 @@ void zappy::game::CommandHandler::handleDrop(
     if (objectDrop == names.end())
         return player.getClient().sendMessage("ko\n");
 
-    std::lock_guard<std::mutex> lock(this->_resourceMutex);
+    std::lock_guard<std::mutex> lock(this->_map._resourceMutex);
     zappy::game::Resource resource = getResource(arg);
 
     auto &inventory = player.getInventory();
@@ -549,7 +549,7 @@ bool zappy::game::CommandHandler::_checkIncantationConditions(
 void zappy::game::CommandHandler::_consumeElevationResources(
     size_t x, size_t y, size_t level)
 {
-    std::lock_guard<std::mutex> lock(this->_resourceMutex);
+    std::lock_guard<std::mutex> lock(this->_map._resourceMutex);
     auto &tile = this->_map.getTile(x, y);
     const auto &req = elevationRequirements[level - 1];
 
