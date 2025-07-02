@@ -16,7 +16,6 @@
 #include <raylib.h>
 #include <unordered_map>
 #include <rlgl.h>
-#include "Skybox.hpp"
 
 namespace zappy {
     namespace gui {
@@ -28,11 +27,6 @@ namespace zappy {
 
                     void init() override;
 
-                    void handleInput(InputManager &inputManager);
-
-                    void update() override;
-                    void render() const override;
-
                     bool shouldClose() const override;
 
                     void addEgg(const int &id) override;
@@ -41,7 +35,6 @@ namespace zappy {
                     void endGame(const std::string &teamName) override;
 
                 private:
-                    Skybox _skybox;
             };
         } // namespace raylib
     } // namespace gui

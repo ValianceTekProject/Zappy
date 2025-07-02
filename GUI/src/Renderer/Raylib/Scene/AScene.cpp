@@ -10,7 +10,8 @@
 zappy::gui::raylib::AScene::AScene(const std::shared_ptr<game::GameState> &gameState) :
     _camera(Camera()),
     _gameState(gameState),
-    _menu(std::make_unique<Menu>(gameState)),
+    _menu(std::make_unique<GameMenu>(gameState)),
+    _skybox(),
     _mapRenderer(std::make_unique<MapRenderer>(this->_gameState->getMap()))
 {}
 
@@ -40,13 +41,15 @@ void zappy::gui::raylib::AScene::update()
 {
     this->_menu->update();
     this->_mapRenderer->update(this->_gameState->getFrequency());
+    this->_skybox.update();
 }
 
 void zappy::gui::raylib::AScene::render() const
 {
     BeginMode3D(getCamera());
 
-    _mapRenderer->render();
+    this->_skybox.render();
+    this->_mapRenderer->render();
 
     EndMode3D();
 

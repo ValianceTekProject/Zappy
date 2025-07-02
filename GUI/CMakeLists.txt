@@ -101,7 +101,7 @@ set(SOURCES
 
     ${RAYLIB_DIR}/RaylibRenderer.cpp
 
-    ${RAYLIB_MENU_DIR}/Menu.cpp
+    ${RAYLIB_MENU_DIR}/GameMenu.cpp
     ${RAYLIB_MENU_DIR}/InputManager.cpp
 
     ${RAYLIB_SCENE_DIR}/Skybox.cpp

@@ -22,10 +22,10 @@ namespace zappy {
         namespace raylib {
             class Skybox {
                 public:
-                    Skybox(const std::string &imagePath);
+                    Skybox() = default;
                     ~Skybox() = default;
 
-                    bool load();
+                    bool init(const std::string &imagePath);
 
                     void update();
 

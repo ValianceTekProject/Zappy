@@ -8,12 +8,10 @@
 #include "Skybox.hpp"
 #include "AssetPaths.hpp"
 
-zappy::gui::raylib::Skybox::Skybox(const std::string &imagePath)
-    : _imagePath(imagePath)
-{}
-
-bool zappy::gui::raylib::Skybox::load()
+bool zappy::gui::raylib::Skybox::init(const std::string &imagePath)
 {
+    this->_imagePath = imagePath;
+
     _mesh = GenMeshCube(1.0f, 1.0f, 1.0f);
     _model = LoadModelFromMesh(_mesh);
 

@@ -9,7 +9,8 @@
 
 #include "IScene.hpp"
 #include "MapRenderer.hpp"
-#include "Menu.hpp"
+#include "GameMenu.hpp"
+#include "Skybox.hpp"
 
 #include <memory>
 #include <unordered_map>
@@ -66,8 +67,9 @@ namespace zappy {
 
                     const std::shared_ptr<game::GameState> _gameState;
 
-                    std::unique_ptr<Menu> _menu;
+                    std::unique_ptr<GameMenu> _menu;
 
+                    Skybox _skybox;
                     const std::unique_ptr<MapRenderer> _mapRenderer;
             };
         } // namespace raylib
