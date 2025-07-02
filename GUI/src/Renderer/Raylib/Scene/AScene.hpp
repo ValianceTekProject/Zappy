@@ -9,7 +9,6 @@
 
 #include "IScene.hpp"
 #include "MapRenderer.hpp"
-#include "GameMenu.hpp"
 #include "Skybox.hpp"
 
 #include <memory>
@@ -26,10 +25,6 @@ namespace zappy {
                     ~AScene() override = default;
 
                     virtual void init() override;
-
-                    void setFrequency(const size_t &frequency) override;
-                    size_t getFrequency() const override { return this->_menu->getFrequency(); }
-                    bool hasFrequencyChanged() const override { return this->_menu->hasFrequencyChanged(); }
 
                     Camera &getCamera() override { return _camera; }
                     const Camera &getCamera() const override { return _camera; }
@@ -66,8 +61,6 @@ namespace zappy {
                     Camera _camera;
 
                     const std::shared_ptr<game::GameState> _gameState;
-
-                    std::unique_ptr<GameMenu> _menu;
 
                     Skybox _skybox;
                     const std::unique_ptr<MapRenderer> _mapRenderer;
