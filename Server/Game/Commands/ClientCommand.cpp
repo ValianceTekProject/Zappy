@@ -96,6 +96,11 @@ void zappy::game::CommandHandler::handleForward(
     player.stepForward(this->_widthMap, this->_heightMap);
     player.setInAction(false);
     player.getClient().sendMessage("ok\n");
+    std::string msg = "ppo #" + std::to_string(player.getId()) + " " + 
+        std::to_string(player.x) + " " + 
+        std::to_string(player.y) + " " + 
+        std::to_string(static_cast<int>(player.orientation + 1)) + "\n";
+    this->messageToGUI(msg);
 }
 
 void zappy::game::CommandHandler::handleRight(
@@ -105,6 +110,11 @@ void zappy::game::CommandHandler::handleRight(
     player.lookRight();
     player.setInAction(false);
     player.getClient().sendMessage("ok\n");
+    std::string msg = "ppo #" + std::to_string(player.getId()) + " " + 
+        std::to_string(player.x) + " " + 
+        std::to_string(player.y) + " " + 
+        std::to_string(static_cast<int>(player.orientation + 1)) + "\n";
+    this->messageToGUI(msg);
 }
 
 void zappy::game::CommandHandler::handleLeft(zappy::game::ServerPlayer &player)
@@ -113,6 +123,11 @@ void zappy::game::CommandHandler::handleLeft(zappy::game::ServerPlayer &player)
     player.lookLeft();
     player.setInAction(false);
     player.getClient().sendMessage("ok\n");
+    std::string msg = "ppo #" + std::to_string(player.getId()) + " " + 
+        std::to_string(player.x) + " " + 
+        std::to_string(player.y) + " " + 
+        std::to_string(static_cast<int>(player.orientation + 1)) + "\n";
+    this->messageToGUI(msg);
 }
 
 std::pair<size_t, size_t> zappy::game::CommandHandler::_normalizeCoords(
@@ -374,7 +389,7 @@ void zappy::game::CommandHandler::handleBroadcast(
     player.setInAction(false);
     player.getClient().sendMessage("ok\n");
     this->messageToGUI(std::string(
-        "pbc " + std::to_string(player.getId()) + " " + arg + "\n"));
+        "pbc #" + std::to_string(player.getId()) + " " + arg + "\n"));
 }
 
 void zappy::game::CommandHandler::handleConnectNbr(
@@ -392,6 +407,7 @@ void zappy::game::CommandHandler::handleConnectNbr(
 
 void zappy::game::CommandHandler::handleFork(zappy::game::ServerPlayer &player)
 {
+    this->messageToGUI("pfk #" + std::to_string(player.getId()) + "\n");
     this->_waitCommand(timeLimit::FORK);
 
     auto playerTeam =
@@ -401,6 +417,10 @@ void zappy::game::CommandHandler::handleFork(zappy::game::ServerPlayer &player)
         this->_map.addNewEgg(playerTeam->getTeamId(), player.x, player.y);
         player.setInAction(false);
         player.getClient().sendMessage("ok\n");
+        this->messageToGUI("enw #" + std::to_string(player.getTeam().getTeamId()) + " #" +
+            std::to_string(player.getId()) + " " +
+            std::to_string(player.x) + " " +
+            std::to_string(player.y) + "\n");
     }
 }
 
@@ -414,7 +434,7 @@ void zappy::game::CommandHandler::handleTake(
     if (objectTake == names.end())
         return player.getClient().sendMessage("ko\n");
 
-    std::lock_guard<std::mutex> lock(this->_resourceMutex);
+    std::lock_guard<std::mutex> lock(this->_map._resourceMutex);
     zappy::game::Resource resource = getResource(arg);
 
     auto &tile = this->_map.getTile(player.x, player.y);
@@ -425,6 +445,19 @@ void zappy::game::CommandHandler::handleTake(
     tile.removeResource(resource);
     player.setInAction(false);
     player.getClient().sendMessage("ok\n");
+    this->messageToGUI("pgt #" +
+        std::to_string(player.getId()) +
+        " " + std::to_string(castResource(resource)) +
+        "\n");
+    for (auto &team : this->_teamList) {
+        if (team->getName() == "GRAPHIC") {
+            for (auto &players : team->getPlayerList()) {
+                handlePin(*players, std::to_string(player.getId()));
+                handleBct(*players, std::string(std::to_string(player.x)) +
+                    " " + std::string(std::to_string(player.y)));
+            }
+        }
+    }
 }
 
 void zappy::game::CommandHandler::handleDrop(
@@ -437,7 +470,7 @@ void zappy::game::CommandHandler::handleDrop(
     if (objectDrop == names.end())
         return player.getClient().sendMessage("ko\n");
 
-    std::lock_guard<std::mutex> lock(this->_resourceMutex);
+    std::lock_guard<std::mutex> lock(this->_map._resourceMutex);
     zappy::game::Resource resource = getResource(arg);
 
     auto &inventory = player.getInventory();
@@ -448,6 +481,17 @@ void zappy::game::CommandHandler::handleDrop(
     player.dropRessource(resource);
     player.setInAction(false);
     player.getClient().sendMessage("ok\n");
+    this->messageToGUI("pdr #" + std::to_string(player.getId()) + " " +
+        std::to_string(castResource(resource)) + "\n");
+    for (auto &team : this->_teamList) {
+        if (team->getName() == "GRAPHIC") {
+            for (auto &players : team->getPlayerList()) {
+                handlePin(*players, std::to_string(player.getId()));
+                handleBct(*players, std::string(std::to_string(player.x)) +
+                    " " + std::string(std::to_string(player.y)));
+            }
+        }
+    }
 }
 
 std::vector<std::weak_ptr<zappy::game::ServerPlayer>>
@@ -505,7 +549,7 @@ bool zappy::game::CommandHandler::_checkIncantationConditions(
 void zappy::game::CommandHandler::_consumeElevationResources(
     size_t x, size_t y, size_t level)
 {
-    std::lock_guard<std::mutex> lock(this->_resourceMutex);
+    std::lock_guard<std::mutex> lock(this->_map._resourceMutex);
     auto &tile = this->_map.getTile(x, y);
     const auto &req = elevationRequirements[level - 1];
 
@@ -559,13 +603,20 @@ void zappy::game::CommandHandler::_elevatePlayer(
                 std::string("Current level:") +
                 std::to_string(sharedPlayer->level) + "\n");
         });
+    this->messageToGUI(std::string("pie " +
+                std::to_string(player.x) + " " +
+                std::to_string(player.y) + " 1\n"));
 }
 
 void zappy::game::CommandHandler::handleIncantation(
     zappy::game::ServerPlayer &player)
 {
-    if (!this->_checkIncantationConditions(player))
+    if (!this->_checkIncantationConditions(player)) {
+        this->messageToGUI(std::string("pie " +
+                std::to_string(player.x) + " " +
+                std::to_string(player.y) + " 0\n"));
         return player.getClient().sendMessage("ko\n");
+    }
     this->_setPrayer(player);
     std::string guiMsg = "pic " + std::to_string(player.x) + " " +
                          std::to_string(player.y) + " " +
@@ -578,18 +629,23 @@ void zappy::game::CommandHandler::handleIncantation(
             auto sharedPlayer = player.lock();
             if (!sharedPlayer->isPraying())
                 return;
-            guiMsg += " ";
+            guiMsg += " #";
             guiMsg += sharedPlayer->getId();
         });
     guiMsg += "\n";
     this->messageToGUI(guiMsg);
     this->_waitCommand(timeLimit::INCANTATION);
 
-    if (!this->_checkIncantationConditions(player))
+    if (!this->_checkIncantationConditions(player)) {
+        this->messageToGUI(std::string("pie " +
+                std::to_string(player.x) + " " +
+                std::to_string(player.y) + " 0\n"));
         return player.getClient().sendMessage("ko\n");
+    }
     this->_consumeElevationResources(player.x, player.y, player.level);
     this->_elevatePlayer(player);
     player.setInAction(false);
+    std::cout << "SERV: Incantation Réussi !" << std::endl;
 }
 
 void zappy::game::CommandHandler::_executeCommand(
@@ -612,7 +668,7 @@ void zappy::game::CommandHandler::_executeCommand(
 }
 
 void zappy::game::CommandHandler::processClientInput(
-    const std::string &input, zappy::game::ServerPlayer &player)
+    std::string &input, zappy::game::ServerPlayer &player)
 {
     if (this->_commandMap.empty())
         this->initCommandMap();

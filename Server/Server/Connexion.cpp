@@ -17,7 +17,7 @@ void zappy::server::Server::handleClientMessage(
     for (auto &team : this->_game->getTeamList()) {
         for (auto &player : team->getPlayerList()) {
             if (clientSocket == player->getClient().getSocket() &&
-        player->getClient().getState() == zappy::server::ClientState::CONNECTED) {
+                player->getClient().getState() == zappy::server::ClientState::CONNECTED) {
                 std::lock_guard<std::mutex> lock(*(player->getClient().queueMutex));
                 player->getClient().queueMessage.push(buffer);
                 return;
@@ -31,6 +31,11 @@ zappy::server::ClientState zappy::server::Server::_handleClientDisconnection(
     const std::string &content, struct pollfd &pfd)
 {
     if (content.compare("exit") == 0) {
+        auto optPlayer = this->getPlayerBySocket(pfd.fd);
+        if (optPlayer.has_value() && optPlayer.value()->getTeam().getName() != "GRAPHIC") {
+            this->_game->getCommandHandler().messageToGUI("pdi #" +
+                std::to_string(optPlayer.value()->getId()) + "\n");
+        }
         this->_game->removeFromTeam(pfd.fd);
         ::close(pfd.fd);
         return ClientState::DISCONNECTED;
