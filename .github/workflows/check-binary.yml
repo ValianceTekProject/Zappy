@@ -11,6 +11,8 @@ on:
 jobs:
     check-compilation:
         runs-on: ubuntu-latest
+        container:
+          image: epitechcontent/epitest-docker:latest
         steps:
           - name: Checkout Branch
             uses: actions/checkout@v4
