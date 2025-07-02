@@ -14,9 +14,6 @@ jobs:
         steps:
           - name: Checkout Branch
             uses: actions/checkout@v4
-          - name: Add dependencies
-            run: |
-              sudo apt install raylib
           - name: Compile Repo
             run:  |
               ./build.sh
