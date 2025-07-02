@@ -16,7 +16,7 @@ jobs:
             uses: actions/checkout@v4
           - name: Add dependencies
             run: |
-              apt install raylib
+              sudo apt install raylib
           - name: Compile Repo
             run:  |
               ./build.sh
