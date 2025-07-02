@@ -13,6 +13,7 @@
 #include "Map.hpp"
 #include "FlatFloor.hpp"
 #include "BasicResourceModel.hpp"
+#include "PokemonResourceModel.hpp"
 
 #include "PlayerActionFactory.hpp"
 

@@ -7,6 +7,7 @@
 
 #include "MapRenderer.hpp"
 #include "PlayerActions/PlayerIncantation.hpp"
+#include "PokemonEggModel.hpp"
 #include <memory>
 #include <raylib.h>
 
@@ -99,8 +100,14 @@ void zappy::gui::raylib::MapRenderer::setEggPosition(const int &id, const int &x
     if (_eggs.empty())
         return;
 
+    constexpr float pokemonEggPosY = 0.15;
     auto &egg = this->_getEgg(id);
+    PokemonEggModel *pokemonEgg = dynamic_cast<PokemonEggModel *>(&egg);
     Vector3 position3D = this->_floor->get3DCoords(x, y);
+
+    if (pokemonEgg) {
+        position3D.y = pokemonEggPosY;
+    }
 
     egg.setPosition(position3D);
 }
@@ -429,7 +436,7 @@ void zappy::gui::raylib::MapRenderer::_renderPlayersAndEggs()
 void zappy::gui::raylib::MapRenderer::_renderResources()
 {
     constexpr float uniformHeight = 0.1f;
-    float spacing = 0.2f;
+    constexpr float spacing = 0.2f;
 
     for (size_t y = 0; y < _map->getHeight(); ++y) {
         for (size_t x = 0; x < _map->getWidth(); ++x) {
