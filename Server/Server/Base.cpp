@@ -77,6 +77,10 @@ void zappy::server::Server::_parseFlagsInt(int &index, std::string arg, std::str
         throw error::Error("Missing or invalid value");
     auto valueInt = handleFlag(value);
     flagsIt->second(valueInt);
+    if (arg == "-x" && (this->_width < 10 || this->_width > 42))
+        throw error::Error("Map size must be between 10 and 42");
+    if (arg == "-y" && (this->_height < 10 || this->_height > 42))
+        throw error::Error("Map size must be between 10 and 42");
     index += 1;
 }
 
