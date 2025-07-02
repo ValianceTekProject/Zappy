@@ -15,9 +15,13 @@ zappy::gui::raylib::PokemonEggModel::PokemonEggModel(const int &id) : AEggModel:
 
 void zappy::gui::raylib::PokemonEggModel::init()
 {
+    constexpr float scale = 0.15f;
+
     AEggModel::init();
 
     AEggModel::_initModel(assets::POKEMON_EGG_PATH);
+
+    setScale(scale);
 
     if (_animsCount > 0 && _modelAnimations != nullptr) {
         std::cout << "Configuring " << _animsCount << " animation(s) for egg model" << std::endl;

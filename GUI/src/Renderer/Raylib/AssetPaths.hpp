@@ -15,9 +15,6 @@ namespace zappy {
             namespace assets {
                 constexpr const char *ASSETS_PATH = "src/Renderer/Raylib/Assets/";
 
-                // Floor assets
-                inline std::string FLOOR_PATH = std::string(ASSETS_PATH) + "grass.jpg";
-
                 // Basic Scene assets
                 inline std::string BASIC_SCENE_PATH = std::string(ASSETS_PATH) + "Basic/";
 
@@ -28,9 +25,14 @@ namespace zappy {
                 // Pokemon Scene assets
                 inline std::string POKEMON_SCENE_PATH = std::string(ASSETS_PATH) + "Pokemon/";
 
-                inline std::string POKEMON_PLAYER_PATH = POKEMON_SCENE_PATH + "player.glb";
+                inline std::string POKEMON_PLAYER_PATH = BASIC_SCENE_PATH + "player.glb";
 
                 inline std::string POKEMON_EGG_PATH = POKEMON_SCENE_PATH + "egg.glb";
+
+                // Floor assets
+                inline std::string BASIC_FLOOR_PATH = std::string(BASIC_SCENE_PATH) + "floor.jpg";
+
+                inline std::string POKEMON_FLOOR_PATH = std::string(POKEMON_SCENE_PATH) + "floor.png";
 
                 // Basic Scene resources assets
                 inline std::string BASIC_SCENE_RESOURCES_PATH = std::string(BASIC_SCENE_PATH) + "Resources/";
@@ -53,8 +55,6 @@ namespace zappy {
                 inline std::string POKEMON_MENDIANE_PATH = POKEMON_SCENE_RESOURCES_PATH + "mendiane.glb";
                 inline std::string POKEMON_PHIRAS_PATH = POKEMON_SCENE_RESOURCES_PATH + "phiras.glb";
                 inline std::string POKEMON_THYSTAME_PATH = POKEMON_SCENE_RESOURCES_PATH + "thystame.glb";
-
-                // Pokemon Scene assets
             }
         }
     }

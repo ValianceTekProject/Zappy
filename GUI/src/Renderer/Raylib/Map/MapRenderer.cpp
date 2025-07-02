@@ -100,8 +100,14 @@ void zappy::gui::raylib::MapRenderer::setEggPosition(const int &id, const int &x
     if (_eggs.empty())
         return;
 
+    constexpr float pokemonEggPosY = 0.15;
     auto &egg = this->_getEgg(id);
+    PokemonEggModel *pokemonEgg = dynamic_cast<PokemonEggModel *>(&egg);
     Vector3 position3D = this->_floor->get3DCoords(x, y);
+
+    if (pokemonEgg) {
+        position3D.y = pokemonEggPosY;
+    }
 
     egg.setPosition(position3D);
 }
