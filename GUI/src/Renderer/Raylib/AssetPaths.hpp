@@ -39,7 +39,7 @@ namespace zappy {
                 // Pokemon Scene assets
                 inline std::string POKEMON_SCENE_PATH = std::string(ASSETS_PATH) + "Pokemon/";
 
-                inline std::string POKEMON_PLAYER_PATH = BASIC_SCENE_PATH + "player.glb";
+                inline std::string POKEMON_PLAYER_PATH = POKEMON_SCENE_PATH + "player.glb";
 
                 inline std::string POKEMON_EGG_PATH = POKEMON_SCENE_PATH + "egg.glb";
 
