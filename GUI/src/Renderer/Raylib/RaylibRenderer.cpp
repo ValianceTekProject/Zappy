@@ -9,7 +9,6 @@
 
 zappy::gui::RaylibRenderer::RaylibRenderer() :
     ARenderer::ARenderer(),
-    _menu(nullptr),
     _scene(nullptr),
     _inputManager()
 {
@@ -23,35 +22,36 @@ void zappy::gui::RaylibRenderer::init()
     SetTargetFPS(60);
     DisableCursor();
 
-    this->_menu = std::make_unique<raylib::Menu>();
-    this->_menu->init(this->_gameState->getFrequency());
-
     this->_scene = std::make_unique<raylib::BasicScene>(this->_gameState);
     this->_scene->init();
 
-    // game::Player p(0, 0, 0);
-    // this->addPlayer(p);
+    for (int id = 0; id < 11; ++id) {
+        game::Player p(id, std::rand() % 10, std::rand() % 10);
+        p.teamName = "Team " + std::to_string(id % 2);
+        this->addPlayer(p);
+        game::Inventory inv;
+        inv.addResource(game::Resource::FOOD, 10);
+        this->updatePlayerInventory(id, inv);
+    }
 }
 
 void zappy::gui::RaylibRenderer::setFrequency(const size_t &frequency)
 {
     ARenderer::setFrequency(frequency);
-    this->_menu->setFrequency(frequency);
+    this->_scene->setFrequency(frequency);
 }
 
 void zappy::gui::RaylibRenderer::handleInput()
 {
     this->_inputManager.update();
 
-    this->_menu->handleInput(this->_inputManager);
     this->_scene->handleInput(this->_inputManager);
 }
 
 void zappy::gui::RaylibRenderer::update()
 {
-    UpdateCamera(&this->_scene->getCamera(), CAMERA_CUSTOM);
+    UpdateCamera(&this->_scene->getCamera(), CAMERA_FREE);
 
-    this->_menu->update();
     this->_scene->update();
 
 }
@@ -62,7 +62,6 @@ void zappy::gui::RaylibRenderer::render() const
     ClearBackground(SKYBLUE);
 
     this->_scene->render();
-    this->_menu->render();
 
     EndDrawing();
 }
@@ -118,10 +117,6 @@ void zappy::gui::RaylibRenderer::playerBroadcast(const int &id, const std::strin
 {
     ARenderer::playerBroadcast(id, message);
     this->_scene->playerBroadcast(id, message);
-
-    std::string playerTeam = this->_gameState->getPlayerById(id).teamName;
-
-    this->_menu->playerBroadcast(id, message, playerTeam);
 }
 
 void zappy::gui::RaylibRenderer::startIncantation(

@@ -21,7 +21,7 @@ namespace zappy {
 
                 virtual void init() override = 0;
 
-                void setGameState(std::shared_ptr<game::GameState> gameState) override
+                void setGameState(std::shared_ptr<game::GameState> &gameState) override
                     { _gameState = gameState; }
 
                 virtual void setFrequency(const size_t &frequency) override;

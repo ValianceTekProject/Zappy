@@ -9,8 +9,6 @@
 
 #include "ARenderer.hpp"
 
-#include "Menu.hpp"
-
 #include "BasicScene.hpp"
 
 namespace zappy {
@@ -23,8 +21,8 @@ namespace zappy {
                 void init() override;
 
                 void setFrequency(const size_t &frequency) override;
-                size_t getFrequency() const override { return this->_menu->getFrequency(); }
-                bool hasFrequencyChanged() const override { return this->_menu->hasFrequencyChanged(); }
+                size_t getFrequency() const override { return this->_scene->getFrequency(); }
+                bool hasFrequencyChanged() const override { return this->_scene->hasFrequencyChanged(); }
 
                 void handleInput() override;
                 void update() override;
@@ -33,7 +31,8 @@ namespace zappy {
 
                 bool shouldClose() const override;
 
-                void addEgg(const int &eggId,
+                void addEgg(
+                    const int &eggId,
                     const int &fatherId,
                     const int &x,
                     const int &y
@@ -67,8 +66,6 @@ namespace zappy {
                 void endGame(const std::string &teamName) override;
 
             private:
-                std::unique_ptr<raylib::Menu> _menu;
-
                 std::unique_ptr<raylib::IScene> _scene;
 
                 raylib::InputManager _inputManager;

@@ -10,6 +10,7 @@
 zappy::gui::raylib::AScene::AScene(const std::shared_ptr<game::GameState> &gameState) :
     _camera(Camera()),
     _gameState(gameState),
+    _menu(std::make_unique<Menu>(gameState)),
     _mapRenderer(std::make_unique<MapRenderer>(this->_gameState->getMap()))
 {}
 
@@ -26,11 +27,18 @@ void zappy::gui::raylib::AScene::init()
     this->_camera.fovy = fovy;
     this->_camera.projection = CAMERA_PERSPECTIVE;
 
+    this->_menu->init();
     this->_mapRenderer->init();
+}
+
+void zappy::gui::raylib::AScene::setFrequency(const size_t &frequency)
+{
+    this->_menu->setFrequency(frequency);
 }
 
 void zappy::gui::raylib::AScene::update()
 {
+    this->_menu->update();
     this->_mapRenderer->update(this->_gameState->getFrequency());
 }
 
@@ -41,11 +49,13 @@ void zappy::gui::raylib::AScene::render() const
     _mapRenderer->render();
 
     EndMode3D();
+
+    this->_menu->render();
 }
 
 void zappy::gui::raylib::AScene::handleInput(InputManager &inputManager)
 {
-    (void)inputManager;
+    this->_menu->handleInput(inputManager);
 }
 
 void zappy::gui::raylib::AScene::addEgg(const int &id)
@@ -58,8 +68,9 @@ void zappy::gui::raylib::AScene::addEgg(const int &id)
 
 void zappy::gui::raylib::AScene::addPlayer(const int &id)
 {
-    // Player supposed to be added to the map
-    game::Player player = this->_gameState->getPlayerById(id);
+    game::Player &player = this->_gameState->getPlayerById(id);
+
+    this->_menu->addPlayer(id);
 
     this->_mapRenderer->setPlayerPosition(id, player.x, player.y, player.orientation);
 }
@@ -144,7 +155,10 @@ void zappy::gui::raylib::AScene::playerExpulsion(const int &id)
 void zappy::gui::raylib::AScene::playerBroadcast(const int &id, const std::string &message)
 {
     this->_mapRenderer->playerBroadcast(id);
-    (void)message;
+
+    std::string playerTeam = this->_gameState->getPlayerById(id).teamName;
+
+    this->_menu->playerBroadcast(id, message, playerTeam);
 }
 
 void zappy::gui::raylib::AScene::startIncantation(
@@ -173,5 +187,6 @@ void zappy::gui::raylib::AScene::removeEgg(const int &id)
 
 void zappy::gui::raylib::AScene::removePlayer(const int &id)
 {
+    this->_menu->removePlayer(id);
     this->_mapRenderer->removePlayer(id);
 }
