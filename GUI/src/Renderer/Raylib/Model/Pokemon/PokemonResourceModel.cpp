@@ -31,13 +31,13 @@ void zappy::gui::raylib::PokemonResourceModel::init()
     };
 
     static const std::unordered_map<zappy::game::Resource, float> resourceScales = {
-        { zappy::game::Resource::FOOD, 0.002f },
-        { zappy::game::Resource::LINEMATE, 0.2f },
-        { zappy::game::Resource::DERAUMERE, 0.05f },
-        { zappy::game::Resource::SIBUR, 0.08f },
-        { zappy::game::Resource::MENDIANE, 0.08f },
+        { zappy::game::Resource::FOOD, 2.0f },
+        { zappy::game::Resource::LINEMATE, 0.1f },
+        { zappy::game::Resource::DERAUMERE, 0.002f },
+        { zappy::game::Resource::SIBUR, 0.001f },
+        { zappy::game::Resource::MENDIANE, 0.32f },
         { zappy::game::Resource::PHIRAS, 0.003f },
-        { zappy::game::Resource::THYSTAME, 0.2f }
+        { zappy::game::Resource::THYSTAME, 0.1f }
     };
 
     auto modelIt = modelPaths.find(_resourceType);

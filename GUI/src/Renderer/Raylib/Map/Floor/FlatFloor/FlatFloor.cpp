@@ -19,7 +19,7 @@ zappy::gui::raylib::FlatFloor::FlatFloor(const size_t &width, const size_t &heig
 void zappy::gui::raylib::FlatFloor::init()
 {
     AFloor::init();
-    _texture = LoadTexture(assets::FLOOR_PATH.c_str());
+    _texture = LoadTexture(assets::BASIC_FLOOR_PATH.c_str());
 
     TraceLog(LOG_INFO, "Texture ID: %d", _texture.id);
     TraceLog(LOG_INFO, "Texture size: %dx%d", _texture.width, _texture.height);

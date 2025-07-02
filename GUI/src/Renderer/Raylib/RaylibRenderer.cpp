@@ -22,7 +22,7 @@ void zappy::gui::RaylibRenderer::init()
     SetTargetFPS(60);
     DisableCursor();
 
-    _scene = std::make_unique<raylib::PokemonScene>(_gameState);
+    _scene = std::make_unique<raylib::BasicScene>(_gameState);
     _scene->init();
 }
 
