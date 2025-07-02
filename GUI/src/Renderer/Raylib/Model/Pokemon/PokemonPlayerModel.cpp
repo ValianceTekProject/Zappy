@@ -13,7 +13,7 @@
 zappy::gui::raylib::PokemonPlayerModel::PokemonPlayerModel(const int &id) :
     APlayerModel::APlayerModel(id)
 {
-    constexpr float scale = 0.15;
+    constexpr float scale = 0.3;
     constexpr Vector3 headOrigin = {0, 1.5, 0};
 
     this->setScale(scale);
@@ -29,8 +29,8 @@ void zappy::gui::raylib::PokemonPlayerModel::init()
     constexpr Vector3 rotation = {0, -180, 0};
     AModel::rotate(rotation);
 
-    constexpr int idle = 2;
-    constexpr int walk = 10;
+    constexpr int idle = 1;
+    constexpr int walk = 2;
 
     this->_animationIndexMap[State::IDLE] = idle;
     this->_animationIndexMap[State::WALK] = walk;
