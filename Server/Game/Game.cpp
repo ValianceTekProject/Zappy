@@ -38,10 +38,13 @@ void zappy::game::Game::_addPlayerToTeam(
             if (lastPlayer->teamName != "GRAPHIC") {
                 std::ostringstream orientationStream;
                 orientationStream << lastPlayer->orientation;
-                this->_commandHandler.messageToGUI(std::string("pnw #" + std::to_string(newPlayer->getId()) + " "
-                    + std::to_string(lastPlayer->x) + " " + std::to_string(lastPlayer->y) + " "
-                    + orientationStream.str() + " " + std::to_string(lastPlayer->level) + " "
-                    + lastPlayer->teamName + "\n"));
+                for (auto &team : this->_teamList) {
+                    if (team->getName() == "GRAPHIC") {
+                        for (auto &guiPlayer : team->getPlayerList()) {
+                            this->getCommandHandlerGui().handlePnw(*guiPlayer);
+                        }
+                    }
+                }
             }
         }
     } else {

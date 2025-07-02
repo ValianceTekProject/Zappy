@@ -37,9 +37,9 @@ void zappy::game::Player::stepForward(int width, int height)
             break;
     }
 
-    if (x > width || x < 0)
+    if (x >= width || x <= 0)
         x = (x + width) % width;
-    if (y > height || y < 0)
+    if (y >= height || y <= 0)
         y = (y + height) % height;
 }
 

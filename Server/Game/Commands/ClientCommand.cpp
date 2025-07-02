@@ -454,7 +454,7 @@ void zappy::game::CommandHandler::handleTake(
             for (auto &players : team->getPlayerList()) {
                 handlePin(*players, std::to_string(player.getId()));
                 handleBct(*players, std::string(std::to_string(player.x)) +
-                    " " + std::string(std::to_string(player.x)));
+                    " " + std::string(std::to_string(player.y)));
             }
         }
     }
@@ -488,7 +488,7 @@ void zappy::game::CommandHandler::handleDrop(
             for (auto &players : team->getPlayerList()) {
                 handlePin(*players, std::to_string(player.getId()));
                 handleBct(*players, std::string(std::to_string(player.x)) +
-                    " " + std::string(std::to_string(player.x)));
+                    " " + std::string(std::to_string(player.y)));
             }
         }
     }
@@ -645,6 +645,7 @@ void zappy::game::CommandHandler::handleIncantation(
     this->_consumeElevationResources(player.x, player.y, player.level);
     this->_elevatePlayer(player);
     player.setInAction(false);
+    std::cout << "SERV: Incantation Réussi !" << std::endl;
 }
 
 void zappy::game::CommandHandler::_executeCommand(

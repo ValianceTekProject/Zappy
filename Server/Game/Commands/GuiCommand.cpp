@@ -20,11 +20,9 @@ void zappy::game::CommandHandlerGui::handlePnw(zappy::game::ServerPlayer &gui)
 
         if (teamsPlayer && !teamsPlayer->getPlayerList().empty()) {
             for (auto &player : teamsPlayer->getPlayerList()) {
-                std::ostringstream orientationStream;
-                orientationStream << player->orientation;
 
                 gui.getClient().sendMessage("pnw #" + std::to_string(player->getId()) + " " +
-                    std::to_string(player->x) + " " + std::to_string(player->y) + " " + orientationStream.str() +
+                    std::to_string(player->x) + " " + std::to_string(player->y) + " " + std::to_string(static_cast<int>(player->orientation + 1)) +
                     " " + std::to_string(player->level) + " " + player->teamName + "\n");
             }
         }
@@ -105,6 +103,7 @@ void zappy::game::CommandHandlerGui::handlePlv(zappy::game::ServerPlayer &player
             if (p->getId() == playerId) {
                 msg += std::to_string(playerId) + " " + std::to_string(p->level) + "\n";
                 player.getClient().sendMessage(msg);
+                std::cout << "LEVEL : " << p->level << std::endl;
                 return;
             }
         }
