@@ -9,42 +9,58 @@
 
 zappy::gui::RaylibRenderer::RaylibRenderer() :
     ARenderer::ARenderer(),
-    _scene(nullptr)
+    _scene(nullptr),
+    _inputManager()
 {
     SetTraceLogLevel(LOG_NONE);
 }
 
 void zappy::gui::RaylibRenderer::init()
 {
-    // Initialisation Raylib ici
     InitWindow(1280, 720, "Zappy");
     // ToggleFullscreen();
     SetTargetFPS(60);
     DisableCursor();
 
-    _scene = std::make_unique<raylib::BasicScene>(_gameState);
-    _scene->init();
+    this->_scene = std::make_unique<raylib::BasicScene>(this->_gameState);
+    this->_scene->init();
+
+    this->_gameMenu = std::make_unique<raylib::GameMenu>(this->_gameState);
+    this->_gameMenu->init();
+}
+
+void zappy::gui::RaylibRenderer::setFrequency(const size_t &frequency)
+{
+    ARenderer::setFrequency(frequency);
+    this->_gameMenu->setFrequency(frequency);
 }
 
 void zappy::gui::RaylibRenderer::handleInput()
 {
-    _inputManager.update();
-    _scene->handleInput(_inputManager);
+    this->_inputManager.update();
+
+    this->_scene->handleInput(this->_inputManager);
+
+    this->_gameMenu->handleInput(this->_inputManager);
 }
 
 void zappy::gui::RaylibRenderer::update()
 {
-    _scene->update();
+    UpdateCamera(&this->_scene->getCamera(), CAMERA_FREE);
+
+    this->_scene->update();
+
+    this->_gameMenu->update();
 }
 
 void zappy::gui::RaylibRenderer::render() const
 {
-    UpdateCamera(&_scene->getCamera(), CAMERA_FREE);
-
     BeginDrawing();
     ClearBackground(SKYBLUE);
 
-    _scene->render();
+    this->_scene->render();
+
+    this->_gameMenu->render();
 
     EndDrawing();
 }
@@ -60,13 +76,17 @@ void zappy::gui::RaylibRenderer::addEgg(const int &eggId,
     const int &y
 ) {
     ARenderer::addEgg(eggId, fatherId, x, y);
-    _scene->addEgg(eggId);
+    this->_scene->addEgg(eggId);
 }
 
 void zappy::gui::RaylibRenderer::addPlayer(const game::Player &player)
 {
     ARenderer::addPlayer(player);
-    _scene->addPlayer(player.getId());
+
+    const int id = player.getId();
+
+    this->_scene->addPlayer(id);
+    this->_gameMenu->addPlayer(id);
 }
 
 void zappy::gui::RaylibRenderer::updatePlayerPosition(const int &id,
@@ -74,32 +94,37 @@ void zappy::gui::RaylibRenderer::updatePlayerPosition(const int &id,
     const int &y,
     const game::Orientation &orientation
 ) {
-    _scene->updatePlayerPosition(id, x, y, orientation);
+    this->_scene->updatePlayerPosition(id, x, y, orientation);
     ARenderer::updatePlayerPosition(id, x, y, orientation);
 }
 
 void zappy::gui::RaylibRenderer::updatePlayerLevel(const int &id, const size_t &level)
 {
-    _scene->updatePlayerLevel(id, level);
+    this->_scene->updatePlayerLevel(id, level);
     ARenderer::updatePlayerLevel(id, level);
 }
 
 void zappy::gui::RaylibRenderer::updatePlayerInventory(const int &id, const game::Inventory &inventory)
 {
-    _scene->updatePlayerInventory(id, inventory);
+    this->_scene->updatePlayerInventory(id, inventory);
     ARenderer::updatePlayerInventory(id, inventory);
 }
 
 void zappy::gui::RaylibRenderer::playerExpulsion(const int &id)
 {
-    _scene->playerExpulsion(id);
+    this->_scene->playerExpulsion(id);
     ARenderer::playerExpulsion(id);
 }
 
 void zappy::gui::RaylibRenderer::playerBroadcast(const int &id, const std::string &message)
 {
     ARenderer::playerBroadcast(id, message);
-    _scene->playerBroadcast(id, message);
+
+    this->_scene->playerBroadcast(id, message);
+
+    std::string playerTeam = this->_gameState->getPlayerById(id).teamName;
+
+    this->_gameMenu->playerBroadcast(id, message, playerTeam);
 }
 
 void zappy::gui::RaylibRenderer::startIncantation(
@@ -108,35 +133,37 @@ void zappy::gui::RaylibRenderer::startIncantation(
     const std::vector<int> &playerIds
 ) {
     ARenderer::startIncantation(x, y, level, playerIds);
-    _scene->startIncantation(x, y, level, playerIds);
+    this->_scene->startIncantation(x, y, level, playerIds);
 }
 
 void zappy::gui::RaylibRenderer::endIncantation(const int &x, const int &y, const bool &result)
 {
     ARenderer::endIncantation(x, y, result);
-    _scene->endIncantation(x, y, result);
+    this->_scene->endIncantation(x, y, result);
 }
 
 void zappy::gui::RaylibRenderer::hatchEgg(const int &eggId)
 {
     ARenderer::hatchEgg(eggId);
-    _scene->hatchEgg(eggId);
+    this->_scene->hatchEgg(eggId);
 }
 
 void zappy::gui::RaylibRenderer::removeEgg(const int &eggId)
 {
     ARenderer::removeEgg(eggId);
-    _scene->removeEgg(eggId);
+    this->_scene->removeEgg(eggId);
 }
 
 void zappy::gui::RaylibRenderer::removePlayer(const int &id)
 {
     ARenderer::removePlayer(id);
-    _scene->removePlayer(id);
+
+    this->_scene->removePlayer(id);
+    this->_gameMenu->removePlayer(id);
 }
 
 void zappy::gui::RaylibRenderer::endGame(const std::string &teamName)
 {
     ARenderer::endGame(teamName);
-    _scene->endGame(teamName);
+    this->_scene->endGame(teamName);
 }

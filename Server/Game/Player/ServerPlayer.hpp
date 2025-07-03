@@ -12,7 +12,6 @@
 #include "Client.hpp"
 #include "Player.hpp"
 #include "ITeams.hpp"
-#include "ServerInventory.hpp"
 
 namespace zappy {
     namespace game {
@@ -32,7 +31,11 @@ namespace zappy {
                 : Player::Player(id, x, y, orientation, level),
                 _user(std::move(user)),
                 _startTime(std::chrono::steady_clock::now()),
-                _team(team) {}
+                _lifeTime(std::chrono::steady_clock::now()),
+                _team(team) {
+                    constexpr int startFood = 10;
+                    this->collectRessource(zappy::game::Resource::FOOD, startFood);
+                }
 
             ~ServerPlayer() = default;
 
@@ -44,6 +47,11 @@ namespace zappy {
                 auto now = std::chrono::steady_clock::now();
                 return now - _startTime;
             }
+            std::chrono::duration<double> getLifeChrono() const {
+                auto now = std::chrono::steady_clock::now();
+                return now - _lifeTime;
+            }
+            void resetLifeChrono() { _lifeTime = std::chrono::steady_clock::now(); }
 
             bool isInAction() { return _actionStarted; }
             void setInAction(bool status) { _actionStarted = status; }
@@ -52,8 +60,8 @@ namespace zappy {
 
            private:
             zappy::server::Client _user;
-            zappy::game::player::InventoryServer _inventory;
             std::chrono::steady_clock::time_point _startTime;
+            std::chrono::steady_clock::time_point _lifeTime;
 
             bool _actionStarted = false;
             zappy::game::ITeams &_team;

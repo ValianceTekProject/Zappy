@@ -8,6 +8,9 @@
 #pragma once
 
 #include "ARenderer.hpp"
+
+#include "GameMenu.hpp"
+
 #include "BasicScene.hpp"
 #include "PokemonScene.hpp"
 
@@ -20,6 +23,10 @@ namespace zappy {
 
                 void init() override;
 
+                void setFrequency(const size_t &frequency) override;
+                size_t getFrequency() const override { return this->_gameMenu->getFrequency(); }
+                bool hasFrequencyChanged() const override { return this->_gameMenu->hasFrequencyChanged(); }
+
                 void handleInput() override;
                 void update() override;
 
@@ -27,7 +34,8 @@ namespace zappy {
 
                 bool shouldClose() const override;
 
-                void addEgg(const int &eggId,
+                void addEgg(
+                    const int &eggId,
                     const int &fatherId,
                     const int &x,
                     const int &y
@@ -62,6 +70,8 @@ namespace zappy {
 
             private:
                 std::unique_ptr<raylib::IScene> _scene;
+
+                std::unique_ptr<raylib::GameMenu> _gameMenu;
 
                 raylib::InputManager _inputManager;
         };

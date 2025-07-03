@@ -9,9 +9,11 @@
 
 #include "IScene.hpp"
 #include "MapRenderer.hpp"
+#include "Skybox.hpp"
 
 #include <memory>
 #include <unordered_map>
+#include <list>
 
 namespace zappy {
     namespace gui {
@@ -29,6 +31,8 @@ namespace zappy {
 
                     virtual void handleInput(InputManager &inputManager) override;
                     virtual void update() override;
+
+                    virtual void render() const override;
 
                     virtual void addEgg(const int &id) override;
                     virtual void addPlayer(const int &id) override;
@@ -58,6 +62,7 @@ namespace zappy {
 
                     const std::shared_ptr<game::GameState> _gameState;
 
+                    Skybox _skybox;
                     const std::unique_ptr<MapRenderer> _mapRenderer;
             };
         } // namespace raylib

@@ -13,7 +13,7 @@ namespace zappy {
     namespace gui {
         namespace raylib {
             namespace assets {
-                constexpr const char *ASSETS_PATH = "src/Renderer/Raylib/Assets/";
+                constexpr const char *ASSETS_PATH = "GUI/src/Renderer/Raylib/Assets/";
 
                 // Basic Scene assets
                 inline std::string BASIC_SCENE_PATH = std::string(ASSETS_PATH) + "Basic/";
@@ -22,6 +22,20 @@ namespace zappy {
 
                 inline std::string BASIC_EGG_PATH = BASIC_SCENE_PATH + "egg.glb";
 
+                inline std::string BASIC_BG_PATH = BASIC_SCENE_PATH + "bg.glb";
+
+                // Basic skybox assets
+                inline std::string BASIC_SKYBOX_PATH = std::string(BASIC_SCENE_PATH) + "Skybox/";
+
+                inline std::string BASIC_SKYBOX_MODEL_PATH = BASIC_SKYBOX_PATH + "Cubemap_Tropical_01-512x512.png";
+
+                inline std::string BASIC_SKYBOX_VS_PATH = BASIC_SKYBOX_PATH + "skybox.vs";
+
+                inline std::string BASIC_SKYBOX_FS_PATH = BASIC_SKYBOX_PATH + "skybox.fs";
+
+                inline std::string BASIC_SKYBOX_CUBEMAP_VS_PATH = BASIC_SKYBOX_PATH + "cubemap.vs";
+
+                inline std::string BASIC_SKYBOX_CUBEMAP_FS_PATH = BASIC_SKYBOX_PATH + "cubemap.fs";
                 // Pokemon Scene assets
                 inline std::string POKEMON_SCENE_PATH = std::string(ASSETS_PATH) + "Pokemon/";
 
@@ -35,7 +49,8 @@ namespace zappy {
                 inline std::string POKEMON_FLOOR_PATH = std::string(POKEMON_SCENE_PATH) + "floor.png";
 
                 // Basic Scene resources assets
-                inline std::string BASIC_SCENE_RESOURCES_PATH = std::string(BASIC_SCENE_PATH) + "Resources/";
+
+                inline std::string BASIC_SCENE_RESOURCES_PATH = BASIC_SCENE_PATH + "Resources/";
 
                 inline std::string BASIC_FOOD_PATH = BASIC_SCENE_RESOURCES_PATH + "food.glb";
                 inline std::string BASIC_LINEMATE_PATH = BASIC_SCENE_RESOURCES_PATH + "linemate.glb";

@@ -18,7 +18,7 @@ zappy::network::Protocol::Protocol(
     _authenticated(false)
 {
     initHandlers();
-    _network->setMessageCallback([this](const ServerMessage &msg) {
+    this->_network->setMessageCallback([this](const ServerMessage &msg) {
         printDebug("Received message: " + msg.command + " " + msg.params);
 
         GP cmd = getGuiProtocol(msg.command);
@@ -57,7 +57,7 @@ void zappy::network::Protocol::initHandlers()
         {GP::EGG_HATCH,              [this](auto &p){ handleEggHatch(p); }},
         {GP::EGG_DESTROYED,          [this](auto &p){ handleEggDeath(p); }},
         {GP::TIME_UNIT_REQUEST,      [this](auto &p){ handleTimeUnit(p); }},
-        {GP::TIME_UNIT_MODIFICATION, [this](auto &p){ setTimeUnit(std::stoi(p)); }},
+        {GP::TIME_UNIT_MODIFICATION, [this](auto &p){ handleTimeUnit(p); }},
         {GP::GAME_END,               [this](auto &p){ handleGameEnd(p); }},
         {GP::SERVER_MESSAGE,         [this](auto &p){ handleServerMessage(p); }},
         {GP::UNKNOWN_COMMAND,        [this](auto &p){ handleUnknownCommand(p); }},
@@ -78,7 +78,7 @@ void zappy::network::Protocol::onServerMessage(const ServerMessage &msg)
 
 bool zappy::network::Protocol::connectToServer(const std::string &host, int port) {
     try {
-        if (!_network->connect(host, port))
+        if (!this->_network->connect(host, port))
             return false;
 
         std::vector<ServerMessage> messages;
@@ -86,7 +86,7 @@ bool zappy::network::Protocol::connectToServer(const std::string &host, int port
         constexpr int maxAttempts = 200;
 
         while (attempts < maxAttempts && messages.empty()) {
-            messages = _network->receiveMessages();
+            messages = this->_network->receiveMessages();
             if (messages.empty()) {
                 std::this_thread::sleep_for(std::chrono::milliseconds(10));
                 attempts++;
@@ -95,16 +95,16 @@ bool zappy::network::Protocol::connectToServer(const std::string &host, int port
 
         if (messages.empty() || messages[0].raw != "WELCOME") {
             printDebug("Failed to receive WELCOME message from server", std::cerr);
-            _network->disconnect();
+            this->_network->disconnect();
             return false;
         }
 
         printDebug("Received: " + messages[0].raw);
 
         // Envoyer "GRAPHIC" pour s'authentifier comme GUI
-        if (!_network->sendCommand("GRAPHIC")) {
+        if (!this->_network->sendCommand("GRAPHIC")) {
             printDebug("Failed to send GRAPHIC command to server", std::cerr);
-            _network->disconnect();
+            this->_network->disconnect();
             return false;
         }
 
@@ -128,7 +128,7 @@ bool zappy::network::Protocol::connectToServer(const std::string &host, int port
 
 void zappy::network::Protocol::disconnect() {
     _authenticated = false;
-    _network->disconnect();
+    this->_network->disconnect();
 }
 
 bool zappy::network::Protocol::isConnected() const {
@@ -139,53 +139,53 @@ void zappy::network::Protocol::update() {
     if (!isConnected())
         return;
 
-    auto messages = _network->receiveMessages();
+    auto messages = this->_network->receiveMessages();
 }
 
 // Commandes GUI vers serveur selon le protocole officiel
 void zappy::network::Protocol::requestMapSize()
 {
-    _network->sendCommand("msz");
+    this->_network->sendCommand("msz");
 }
 
 void zappy::network::Protocol::requestTileContent(int x, int y)
 {
-    _network->sendCommand("bct " + std::to_string(x) + " " + std::to_string(y));
+    this->_network->sendCommand("bct " + std::to_string(x) + " " + std::to_string(y));
 }
 
 void zappy::network::Protocol::requestMapContent()
 {
-    _network->sendCommand("mct");
+    this->_network->sendCommand("mct");
 }
 
 void zappy::network::Protocol::requestTeamNames()
 {
-    _network->sendCommand("tna");
+    this->_network->sendCommand("tna");
 }
 
 void zappy::network::Protocol::requestPlayerPosition(int playerId)
 {
-    _network->sendCommand("ppo #" + std::to_string(playerId));
+    this->_network->sendCommand("ppo #" + std::to_string(playerId));
 }
 
 void zappy::network::Protocol::requestPlayerLevel(int playerId)
 {
-    _network->sendCommand("plv #" + std::to_string(playerId));
+    this->_network->sendCommand("plv #" + std::to_string(playerId));
 }
 
 void zappy::network::Protocol::requestPlayerInventory(int playerId)
 {
-    _network->sendCommand("pin #" + std::to_string(playerId));
+    this->_network->sendCommand("pin #" + std::to_string(playerId));
 }
 
 void zappy::network::Protocol::requestTimeUnit()
 {
-    _network->sendCommand("sgt");
+    this->_network->sendCommand("sgt");
 }
 
 void zappy::network::Protocol::setTimeUnit(int timeUnit)
 {
-    _network->sendCommand("sst " + std::to_string(timeUnit));
+    this->_network->sendCommand("sst " + std::to_string(timeUnit));
 }
 
 // Handlers selon le protocole officiel
@@ -197,8 +197,8 @@ void zappy::network::Protocol::handleMapSize(const std::string &params)
 
     iss >> width >> height;
 
-    _gameState->initMap(width, height);
-    _renderer->init();
+    this->_gameState->initMap(width, height);
+    this->_renderer->init();
     printDebug("Map size: " + std::to_string(width) + "x" + std::to_string(height));
 }
 
@@ -230,7 +230,7 @@ void zappy::network::Protocol::handleTileContent(const std::string &params)
         tile.addResource(static_cast<game::Resource>(i), resourceCount);
     }
 
-    _gameState->updateTile(x, y, tile);
+    this->_gameState->updateTile(x, y, tile);
 }
 
 /**
@@ -248,7 +248,7 @@ void zappy::network::Protocol::handleTeamNames(const std::string &params)
 
     iss >> teamName;
 
-    _gameState->addTeam(teamName);
+    this->_gameState->addTeam(teamName);
     printDebug("Team " + teamName + " added");
 }
 
@@ -283,7 +283,7 @@ void zappy::network::Protocol::handleNewPlayer(const std::string &params)
     );
     player.teamName = teamName;
 
-    _renderer->addPlayer(player);
+    this->_renderer->addPlayer(player);
     printDebug("New player " + std::to_string(playerId) + " connected from team " + teamName);
 }
 
@@ -309,7 +309,7 @@ void zappy::network::Protocol::handlePlayerPosition(const std::string &params)
 
     iss >> playerId >> x >> y >> orientation;
 
-    _renderer->updatePlayerPosition(playerId, x, y, static_cast<game::Orientation>(orientation - 1));
+    this->_renderer->updatePlayerPosition(playerId, x, y, static_cast<game::Orientation>(orientation - 1));
 }
 
 /**
@@ -333,7 +333,7 @@ void zappy::network::Protocol::handlePlayerLevel(const std::string &params)
 
     iss >> playerId >> level;
 
-    _renderer->updatePlayerLevel(playerId, level);
+    this->_renderer->updatePlayerLevel(playerId, level);
     printDebug("Player " + std::to_string(playerId) + " reached level " + std::to_string(level));
 }
 
@@ -368,7 +368,7 @@ void zappy::network::Protocol::handlePlayerInventory(const std::string &params)
         inventory.addResource(static_cast<game::Resource>(i), resourceCount);
     }
 
-    _renderer->updatePlayerInventory(playerId, inventory);
+    this->_renderer->updatePlayerInventory(playerId, inventory);
 }
 
 /**
@@ -387,7 +387,7 @@ void zappy::network::Protocol::handleGameEnd(const std::string &params)
 
     iss >> winningTeam;
 
-    _renderer->endGame(winningTeam);
+    this->_renderer->endGame(winningTeam);
     std::cout << "Game ended! Winning team: " << winningTeam << std::endl;
 }
 
@@ -411,7 +411,7 @@ void zappy::network::Protocol::handlePlayerExpulsion(const std::string &params)
 
     iss >> playerId;
 
-    _renderer->playerExpulsion(playerId);
+    this->_renderer->playerExpulsion(playerId);
     printDebug("Player " + std::to_string(playerId) + " expelled");
 }
 
@@ -437,7 +437,7 @@ void zappy::network::Protocol::handlePlayerBroadcast(const std::string &params)
 
     iss >> playerId >> message;
 
-    _renderer->playerBroadcast(playerId, message);
+    this->_renderer->playerBroadcast(playerId, message);
     printDebug("Player " + std::to_string(playerId) + " broadcast: " + message);
 }
 
@@ -468,7 +468,7 @@ void zappy::network::Protocol::handleIncantationStart(const std::string &params)
     while (iss >> playerId)
         playerIds.push_back(playerId);
 
-    _renderer->startIncantation(x, y, level, playerIds);
+    this->_renderer->startIncantation(x, y, level, playerIds);
     std::string result;
     result += "Incantation started at (" + std::to_string(x) + ", " + std::to_string(y) + ") for level " + std::to_string(level) + " with players:";
     for (const auto &playerId : playerIds)
@@ -494,7 +494,7 @@ void zappy::network::Protocol::handleIncantationEnd(const std::string &params)
 
     iss >> x >> y >> success;
 
-    _renderer->endIncantation(x, y, success);
+    this->_renderer->endIncantation(x, y, success);
     printDebug("Incantation " + std::string(success ? "succeeded" : "failed") + " at (" + std::to_string(x) + ", " + std::to_string(y) + ")");
 }
 
@@ -588,7 +588,7 @@ void zappy::network::Protocol::handlePlayerDeath(const std::string &params)
 
     iss >> playerId;
 
-    _renderer->removePlayer(playerId);
+    this->_renderer->removePlayer(playerId);
     printDebug("Player " + std::to_string(playerId) + " died");
 }
 
@@ -613,7 +613,7 @@ void zappy::network::Protocol::handleEggCreated(const std::string &params)
 
     iss >> eggId >> playerId >> x >> y;
 
-    _renderer->addEgg(eggId, playerId, x, y);
+    this->_renderer->addEgg(eggId, playerId, x, y);
     printDebug("Egg " + std::to_string(eggId) + " created at (" + std::to_string(x) + ", " + std::to_string(y) + ") by player " + std::to_string(playerId));
 }
 
@@ -635,7 +635,7 @@ void zappy::network::Protocol::handleEggHatch(const std::string &params)
 
     iss >> eggId;
 
-    _renderer->hatchEgg(eggId);
+    this->_renderer->hatchEgg(eggId);
     printDebug("Egg " + std::to_string(eggId) + " hatched");
 }
 
@@ -649,7 +649,7 @@ void zappy::network::Protocol::handleEggDeath(const std::string &params)
 
     iss >> eggId;
 
-    _renderer->removeEgg(eggId);
+    this->_renderer->removeEgg(eggId);
     printDebug("Egg " + std::to_string(eggId) + " died");
 }
 
@@ -660,7 +660,8 @@ void zappy::network::Protocol::handleTimeUnit(const std::string &params)
 
     iss >> timeUnit;
 
-    _gameState->setFrequency(timeUnit);
+    if (_gameState->getFrequency() != timeUnit)
+        _renderer->setFrequency(timeUnit);
     printDebug("Time unit set to " + std::to_string(timeUnit));
 }
 

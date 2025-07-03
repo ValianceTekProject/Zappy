@@ -7,8 +7,8 @@
 
 #include "BasicScene.hpp"
 
-zappy::gui::raylib::BasicScene::BasicScene(const std::shared_ptr<game::GameState> &gameState) :
-    AScene::AScene(gameState)
+zappy::gui::raylib::BasicScene::BasicScene(const std::shared_ptr<game::GameState> &gameState)
+    : AScene::AScene(gameState)
 {}
 
 void zappy::gui::raylib::BasicScene::init()
@@ -20,25 +20,9 @@ void zappy::gui::raylib::BasicScene::init()
         auto model = std::make_unique<zappy::gui::raylib::BasicResourceModel>(-1, type); // ou AResourceModel si tu préfères
         _mapRenderer->addResourceModel(type, std::move(model));
     }
-}
 
-void zappy::gui::raylib::BasicScene::handleInput(InputManager &inputManager)
-{
-    AScene::handleInput(inputManager);
-}
-
-void zappy::gui::raylib::BasicScene::update()
-{
-    AScene::update();
-}
-
-void zappy::gui::raylib::BasicScene::render() const
-{
-    BeginMode3D(getCamera());
-
-    _mapRenderer->render();
-
-    EndMode3D();
+    // Init le background
+    // this->_skybox.init(zappy::gui::raylib::assets::BASIC_SKYBOX_MODEL_PATH);
 }
 
 bool zappy::gui::raylib::BasicScene::shouldClose() const
@@ -58,6 +42,13 @@ void zappy::gui::raylib::BasicScene::addEgg(const int &id)
 void zappy::gui::raylib::BasicScene::addPlayer(const int &id)
 {
     auto player = std::make_unique<BasicPlayerModel>(id);
+
+    player->setColor(Color{
+        static_cast<uint8_t>(GetRandomValue(0, 255)),
+        static_cast<uint8_t>(GetRandomValue(0, 255)),
+        static_cast<uint8_t>(GetRandomValue(0, 255)),
+        255
+    });
 
     _mapRenderer->addPlayer(std::move(player));
 

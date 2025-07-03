@@ -26,7 +26,9 @@ namespace zappy {
                     };
 
                     void update();
+
                     KeyState getKeyState(int key) const;
+                    bool isKeyPressed(int key) const;
 
                     KeyState getMouseButtonState(int button) const;
                     bool isMouseButtonPressed(int button) const;

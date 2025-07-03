@@ -20,25 +20,9 @@ void zappy::gui::raylib::PokemonScene::init()
         auto model = std::make_unique<zappy::gui::raylib::PokemonResourceModel>(-1, type); // ou AResourceModel si tu préfères
         _mapRenderer->addResourceModel(type, std::move(model));
     }
-}
 
-void zappy::gui::raylib::PokemonScene::handleInput(InputManager &inputManager)
-{
-    AScene::handleInput(inputManager);
-}
-
-void zappy::gui::raylib::PokemonScene::update()
-{
-    AScene::update();
-}
-
-void zappy::gui::raylib::PokemonScene::render() const
-{
-    BeginMode3D(getCamera());
-
-    _mapRenderer->render();
-
-    EndMode3D();
+    // Init le background
+    this->_skybox.init(zappy::gui::raylib::assets::BASIC_SKYBOX_MODEL_PATH);
 }
 
 bool zappy::gui::raylib::PokemonScene::shouldClose() const

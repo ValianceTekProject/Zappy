@@ -89,17 +89,24 @@ void zappy::gui::Gui::run()
 {
     init();
 
-    _protocol->setTimeUnit(7);
-
     bool running = true;
     while (running) {
         _renderer->handleInput();
+
+        if (_renderer->hasFrequencyChanged())
+            _protocol->setTimeUnit(_renderer->getFrequency());
 
         _protocol->update();
         _renderer->update();
 
         if (_renderer->shouldClose()) {
             running = false;
+            continue;
+        }
+
+        if (!_protocol->isConnected()) {
+            running = false;
+            std::cerr << "Connection lost" << std::endl;
             continue;
         }
 

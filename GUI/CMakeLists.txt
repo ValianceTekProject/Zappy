@@ -1,11 +1,20 @@
 cmake_minimum_required(VERSION 3.10)
 project(zappy_gui)
 
+include(FetchContent)
+
+FetchContent_Declare(
+    raylib
+    GIT_REPOSITORY https://github.com/raysan5/raylib.git
+    GIT_TAG        5.5
+)
+FetchContent_MakeAvailable(raylib)
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_BUILD_TYPE Release)
-add_compile_options(-Wall -Wextra -Werror -pedantic)
+add_compile_options(-Wall -Wextra -pedantic)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -fno-gnu-unique -Wl,--export-dynamic")
 
 # === Dossiers sources ===
@@ -14,6 +23,8 @@ set(NETWORK_DIR ${SRC_DIR}/Network)
 set(GAME_DIR ${SRC_DIR}/Game)
 set(RENDERER_DIR ${SRC_DIR}/Renderer)
 set(RAYLIB_DIR ${RENDERER_DIR}/Raylib)
+
+set(RAYLIB_MENU_DIR ${RAYLIB_DIR}/Menu)
 
 set(RAYLIB_SCENE_DIR ${RAYLIB_DIR}/Scene)
 
@@ -49,6 +60,9 @@ include_directories(
     ${GAME_DIR}
     ${RENDERER_DIR}
     ${RAYLIB_DIR}
+
+    ${RAYLIB_MENU_DIR}
+
     ${RAYLIB_SCENE_DIR}
 
     ${RAYLIB_EFFECT_DIR}
@@ -95,7 +109,11 @@ set(SOURCES
     ${RENDERER_DIR}/NcursesRenderer.cpp
 
     ${RAYLIB_DIR}/RaylibRenderer.cpp
-    ${RAYLIB_SCENE_DIR}/InputManager.cpp
+
+    ${RAYLIB_MENU_DIR}/GameMenu.cpp
+    ${RAYLIB_MENU_DIR}/InputManager.cpp
+
+    ${RAYLIB_SCENE_DIR}/Skybox.cpp
 
     ${RAYLIB_SCENE_DIR}/AScene.cpp
 
@@ -139,12 +157,7 @@ add_executable(zappy_gui ${SOURCES})
 # === Dépendances ===
 
 # Raylib via pkg-config
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(RAYLIB REQUIRED raylib)
-
-include_directories(${RAYLIB_INCLUDE_DIRS})
-link_directories(${RAYLIB_LIBRARY_DIRS})
-target_link_libraries(zappy_gui PRIVATE ${RAYLIB_LIBRARIES})
+target_link_libraries(zappy_gui PRIVATE raylib)
 
 ## Ncurses
 find_package(Curses REQUIRED)
@@ -152,4 +165,4 @@ include_directories(${CURSES_INCLUDE_DIR})
 target_link_libraries(zappy_gui PRIVATE ${CURSES_LIBRARIES})
 
 # === Dossier de sortie du binaire ===
-set_target_properties(zappy_gui PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+set_target_properties(zappy_gui PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/..)

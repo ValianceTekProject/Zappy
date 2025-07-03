@@ -7,6 +7,12 @@
 
 #include "ARenderer.hpp"
 
+void zappy::gui::ARenderer::setFrequency(const size_t &frequency)
+{
+    _checkGameState();
+    _gameState->setFrequency(frequency);
+}
+
 void zappy::gui::ARenderer::addEgg(
     const int &eggId,
     const int &fatherId,

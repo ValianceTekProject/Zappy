@@ -20,14 +20,15 @@
 namespace zappy {
     namespace game {
 
+        #define TIME_BEFORE_RESPAWN 20
 
         class Game {
 
            public:
             Game(int mapWidth, int mapHeight, std::vector<std::shared_ptr<ITeams>> teamList, int &freq, int clientNb)
                 : _map(mapWidth, mapHeight),
-                _commandHandler(freq, _map.getWidth(), _map.getHeight(), clientNb, _map, _teamList),
                 _commandHandlerGui(freq, _map.getWidth(), _map.getHeight(), clientNb, _map, _teamList),
+                _commandHandler(freq, _map.getWidth(), _map.getHeight(), clientNb, _map, _teamList),
                 _teamList(teamList),
                 _baseFreqMs(freq),
                 _clientNb(clientNb)
@@ -39,7 +40,6 @@ namespace zappy {
                 }
                 std::srand(std::time(nullptr));
                 this->_map.setEggsonMap(teamList, clientNb);
-            
             }
 
             ~Game() = default;
@@ -55,11 +55,16 @@ namespace zappy {
             MapServer &getMap() { return this->_map; }
             std::vector<std::shared_ptr<zappy::game::ITeams>> &getTeamList() { return this->_teamList; };
 
+            void foodManager(std::shared_ptr<ITeams> &team);
+
+            zappy::game::CommandHandler &getCommandHandler() { return _commandHandler; }
+            zappy::game::CommandHandlerGui &getCommandHandlerGui() { return _commandHandlerGui; }
+
            private:
-            int _idPlayerTot = 0;
+            int _idPlayerTot = 1;
             MapServer _map;
-            zappy::game::CommandHandler _commandHandler;
             zappy::game::CommandHandlerGui _commandHandlerGui;
+            zappy::game::CommandHandler _commandHandler;
             std::vector<std::shared_ptr<zappy::game::ITeams>> _teamList;
             std::vector<std::weak_ptr<zappy::game::Player>> _playerList;
             int &_baseFreqMs;

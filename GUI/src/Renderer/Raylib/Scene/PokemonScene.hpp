@@ -23,11 +23,6 @@ namespace zappy {
 
                     void init() override;
 
-                    void handleInput(InputManager &inputManager);
-
-                    void update() override;
-                    void render() const override;
-
                     bool shouldClose() const override;
 
                     void addEgg(const int &id) override;

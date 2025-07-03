@@ -7,22 +7,25 @@
 
 #pragma once
 
-#include "ClientCommand.hpp"
+#include "TeamsPlayer.hpp"
+#include "ServerMap.hpp"
 
 #include <sstream>
 
 namespace zappy {
     namespace game {
-        class CommandHandlerGui : public CommandHandler {
+        class CommandHandlerGui {
             public:
-                CommandHandlerGui(int &freq, int width, int height, int clientNb, zappy::game::MapServer &map, std::vector<std::shared_ptr<ITeams>> &teamList) : CommandHandler(freq, width, height, clientNb, map, teamList), _teamList(teamList) {};
+                CommandHandlerGui(int &freq, int width, int height, int clientNb,
+                zappy::game::MapServer &map, std::vector<std::shared_ptr<ITeams>> &teamList)
+                :  _teamList(teamList), _freq(freq), _widthMap(width), _heightMap(height),
+                  _clientNb(clientNb), _map(map) {};
                 ~CommandHandlerGui() = default;
                 
-                void processClientInput(const std::string &input, zappy::game::ServerPlayer &player) override;
+                virtual void processClientInput(std::string &input, zappy::game::ServerPlayer &player);
 
-                void initCommandMap() override;
+                virtual void initCommandMap();
 
-            private:
                 std::unordered_map<std::string, std::function<void(ServerPlayer &, const std::string &)>> _commandMapGui;
 
                 std::vector<std::shared_ptr<ITeams>> &_teamList;
@@ -30,11 +33,22 @@ namespace zappy {
                 void handleBct(zappy::game::ServerPlayer &player, const std::string &arg);
                 void handleMct(zappy::game::ServerPlayer &player);
                 void handleTna(zappy::game::ServerPlayer &player);
+                void handlePnw(zappy::game::ServerPlayer &gui);
                 void handlePpo(zappy::game::ServerPlayer &player, const std::string &arg);
                 void handlePlv(zappy::game::ServerPlayer &player, const std::string &arg);
                 void handlePin(zappy::game::ServerPlayer &player, const std::string &arg);
                 void handleSgt(zappy::game::ServerPlayer &player);
                 void handleSst(zappy::game::ServerPlayer &player, const std::string &arg);
+
+                protected:
+                    int &_freq;
+                    int _widthMap;
+                    int _heightMap;
+                    int _clientNb;
+                    MapServer &_map;
+                    std::unordered_map<std::string,
+                        std::function<void(ServerPlayer &, const std::string &)>>
+                        _commandMap;
         };
     }
 }
