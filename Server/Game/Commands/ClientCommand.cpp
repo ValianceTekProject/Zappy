@@ -421,12 +421,12 @@ void zappy::game::CommandHandler::handleFork(zappy::game::ServerPlayer &player)
         playerTeam->allowNewPlayer();
         auto eggId = this->_map.addNewEgg(playerTeam->getTeamId(), player.x, player.y);
         player.setInAction(false);
-        player.getClient().sendMessage("ok\n");
         std::cout << "Egg id" << eggId << std::endl;
         this->messageToGUI(
-            "enw #" + std::to_string(player.getTeam().getTeamId()) + " #" +
-            std::to_string(eggId) + " " + std::to_string(player.x) +
+            "enw #" + std::to_string(eggId) + " #" +
+            std::to_string(player.getId()) + " " + std::to_string(player.x) +
             " " + std::to_string(player.y) + "\n");
+        player.getClient().sendMessage("ok\n");
     }
 }
 
@@ -563,7 +563,7 @@ bool zappy::game::CommandHandler::_checkIncantationConditions(
     auto players =
         this->_getPlayersForIncant(player.x, player.y, player.level);
 
-    if (players.size() + 1 < requirements.players) {
+    if (players.size() < requirements.players) {
         return false;
     }
     return this->_checkIncantationResources(player.x, player.y, player.level);
@@ -607,41 +607,26 @@ void zappy::game::CommandHandler::_setPrayer(zappy::game::ServerPlayer &player)
         });
 }
 
-void zappy::game::CommandHandler::_elevatePlayer(
-    zappy::game::ServerPlayer &player)
+void zappy::game::CommandHandler::_elevatePlayer(zappy::game::ServerPlayer &player)
 {
-    auto playersOnTile =
-        this->_getPlayersIncanting(player.x, player.y, player.level);
-
-    for (auto &team : this->_teamList) {
-        for (auto &teamPlayer : team->getPlayerList()) {
-            if (teamPlayer->getClient().getSocket() ==
-                player.getClient().getSocket()) {
-                std::cout << "Add player: " << teamPlayer->getClient().getSocket() << std::endl;
-                playersOnTile.push_back(teamPlayer);
-                break;
-            }
+    auto playersOnTile = this->_getPlayersIncanting(player.x, player.y, player.level);
+    
+    for (auto &playerPtr : playersOnTile) {
+        auto sharedPlayer = playerPtr.lock();
+        if (!sharedPlayer || !sharedPlayer->isPraying()) {
+            continue;
         }
+        sharedPlayer->level += 1;
+        sharedPlayer->stopPraying();
+        sharedPlayer->setInAction(false);
+
+        std::string msg = std::string("Current level: ") + 
+                         std::to_string(sharedPlayer->level) + "\n";
+        sharedPlayer->getClient().sendMessage(msg);
+        
+        std::cout << "Player " << sharedPlayer->getClient().getSocket() 
+                 << " elevated to level " << sharedPlayer->level << std::endl;
     }
-    std::for_each(playersOnTile.begin(), playersOnTile.end(),
-        [](std::weak_ptr<ServerPlayer> playerOnTile) {
-            auto sharedPlayer = playerOnTile.lock();
-            if (!sharedPlayer)
-                throw GameError("Unable to lock weak ptr", "Elevation");
-            if (!sharedPlayer->isPraying()) {
-                  std::cout << "Zebi c'est parce qu'il prie plus = " << sharedPlayer->getClient().getSocket() << std::endl;
-                return;
-            }
-            sharedPlayer->level += 1;
-            sharedPlayer->stopPraying();
-            sharedPlayer->setInAction(false);
-            std::string msg = std::string("Current level: ") +
-                std::to_string(sharedPlayer->level) + "\n";
-            sharedPlayer->getClient().sendMessage(msg);
-            std::cout << "Msg: " << msg << "for client:  << " << sharedPlayer->getClient().getSocket() << std::endl;
-        });
-    this->messageToGUI(std::string("pie " + std::to_string(player.x) + " " +
-                                   std::to_string(player.y) + " 1\n"));
 }
 
 void zappy::game::CommandHandler::handleIncantation(
@@ -671,9 +656,9 @@ void zappy::game::CommandHandler::handleIncantation(
             guiMsg += sharedPlayer->getId();
         });
     guiMsg += "\n";
+    std::cout << "MSG pic to gui = " << guiMsg << std::endl;
     this->messageToGUI(guiMsg);
     this->_waitCommand(timeLimit::INCANTATION);
-
     if (!this->_checkIncantationConditions(player)) {
         std::cout << "Unable to incant" << std::endl;
         this->messageToGUI(
@@ -684,6 +669,10 @@ void zappy::game::CommandHandler::handleIncantation(
         return player.getClient().sendMessage("ko\n");
     }
     player.pray();
+    this->messageToGUI(std::string("pie " + std::to_string(player.x) + " " +
+                                   std::to_string(player.y) + " 1\n"));
+    this->messageToGUI(std::string("plv #" + std::to_string(player.getId()) + " " +
+                                   std::to_string(player.level + 1) + "\n"));
     this->_consumeElevationResources(player.x, player.y, player.level);
     this->_elevatePlayer(player);
     player.setInAction(false);
@@ -698,7 +687,6 @@ void zappy::game::CommandHandler::_executeCommand(
 {
     std::thread commandThread([&player, function, args]() {
         if (player.isInAction()) {
-            std::cout << "Déjà dans une action pour le player lvl " << player.level << std::endl;
             return;
         }
 

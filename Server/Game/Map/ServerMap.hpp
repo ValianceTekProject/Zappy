@@ -35,7 +35,7 @@ namespace zappy {
             std::mutex _resourceMutex;
 
            private:
-            int _idEggTot = 1;
+            int _idEggTot = 2;
             void _placeResources();
             std::list<Egg> _eggList;
 
