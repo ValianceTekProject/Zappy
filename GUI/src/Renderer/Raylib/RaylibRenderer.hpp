@@ -77,8 +77,6 @@ namespace zappy {
                 std::unique_ptr<raylib::PauseMenu> _pauseMenu;
 
                 raylib::InputManager _inputManager;
-
-                bool _isPaused;
         };
     }
 }
