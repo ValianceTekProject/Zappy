@@ -96,9 +96,9 @@ void zappy::game::CommandHandler::handleForward(
     player.stepForward(this->_widthMap, this->_heightMap);
     player.setInAction(false);
     player.getClient().sendMessage("ok\n");
-    std::string msg = "ppo #" + std::to_string(player.getId()) + " " + 
-        std::to_string(player.x) + " " + 
-        std::to_string(player.y) + " " + 
+    std::string msg =
+        "ppo #" + std::to_string(player.getId()) + " " +
+        std::to_string(player.x) + " " + std::to_string(player.y) + " " +
         std::to_string(static_cast<int>(player.orientation + 1)) + "\n";
     this->messageToGUI(msg);
 }
@@ -110,9 +110,9 @@ void zappy::game::CommandHandler::handleRight(
     player.lookRight();
     player.setInAction(false);
     player.getClient().sendMessage("ok\n");
-    std::string msg = "ppo #" + std::to_string(player.getId()) + " " + 
-        std::to_string(player.x) + " " + 
-        std::to_string(player.y) + " " + 
+    std::string msg =
+        "ppo #" + std::to_string(player.getId()) + " " +
+        std::to_string(player.x) + " " + std::to_string(player.y) + " " +
         std::to_string(static_cast<int>(player.orientation + 1)) + "\n";
     this->messageToGUI(msg);
 }
@@ -123,9 +123,9 @@ void zappy::game::CommandHandler::handleLeft(zappy::game::ServerPlayer &player)
     player.lookLeft();
     player.setInAction(false);
     player.getClient().sendMessage("ok\n");
-    std::string msg = "ppo #" + std::to_string(player.getId()) + " " + 
-        std::to_string(player.x) + " " + 
-        std::to_string(player.y) + " " + 
+    std::string msg =
+        "ppo #" + std::to_string(player.getId()) + " " +
+        std::to_string(player.x) + " " + std::to_string(player.y) + " " +
         std::to_string(static_cast<int>(player.orientation + 1)) + "\n";
     this->messageToGUI(msg);
 }
@@ -282,6 +282,10 @@ void zappy::game::CommandHandler::handleInventory(
     msg.pop_back();
     msg += "]\n";
     player.setInAction(false);
+    if (player.level == 2) {
+        std::cout << "Level 2" << std::endl;
+    }
+    std::cout << msg << std::endl;
     player.getClient().sendMessage(msg);
 }
 
@@ -414,13 +418,13 @@ void zappy::game::CommandHandler::handleFork(zappy::game::ServerPlayer &player)
         dynamic_cast<zappy::game::TeamsPlayer *>(&player.getTeam());
     if (playerTeam) {
         playerTeam->allowNewPlayer();
-        this->_map.addNewEgg(playerTeam->getTeamId(), player.x, player.y);
+        auto eggId = this->_map.addNewEgg(playerTeam->getTeamId(), player.x, player.y);
         player.setInAction(false);
+        this->messageToGUI(
+            "enw #" + std::to_string(eggId) + " #" +
+            std::to_string(player.getId()) + " " + std::to_string(player.x) +
+            " " + std::to_string(player.y) + "\n");
         player.getClient().sendMessage("ok\n");
-        this->messageToGUI("enw #" + std::to_string(player.getTeam().getTeamId()) + " #" +
-            std::to_string(player.getId()) + " " +
-            std::to_string(player.x) + " " +
-            std::to_string(player.y) + "\n");
     }
 }
 
@@ -445,16 +449,15 @@ void zappy::game::CommandHandler::handleTake(
     tile.removeResource(resource);
     player.setInAction(false);
     player.getClient().sendMessage("ok\n");
-    this->messageToGUI("pgt #" +
-        std::to_string(player.getId()) +
-        " " + std::to_string(castResource(resource)) +
-        "\n");
+    this->messageToGUI("pgt #" + std::to_string(player.getId()) + " " +
+                       std::to_string(castResource(resource)) + "\n");
     for (auto &team : this->_teamList) {
         if (team->getName() == "GRAPHIC") {
             for (auto &players : team->getPlayerList()) {
                 handlePin(*players, std::to_string(player.getId()));
                 handleBct(*players, std::string(std::to_string(player.x)) +
-                    " " + std::string(std::to_string(player.y)));
+                                        " " +
+                                        std::string(std::to_string(player.y)));
             }
         }
     }
@@ -482,27 +485,43 @@ void zappy::game::CommandHandler::handleDrop(
     player.setInAction(false);
     player.getClient().sendMessage("ok\n");
     this->messageToGUI("pdr #" + std::to_string(player.getId()) + " " +
-        std::to_string(castResource(resource)) + "\n");
+                       std::to_string(castResource(resource)) + "\n");
     for (auto &team : this->_teamList) {
         if (team->getName() == "GRAPHIC") {
             for (auto &players : team->getPlayerList()) {
                 handlePin(*players, std::to_string(player.getId()));
                 handleBct(*players, std::string(std::to_string(player.x)) +
-                    " " + std::string(std::to_string(player.y)));
+                                        " " +
+                                        std::string(std::to_string(player.y)));
             }
         }
     }
 }
 
 std::vector<std::weak_ptr<zappy::game::ServerPlayer>>
-zappy::game::CommandHandler::_getPlayersOnTile(int x, int y, size_t level)
+zappy::game::CommandHandler::_getPlayersForIncant(int x, int y, size_t level)
 {
     std::vector<std::weak_ptr<ServerPlayer>> players;
 
     for (auto &team : this->_teamList) {
         for (auto &player : team->getPlayerList()) {
-            if (player->x == x && player->y == y && player->level == level &&
-                !player->isInAction()) {
+            if (player->x == x && player->y == y && player->level == level) {
+                players.push_back(player);
+            }
+        }
+    }
+    return players;
+}
+
+std::vector<std::weak_ptr<zappy::game::ServerPlayer>>
+zappy::game::CommandHandler::_getPlayersIncanting(int x, int y, size_t level)
+{
+    std::vector<std::weak_ptr<ServerPlayer>> players;
+
+    for (auto &team : this->_teamList) {
+        for (auto &player : team->getPlayerList()) {
+            if (player->x == x && player->y == y && player->isPraying() &&
+                player->level == level) {
                 players.push_back(player);
             }
         }
@@ -536,9 +555,11 @@ bool zappy::game::CommandHandler::_checkIncantationConditions(
 {
     const auto &requirements = elevationRequirements[player.level - 1];
 
-    if (player.level >= maxLevel)
+    if (player.level >= maxLevel) {
         return false;
-    auto players = this->_getPlayersOnTile(player.x, player.y, player.level);
+    }
+    auto players =
+        this->_getPlayersForIncant(player.x, player.y, player.level);
 
     if (players.size() < requirements.players) {
         return false;
@@ -570,7 +591,7 @@ void zappy::game::CommandHandler::_consumeElevationResources(
 void zappy::game::CommandHandler::_setPrayer(zappy::game::ServerPlayer &player)
 {
     auto playersOnTile =
-        this->_getPlayersOnTile(player.x, player.y, player.level);
+        this->_getPlayersForIncant(player.x, player.y, player.level);
     std::for_each(playersOnTile.begin(), playersOnTile.end(),
         [](std::weak_ptr<ServerPlayer> playerOnTile) {
             auto sharedPlayer = playerOnTile.lock();
@@ -584,37 +605,37 @@ void zappy::game::CommandHandler::_setPrayer(zappy::game::ServerPlayer &player)
         });
 }
 
-void zappy::game::CommandHandler::_elevatePlayer(
-    zappy::game::ServerPlayer &player)
+void zappy::game::CommandHandler::_elevatePlayer(zappy::game::ServerPlayer &player)
 {
-    auto playersOnTile =
-        this->_getPlayersOnTile(player.x, player.y, player.level);
-    std::for_each(playersOnTile.begin(), playersOnTile.end(),
-        [](std::weak_ptr<ServerPlayer> playerOnTile) {
-            auto sharedPlayer = playerOnTile.lock();
-            if (!sharedPlayer)
-                throw GameError("Unable to lock weak ptr", "Elevation");
-            if (!sharedPlayer->isPraying())
-                return;
-            sharedPlayer->level += 1;
-            sharedPlayer->stopPraying();
-            sharedPlayer->setInAction(false);
-            sharedPlayer->getClient().sendMessage(
-                std::string("Current level:") +
-                std::to_string(sharedPlayer->level) + "\n");
-        });
-    this->messageToGUI(std::string("pie " +
-                std::to_string(player.x) + " " +
-                std::to_string(player.y) + " 1\n"));
+    auto playersOnTile = this->_getPlayersIncanting(player.x, player.y, player.level);
+    
+    for (auto &playerPtr : playersOnTile) {
+        auto sharedPlayer = playerPtr.lock();
+        if (!sharedPlayer || !sharedPlayer->isPraying()) {
+            continue;
+        }
+        sharedPlayer->level += 1;
+        sharedPlayer->stopPraying();
+        sharedPlayer->setInAction(false);
+
+        std::string msg = std::string("Current level: ") + 
+                         std::to_string(sharedPlayer->level) + "\n";
+        sharedPlayer->getClient().sendMessage(msg);
+        
+        std::cout << "Player " << sharedPlayer->getClient().getSocket() 
+                 << " elevated to level " << sharedPlayer->level << std::endl;
+    }
 }
 
 void zappy::game::CommandHandler::handleIncantation(
     zappy::game::ServerPlayer &player)
 {
+    std::cout << "Start incantation" << std::endl;
     if (!this->_checkIncantationConditions(player)) {
-        this->messageToGUI(std::string("pie " +
-                std::to_string(player.x) + " " +
-                std::to_string(player.y) + " 0\n"));
+        std::cout << "Condition not good for incant" << std::endl;
+        this->messageToGUI(
+            std::string("pie " + std::to_string(player.x) + " " +
+                        std::to_string(player.y) + " 0\n"));
         return player.getClient().sendMessage("ko\n");
     }
     this->_setPrayer(player);
@@ -622,7 +643,7 @@ void zappy::game::CommandHandler::handleIncantation(
                          std::to_string(player.y) + " " +
                          std::to_string(player.level);
     auto otherPlayers =
-        this->_getPlayersOnTile(player.x, player.y, player.level);
+        this->_getPlayersForIncant(player.x, player.y, player.level);
 
     std::for_each(otherPlayers.begin(), otherPlayers.end(),
         [&guiMsg](std::weak_ptr<ServerPlayer> player) {
@@ -635,17 +656,26 @@ void zappy::game::CommandHandler::handleIncantation(
     guiMsg += "\n";
     this->messageToGUI(guiMsg);
     this->_waitCommand(timeLimit::INCANTATION);
-
     if (!this->_checkIncantationConditions(player)) {
-        this->messageToGUI(std::string("pie " +
-                std::to_string(player.x) + " " +
-                std::to_string(player.y) + " 0\n"));
+        this->messageToGUI(
+            std::string("pie " + std::to_string(player.x) + " " +
+                        std::to_string(player.y) + " 0\n"));
+        player.setInAction(false);
+        player.stopPraying();
         return player.getClient().sendMessage("ko\n");
     }
+    player.pray();
+    this->messageToGUI(std::string("pie " + std::to_string(player.x) + " " +
+                                   std::to_string(player.y) + " 1\n"));
+    this->messageToGUI(std::string("plv #" + std::to_string(player.getId()) + " " +
+                                   std::to_string(player.level + 1) + "\n"));
     this->_consumeElevationResources(player.x, player.y, player.level);
+    this->messageToGUI(std::string("pie " + std::to_string(player.x) + " " +
+                                   std::to_string(player.y) + " 1\n"));
     this->_elevatePlayer(player);
     player.setInAction(false);
-    std::cout << "SERV: Incantation Réussi !" << std::endl;
+    player.stopPraying();
+    std::cout << "SERV: Incantation Réussi !: " << player.isPraying() << player.isInAction() << std::endl;
 }
 
 void zappy::game::CommandHandler::_executeCommand(
@@ -654,8 +684,9 @@ void zappy::game::CommandHandler::_executeCommand(
     const std::string &args)
 {
     std::thread commandThread([&player, function, args]() {
-        if (player.isInAction())
+        if (player.isInAction()) {
             return;
+        }
 
         player.setInAction(true);
         player.startChrono();

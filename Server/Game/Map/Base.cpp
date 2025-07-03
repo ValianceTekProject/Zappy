@@ -9,7 +9,9 @@
 #include <chrono>
 #include <mutex>
 
-zappy::game::MapServer::MapServer(int width, int height)
+zappy::game::MapServer::MapServer(int width, int height,
+    zappy::game::CommandHandlerGui &commandHandlerGui) :
+    _commandHandlerGui(commandHandlerGui)
 {
     std::srand(std::time({}));
 
@@ -33,11 +35,12 @@ void zappy::game::MapServer::setEggsonMap(
     }
 }
 
-void zappy::game::MapServer::addNewEgg(int teamId, int x, int y)
+int zappy::game::MapServer::addNewEgg(int teamId, int x, int y)
 {
     zappy::game::Egg newEgg(this->_idEggTot, teamId, x, y);
     this->_idEggTot += 1;
     this->_eggList.push_back(newEgg);
+    return this->_idEggTot - 1;
 }
 
 zappy::game::Egg zappy::game::MapServer::popEgg()
@@ -85,9 +88,19 @@ void zappy::game::MapServer::replaceResources()
             int randX = std::rand() % this->_width;
             int randY = std::rand() % this->_height;
 
+
             zappy::game::Tile &tile = this->getTile(randX, randY);
             tile.addResource(
                 static_cast<zappy::game::Resource>(resourceIdx), 1);
+            for (auto &team : this->_commandHandlerGui._teamList) {
+                if (team->getName() == "GRAPHIC") {
+                    for (auto &players : team->getPlayerList()) {
+                        this->_commandHandlerGui.handleBct(*players, std::string(std::to_string(randX)) +
+                                                " " +
+                                                std::string(std::to_string(randY)));
+                    }
+                }
+            }
         }
     }
 }

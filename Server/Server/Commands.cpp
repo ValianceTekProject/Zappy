@@ -35,18 +35,14 @@ void zappy::server::Server::_handleClientCommand(const std::string &command, str
                 }
                 auto teamsGui = std::dynamic_pointer_cast<zappy::game::TeamsGui>(team);
                 if (teamsGui) {
-                    std::cout << "1111111111111" << std::endl;
                     this->_game->getCommandHandlerGui().handleMsz(*teamsGui->getPlayerList().back());
                     this->_game->getCommandHandlerGui().handleSgt(*teamsGui->getPlayerList().back());
                     this->_game->getCommandHandlerGui().handleMct(*teamsGui->getPlayerList().back());
                     this->_game->getCommandHandlerGui().handleTna(*teamsGui->getPlayerList().back());
                     this->_game->getCommandHandlerGui().handlePnw(*teamsGui->getPlayerList().back());
                     for (auto &teams : this->_game->getTeamList()) {
-                        std::cout << "22222222222222" << std::endl;
                         if (teams->getName() != "GRAPHIC") {
-                            std::cout << "333333333333333" << std::endl;
                             for (auto &players : teams->getPlayerList()) {
-                                std::cout << "44444444444" << std::endl;
                                 this->_game->getCommandHandlerGui().handlePin(*teamsGui->getPlayerList().back(),
                                     std::to_string(players->getId()));
                                 this->_game->getCommandHandlerGui().handlePlv(*teamsGui->getPlayerList().back(),

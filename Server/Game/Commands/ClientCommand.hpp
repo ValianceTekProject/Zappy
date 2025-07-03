@@ -7,14 +7,14 @@
 
 #pragma once
 
+#include "GuiCommand.hpp"
+#include "ITeams.hpp"
 #include "ServerMap.hpp"
 #include "ServerPlayer.hpp"
-#include "ITeams.hpp"
 #include <functional>
 #include <iostream>
 #include <map>
 #include <string>
-#include "GuiCommand.hpp"
 
 namespace zappy {
     namespace game {
@@ -31,11 +31,11 @@ namespace zappy {
             size_t thystame;
         } elevation_t;
 
-        const std::array<elevation_t, 7> elevationRequirements = {{
-            {1, 1, 0, 0, 0, 0, 0}, {2, 1, 1, 1, 0, 0, 0},
-            {2, 2, 0, 1, 0, 2, 0}, {4, 1, 1, 2, 0, 1, 0},
-            {4, 1, 2, 1, 3, 0, 0}, {6, 1, 2, 3, 0, 1, 0},
-            {6, 2, 2, 2, 2, 2, 1}}};
+        const std::array<elevation_t, 7> elevationRequirements = {
+            {{1, 1, 0, 0, 0, 0, 0}, {2, 1, 1, 1, 0, 0, 0},
+                {2, 2, 0, 1, 0, 2, 0}, {4, 1, 1, 2, 0, 1, 0},
+                {4, 1, 2, 1, 3, 0, 0}, {6, 1, 2, 3, 0, 1, 0},
+                {6, 2, 2, 2, 2, 2, 1}}};
 
         class CommandHandler : public CommandHandlerGui {
            public:
@@ -67,19 +67,20 @@ namespace zappy {
             };
 
             CommandHandler(int &freq, int width, int height, int clientNb,
-                zappy::game::MapServer &map, std::vector<std::shared_ptr<ITeams>> &teamList)
-                : CommandHandlerGui(freq, width, height, clientNb, map, teamList) {};
+                zappy::game::MapServer &map,
+                std::vector<std::shared_ptr<ITeams>> &teamList)
+                : CommandHandlerGui(
+                      freq, width, height, clientNb, map, teamList) {};
             ~CommandHandler() = default;
 
-            void processClientInput(
-                std::string &input, zappy::game::ServerPlayer &player) override;
+            void processClientInput(std::string &input,
+                zappy::game::ServerPlayer &player) override;
 
             void initCommandMap() override;
 
             int &getFreq() { return _freq; }
 
             void messageToGUI(const std::string &msg);
-
 
             void _executeCommand(zappy::game::ServerPlayer &player,
                 std::function<void(ServerPlayer &, const std::string &)>
@@ -125,7 +126,9 @@ namespace zappy {
 
             void handleIncantation(zappy::game::ServerPlayer &player);
             bool _checkIncantationConditions(const ServerPlayer &player);
-            std::vector<std::weak_ptr<ServerPlayer>> _getPlayersOnTile(
+            std::vector<std::weak_ptr<ServerPlayer>> _getPlayersForIncant(
+                int x, int y, size_t level);
+            std::vector<std::weak_ptr<ServerPlayer>> _getPlayersIncanting(
                 int x, int y, size_t level);
             bool _checkIncantationResources(size_t x, size_t y, size_t level);
             void _consumeElevationResources(size_t x, size_t y, size_t level);
