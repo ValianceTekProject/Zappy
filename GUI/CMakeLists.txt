@@ -113,6 +113,8 @@ set(SOURCES
     ${RAYLIB_MENU_DIR}/GameMenu.cpp
     ${RAYLIB_MENU_DIR}/InputManager.cpp
 
+    ${RAYLIB_MENU_DIR}/PauseMenu.cpp
+
     ${RAYLIB_SCENE_DIR}/Skybox.cpp
 
     ${RAYLIB_SCENE_DIR}/AScene.cpp

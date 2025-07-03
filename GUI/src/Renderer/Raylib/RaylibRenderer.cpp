@@ -18,6 +18,7 @@ zappy::gui::RaylibRenderer::RaylibRenderer() :
 void zappy::gui::RaylibRenderer::init()
 {
     InitWindow(1280, 720, "Zappy");
+    SetExitKey(0);
     // ToggleFullscreen();
     SetTargetFPS(60);
     DisableCursor();
@@ -27,6 +28,11 @@ void zappy::gui::RaylibRenderer::init()
 
     this->_gameMenu = std::make_unique<raylib::GameMenu>(this->_gameState);
     this->_gameMenu->init();
+
+    this->_pauseMenu = std::make_unique<raylib::PauseMenu>();
+    this->_pauseMenu->init();
+
+    this->_isPaused = false;
 }
 
 void zappy::gui::RaylibRenderer::setFrequency(const size_t &frequency)
@@ -39,18 +45,27 @@ void zappy::gui::RaylibRenderer::handleInput()
 {
     this->_inputManager.update();
 
-    this->_scene->handleInput(this->_inputManager);
+    this->_pauseMenu->handleInput(this->_inputManager);
 
+    this->_isPaused = this->_pauseMenu->isActive();
+
+    if (this->_isPaused)
+        return;
+
+    this->_scene->handleInput(this->_inputManager);
     this->_gameMenu->handleInput(this->_inputManager);
 }
 
 void zappy::gui::RaylibRenderer::update()
 {
-    UpdateCamera(&this->_scene->getCamera(), CAMERA_FREE);
+    if (!_isPaused)
+        UpdateCamera(&this->_scene->getCamera(), CAMERA_FREE);
 
     this->_scene->update();
 
     this->_gameMenu->update();
+
+    this->_pauseMenu->update();
 }
 
 void zappy::gui::RaylibRenderer::render() const
@@ -61,6 +76,8 @@ void zappy::gui::RaylibRenderer::render() const
     this->_scene->render();
 
     this->_gameMenu->render();
+
+    this->_pauseMenu->render();
 
     EndDrawing();
 }

@@ -10,8 +10,10 @@
 #include "ARenderer.hpp"
 
 #include "GameMenu.hpp"
+#include "PauseMenu.hpp"
 
 #include "BasicScene.hpp"
+#include "Menu/PauseMenu.hpp"
 #include "PokemonScene.hpp"
 
 namespace zappy {
@@ -72,8 +74,11 @@ namespace zappy {
                 std::unique_ptr<raylib::IScene> _scene;
 
                 std::unique_ptr<raylib::GameMenu> _gameMenu;
+                std::unique_ptr<raylib::PauseMenu> _pauseMenu;
 
                 raylib::InputManager _inputManager;
+
+                bool _isPaused;
         };
     }
 }
