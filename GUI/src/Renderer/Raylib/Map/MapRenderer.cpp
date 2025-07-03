@@ -22,10 +22,10 @@ zappy::gui::raylib::MapRenderer::MapRenderer(const std::shared_ptr<game::Map> ma
     _players()
 {}
 
-void zappy::gui::raylib::MapRenderer::init()
+void zappy::gui::raylib::MapRenderer::init(const std::string &tileTexturePath)
 {
     // Init la carte
-    this->_floor = std::make_shared<FlatFloor>(_map->getWidth(), _map->getHeight(), 1);
+    this->_floor = std::make_shared<FlatFloor>(_map->getWidth(), _map->getHeight(), tileTexturePath, 1);
     this->_floor->init();
 
     this->_lastTime = std::chrono::steady_clock::now();

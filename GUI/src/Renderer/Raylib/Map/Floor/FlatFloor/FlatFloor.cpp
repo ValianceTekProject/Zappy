@@ -12,21 +12,24 @@
 #include <algorithm>
 #include "raymath.h"
 
-zappy::gui::raylib::FlatFloor::FlatFloor(const size_t &width, const size_t &height, const float &tileSize) :
-    AFloor::AFloor(width, height, tileSize)
+zappy::gui::raylib::FlatFloor::FlatFloor(
+    const size_t &width,
+    const size_t &height,
+    const std::string &tileTexturePath,
+    const float &tileSize
+) : AFloor::AFloor(width, height, tileTexturePath, tileSize)
 {}
 
 void zappy::gui::raylib::FlatFloor::init()
 {
-    AFloor::init();
-    _texture = LoadTexture(assets::BASIC_FLOOR_PATH.c_str());
+    this->_tileTexture = LoadTexture(_tileTexturePath.c_str());
 
-    TraceLog(LOG_INFO, "Texture ID: %d", _texture.id);
-    TraceLog(LOG_INFO, "Texture size: %dx%d", _texture.width, _texture.height);
+    TraceLog(LOG_INFO, "Texture ID: %d", this->_tileTexture.id);
+    TraceLog(LOG_INFO, "Texture size: %dx%d", this->_tileTexture.width, this->_tileTexture.height);
 
     Mesh mesh = GenMeshPlane(1.0f, 1.0f, 1, 1);
-    _model = LoadModelFromMesh(mesh);
-    _model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = _texture;
+    this->_model = LoadModelFromMesh(mesh);
+    this->_model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = this->_tileTexture;
 }
 
 void zappy::gui::raylib::FlatFloor::update() const {}
@@ -130,10 +133,16 @@ zappy::gui::raylib::Translation zappy::gui::raylib::FlatFloor::createTranslation
     return t;
 }
 
-void zappy::gui::raylib::FlatFloor::translate(const float &deltaUnits, const Vector3 &translationVector, Vector3 &destination, APlayerModel &player)
-{
+void zappy::gui::raylib::FlatFloor::translate(
+    const float &deltaUnits,
+    const Vector3 &translationVector,
+    Vector3 &destination,
+    APlayerModel &player
+) {
     Vector3 step = Vector3Scale(translationVector, deltaUnits);
+
     player.translate(step);
+
     _checkOverlap(player, destination);
 }
 

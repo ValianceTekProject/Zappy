@@ -38,7 +38,7 @@ namespace zappy {
                     MapRenderer(const std::shared_ptr<game::Map> map);
                     ~MapRenderer() = default;
 
-                    void init();
+                    void init(const std::string &tileTexturePath = assets::BASIC_FLOOR_PATH);
 
                     void update(const int &frequency);
 

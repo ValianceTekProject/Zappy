@@ -133,7 +133,6 @@ set(SOURCES
     ${RAYLIB_FLOOR_DIR}/AFloor.cpp
 
     ${RAYLIB_FLATFLOOR_DIR}/FlatFloor.cpp
-    ${RAYLIB_GLOBEFLOOR_DIR}/GlobeFloor.cpp
 
     ${RAYLIB_MODEL_DIR}/AModel.cpp
     ${RAYLIB_MODEL_DIR}/APlayerModel.cpp
@@ -146,7 +145,8 @@ set(SOURCES
     ${RAYLIB_MODEL_BASIC_DIR}/BasicResourceModel.cpp
 
     ${RAYLIB_SCENE_DIR}/PokemonScene.cpp
-    ${RAYLIB_MODEL_POKEMON_DIR}/PokemonPlayerModel.cpp
+    ${RAYLIB_MODEL_POKEMON_DIR}/BulbasaurPlayerModel.cpp
+    ${RAYLIB_MODEL_POKEMON_DIR}/FlyingPikachuPlayerModel.cpp
     ${RAYLIB_MODEL_POKEMON_DIR}/PokemonEggModel.cpp
     ${RAYLIB_MODEL_POKEMON_DIR}/PokemonResourceModel.cpp
 )

@@ -26,8 +26,6 @@ void zappy::gui::raylib::AScene::init()
     this->_camera.up = up;
     this->_camera.fovy = fovy;
     this->_camera.projection = CAMERA_PERSPECTIVE;
-
-    this->_mapRenderer->init();
 }
 
 void zappy::gui::raylib::AScene::update()

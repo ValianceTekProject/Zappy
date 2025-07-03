@@ -48,9 +48,9 @@ namespace zappy {
 
                     virtual void update(const float &deltaUnits) override;
 
-                    void idle();
-                    void walk();
-                    void eject();
+                    virtual void idle();
+                    virtual void walk();
+                    virtual void eject();
 
                 protected:
                     virtual void _initModel(const std::string &modelPath) override;

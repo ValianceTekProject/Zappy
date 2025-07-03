@@ -16,7 +16,8 @@ zappy::gui::raylib::APlayerModel::APlayerModel(const int &id) :
     _headOrigin(Vector3{0, 1, 0}),
     _modelAnimations(nullptr),
     _animsCount(0),
-    _animCurrentFrame(0)
+    _animCurrentFrame(0),
+    _frameAccumulator(0)
 {
     this->_animationIndexMap[State::IDLE] = 0;
     this->_animationIndexMap[State::WALK] = 0;
@@ -68,15 +69,24 @@ void zappy::gui::raylib::APlayerModel::lookRight()
 
 void zappy::gui::raylib::APlayerModel::update(const float &deltaUnits)
 {
+    if (this->_modelAnimations == nullptr || this->_animsCount == 0)
+        return;
+
     ModelAnimation anim = this->_modelAnimations[this->_animationIndexMap[this->_state]];
     float speed = (this->_animationFrameSpeedMap[this->_state]);
 
     this->_frameAccumulator += deltaUnits * speed;
 
+    if (anim.frameCount <= 0)
+        return;
+
     while (this->_frameAccumulator >= 1.0f) {
         this->_animCurrentFrame = (this->_animCurrentFrame + 1) % anim.frameCount;
         this->_frameAccumulator -= 1.0f;
     }
+
+    if (this->_frameAccumulator < 0)
+        this->_frameAccumulator = 0;
 
     UpdateModelAnimation(this->_model, anim, this->_animCurrentFrame);
 }

@@ -13,7 +13,12 @@ namespace zappy {
         namespace raylib {
             class FlatFloor : public AFloor {
                 public:
-                    FlatFloor(const size_t &width, const size_t &height, const float &tileSize = 10);
+                    FlatFloor(
+                        const size_t &width,
+                        const size_t &height,
+                        const std::string &tileTexturePath = assets::BASIC_FLOOR_PATH,
+                        const float &tileSize = 10
+                    );
                     ~FlatFloor() = default;
 
                     void init() override;
@@ -31,9 +36,6 @@ namespace zappy {
 
                 private:
                     void _checkOverlap(APlayerModel &player, Vector3 &destination);
-
-                    Texture2D _texture;
-                    Model _model;
             };
         }
     } // namespace gui
