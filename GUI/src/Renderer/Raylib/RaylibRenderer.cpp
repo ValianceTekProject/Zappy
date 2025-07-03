@@ -22,24 +22,11 @@ void zappy::gui::RaylibRenderer::init()
     SetTargetFPS(60);
     DisableCursor();
 
-    this->_scene = std::make_unique<raylib::PokemonScene>(this->_gameState);
+    this->_scene = std::make_unique<raylib::BasicScene>(this->_gameState);
     this->_scene->init();
 
     this->_gameMenu = std::make_unique<raylib::GameMenu>(this->_gameState);
     this->_gameMenu->init();
-
-    for (int id = 0; id < 1; ++id) {
-        game::Player p(id, std::rand() % 10, std::rand() % 10);
-        p.teamName = "Team " + std::to_string(id % 2);
-        this->addPlayer(p);
-        game::Inventory inv;
-        inv.addResource(game::Resource::FOOD, 10);
-        this->updatePlayerInventory(id, inv);
-    }
-
-    this->updatePlayerPosition(0, 6, 2, game::Orientation::NORTH);
-    this->updatePlayerPosition(0, 6, 1, game::Orientation::NORTH);
-    this->updatePlayerPosition(0, 6, 0, game::Orientation::NORTH);
 }
 
 void zappy::gui::RaylibRenderer::setFrequency(const size_t &frequency)
