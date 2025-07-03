@@ -9,6 +9,7 @@
 #include "Menu/InputManager.hpp"
 #include <raylib.h>
 #include "Menu/MenuMacros.hpp"
+#include "AssetPaths.hpp"
 
 namespace zappy {
     namespace gui {
@@ -17,7 +18,7 @@ namespace zappy {
             {
                 public:
                     PauseMenu();
-                    ~PauseMenu() = default;
+                    ~PauseMenu();
 
                     void init();
 
@@ -40,6 +41,10 @@ namespace zappy {
 
                     int _key;
                     int _selectedButton;
+
+                    Texture2D _classicTexture;
+                    Texture2D _pokemonTexture;
+                    int _selectedTheme;
             };
         }
     }

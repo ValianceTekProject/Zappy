@@ -15,6 +15,11 @@ namespace zappy {
             namespace assets {
                 constexpr const char *ASSETS_PATH = "GUI/src/Renderer/Raylib/Assets/";
 
+                // Theme Images assets
+                inline std::string BASIC_THEME_IMAGE_PATH = std::string(ASSETS_PATH) + "basicTheme.png";
+
+                inline std::string POKEMON_THEME_IMAGE_PATH = std::string(ASSETS_PATH) + "pokemonTheme.png";
+
                 // Basic Scene assets
                 inline std::string BASIC_SCENE_PATH = std::string(ASSETS_PATH) + "Basic/";
 
