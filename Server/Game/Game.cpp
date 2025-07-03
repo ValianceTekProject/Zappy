@@ -6,6 +6,7 @@
 */
 
 #include "Game.hpp"
+#include "Client.hpp"
 #include "Server.hpp"
 #include "ServerPlayer.hpp"
 #include <algorithm>
@@ -127,6 +128,8 @@ void zappy::game::Game::foodManager(std::shared_ptr<ITeams> &team)
 
     if (itPlayerTeam) {
         for (auto &player : itPlayerTeam->getPlayerList()) {
+            if (!player || player->getClient().getState() == server::ClientState::DISCONNECTED)
+                continue;
             if (player->getLifeChrono() >= loseFoodSeconds) {
                 if (player->getInventory().getResourceQuantity(
                         zappy::game::Resource::FOOD) > 0) {
@@ -140,7 +143,9 @@ void zappy::game::Game::foodManager(std::shared_ptr<ITeams> &team)
                     }
                     player->resetLifeChrono();
                 } else {
+                    std::cout << "Death of player: " << player->getId() << std::endl;
                     player->getClient().sendMessage("dead\n");
+                    player->getTeam().removePlayer(player->getClient().getSocket());
                     this->_commandHandler.messageToGUI(
                         "pdi #" + std::to_string(player->getId()) + "\n");
                     itPlayerTeam->removePlayer(

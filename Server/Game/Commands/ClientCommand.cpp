@@ -282,10 +282,6 @@ void zappy::game::CommandHandler::handleInventory(
     msg.pop_back();
     msg += "]\n";
     player.setInAction(false);
-    if (player.level == 2) {
-        std::cout << "Level 2" << std::endl;
-    }
-    std::cout << msg << std::endl;
     player.getClient().sendMessage(msg);
 }
 
