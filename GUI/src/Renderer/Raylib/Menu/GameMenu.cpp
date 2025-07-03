@@ -292,7 +292,8 @@ void zappy::gui::raylib::GameMenu::_renderHelp(const int &screenWidth, const int
         "[F11] Toggle fullscreen",
         "z/q/s/d to move",
         "mouse to look around",
-        "Arrow keys to modify frequency",
+        "Arrow keys to modify frequency/players",
+        "[F] to switch modified section (frequency/players)",
         "[B] Broadcasts messages",
         "[P] Players infos",
     };
@@ -322,7 +323,9 @@ void zappy::gui::raylib::GameMenu::_renderFreq(const int &screenWidth, const int
     const std::string freqText = "Frequency: " + std::to_string(this->_gameState->getFrequency());
 
     DrawRectangle(boxX, boxY, boxWidth, boxHeight, _boxColor);
-    DrawRectangleLines(boxX, boxY, boxWidth, boxHeight, WHITE);
+
+    const Color linesColor = _modifiedSection == MenuModifiedSection::FREQ ? WHITE : BLACK;
+    DrawRectangleLines(boxX, boxY, boxWidth, boxHeight, linesColor);
 
     const int textWidth = MeasureText(freqText.c_str(), fontSize);
     const int textX = boxX + (boxWidth - textWidth) / 2;
@@ -393,6 +396,13 @@ void zappy::gui::raylib::GameMenu::_renderPlayerInfo(
     const int boxX = screenWidth - boxWidth;
 
     DrawRectangle(boxX, y, boxWidth, boxHeight, Fade(GRAY, 0.5f));
+
+    const Color linesColor = _modifiedSection == MenuModifiedSection::PLAYERS ? WHITE : BLACK;
+    DrawRectangleLinesEx(
+        Rectangle{ (float)boxX, (float)y, (float)boxWidth, (float)boxHeight },
+        2.0f,
+        linesColor
+    );
 
     const int centerX = boxX + boxWidth / 2;
     int currentY = y + textSize / 2;
