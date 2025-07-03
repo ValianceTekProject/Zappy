@@ -412,10 +412,12 @@ void zappy::game::CommandHandler::handleConnectNbr(
 void zappy::game::CommandHandler::handleFork(zappy::game::ServerPlayer &player)
 {
     this->messageToGUI("pfk #" + std::to_string(player.getId()) + "\n");
+    std::cout << "FORK Before WAIT" << std::endl;
     this->_waitCommand(timeLimit::FORK);
 
     auto playerTeam =
         dynamic_cast<zappy::game::TeamsPlayer *>(&player.getTeam());
+    std::cout << "ENTER FORK" << std::endl;
     if (playerTeam) {
         std::cout << "Fork for player: " << player.getId() << std::endl;
         playerTeam->allowNewPlayer();
@@ -424,8 +426,8 @@ void zappy::game::CommandHandler::handleFork(zappy::game::ServerPlayer &player)
         player.getClient().sendMessage("ok\n");
         std::cout << "Egg id" << eggId << std::endl;
         this->messageToGUI(
-            "enw #" + std::to_string(player.getTeam().getTeamId()) + " #" +
-            std::to_string(eggId) + " " + std::to_string(player.x) +
+            "enw #" + std::to_string(eggId) + " #" +
+            std::to_string(player.getId()) + " " + std::to_string(player.x) +
             " " + std::to_string(player.y) + "\n");
     }
 }
@@ -640,8 +642,6 @@ void zappy::game::CommandHandler::_elevatePlayer(
             sharedPlayer->getClient().sendMessage(msg);
             std::cout << "Msg: " << msg << "for client:  << " << sharedPlayer->getClient().getSocket() << std::endl;
         });
-    this->messageToGUI(std::string("pie " + std::to_string(player.x) + " " +
-                                   std::to_string(player.y) + " 1\n"));
 }
 
 void zappy::game::CommandHandler::handleIncantation(
@@ -685,6 +685,8 @@ void zappy::game::CommandHandler::handleIncantation(
     }
     player.pray();
     this->_consumeElevationResources(player.x, player.y, player.level);
+    this->messageToGUI(std::string("pie " + std::to_string(player.x) + " " +
+                                   std::to_string(player.y) + " 1\n"));
     this->_elevatePlayer(player);
     player.setInAction(false);
     player.stopPraying();
@@ -726,6 +728,7 @@ void zappy::game::CommandHandler::processClientInput(
     if (!args.empty() && args.back() == '\n')
         args.pop_back();
 
+    std::cout << "CMD = " << cmd << std::endl;
     auto it = this->_commandMap.find(cmd);
     if (it != this->_commandMap.end())
         return this->_executeCommand(player, it->second, args);

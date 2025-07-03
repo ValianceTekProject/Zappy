@@ -14,6 +14,9 @@
 
 namespace zappy {
     namespace game {
+
+        class MapServer;
+
         class CommandHandlerGui {
             public:
                 CommandHandlerGui(int &freq, int width, int height, int clientNb,
