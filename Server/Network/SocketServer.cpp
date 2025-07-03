@@ -6,6 +6,7 @@
 //
 
 #include "SocketServer.hpp"
+#include "Error.hpp"
 #include <arpa/inet.h>
 #include <cstring>
 #include <iostream>

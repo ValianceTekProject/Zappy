@@ -7,15 +7,16 @@
 
 #pragma once
 
+#include <cstddef>
+#include <cstring>
 #include <functional>
 #include <memory>
 #include <mutex>
 #include <queue>
 #include <string>
+#include <sys/socket.h>
 #include <unistd.h>
 #include <vector>
-#include <cstring>
-#include <sys/socket.h>
 
 #include "Inventory.hpp"
 #include "my_macros.hpp"

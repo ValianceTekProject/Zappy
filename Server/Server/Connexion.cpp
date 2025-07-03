@@ -68,8 +68,9 @@ void zappy::server::Server::runLoop()
                     continue;
                 auto content = this->_getClientCommand(pfd);
                 if (this->_handleClientDisconnection(content, pfd) ==
-                    ClientState::DISCONNECTED)
+                    ClientState::DISCONNECTED) {
                     break;
+                }
                 this->_handleClientCommand(content, pfd);
             }
         }
