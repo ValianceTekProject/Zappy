@@ -16,7 +16,6 @@ const constexpr int nbOrientation = 4;
 void zappy::game::Game::_addPlayerToTeam(
     std::shared_ptr<zappy::game::ITeams> team, int clientSocket)
 {
-    std::cout << "Add player with socket: " << clientSocket << std::endl;
     std::srand(std::time({}));
     int randVal = std::rand() % nbOrientation;
     zappy::game::Orientation orientation =
@@ -36,11 +35,8 @@ void zappy::game::Game::_addPlayerToTeam(
         newPlayer->teamName = team->getName();
         this->_idPlayerTot += 1;
         team->addPlayer(newPlayer);
-        std::cout << "Id new player " << newPlayer->getId() << std::endl;
         this->_playerList.push_back(newPlayer);
         if (auto lastPlayer = this->_playerList.back().lock(); lastPlayer) {
-            std::cout << "Team name = '" << lastPlayer->teamName << "'"
-                      << std::endl;
             if (lastPlayer->teamName == "GRAPHIC")
                 return;
             for (auto &team : this->_teamList) {
@@ -159,37 +155,40 @@ void zappy::game::Game::runGame()
 {
     this->_isRunning = RunningState::RUN;
     auto lastUpdate = std::chrono::steady_clock::now();
-    std::chrono::seconds _respawnInterval =
-        std::chrono::seconds(TIME_BEFORE_RESPAWN / this->_baseFreqMs);
+    auto lastResourceRespawn = std::chrono::steady_clock::now();
 
     while (this->_isRunning != RunningState::STOP) {
+        auto respawnInterval = std::chrono::duration<double>(
+            static_cast<double>(TIME_BEFORE_RESPAWN) / this->_baseFreqMs);
         auto now = std::chrono::steady_clock::now();
-        if (now - this->_map._lastResourceRespawn >= _respawnInterval) {
-            this->_map.replaceResources();
-            this->_map._lastResourceRespawn = now;
-        }
-        auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
-            now - lastUpdate);
+        auto elapsedTurn = std::chrono::duration_cast<std::chrono::milliseconds>(now - lastUpdate);
+        auto elapsedRespawn = std::chrono::duration_cast<std::chrono::duration<double>>(now - lastResourceRespawn);
 
         for (auto &team : this->getTeamList()) {
             foodManager(team);
             for (auto &player : team->getPlayerList()) {
                 if (!player->getClient().queueMessage.empty()) {
-                    if (player->teamName.compare("GRAPHIC") == 0) {
+                    if (player->teamName == "GRAPHIC") {
                         this->_commandHandlerGui.processClientInput(
                             player->getClient().queueMessage.front(), *player);
-                    } else
+                    } else {
                         this->_commandHandler.processClientInput(
                             player->getClient().queueMessage.front(), *player);
+                    }
                 }
             }
         }
-        if (elapsed >= static_cast<std::chrono::seconds>(this->_baseFreqMs)) {
+
+        if (elapsedTurn >= std::chrono::milliseconds(this->_baseFreqMs)) {
             this->_playTurn();
             lastUpdate = now;
-            continue;
         }
-        std::this_thread::sleep_for(
-            std::chrono::milliseconds(1));  // temporaire
+
+        if (elapsedRespawn >= respawnInterval) {
+            this->_map.replaceResources();
+            lastResourceRespawn = now;
+        }
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 }

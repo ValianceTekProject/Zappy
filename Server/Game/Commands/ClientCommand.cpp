@@ -417,11 +417,9 @@ void zappy::game::CommandHandler::handleFork(zappy::game::ServerPlayer &player)
     auto playerTeam =
         dynamic_cast<zappy::game::TeamsPlayer *>(&player.getTeam());
     if (playerTeam) {
-        std::cout << "Fork for player: " << player.getId() << std::endl;
         playerTeam->allowNewPlayer();
         auto eggId = this->_map.addNewEgg(playerTeam->getTeamId(), player.x, player.y);
         player.setInAction(false);
-        std::cout << "Egg id" << eggId << std::endl;
         this->messageToGUI(
             "enw #" + std::to_string(eggId) + " #" +
             std::to_string(player.getId()) + " " + std::to_string(player.x) +
@@ -656,11 +654,9 @@ void zappy::game::CommandHandler::handleIncantation(
             guiMsg += sharedPlayer->getId();
         });
     guiMsg += "\n";
-    std::cout << "MSG pic to gui = " << guiMsg << std::endl;
     this->messageToGUI(guiMsg);
     this->_waitCommand(timeLimit::INCANTATION);
     if (!this->_checkIncantationConditions(player)) {
-        std::cout << "Unable to incant" << std::endl;
         this->messageToGUI(
             std::string("pie " + std::to_string(player.x) + " " +
                         std::to_string(player.y) + " 0\n"));
@@ -674,6 +670,8 @@ void zappy::game::CommandHandler::handleIncantation(
     this->messageToGUI(std::string("plv #" + std::to_string(player.getId()) + " " +
                                    std::to_string(player.level + 1) + "\n"));
     this->_consumeElevationResources(player.x, player.y, player.level);
+    this->messageToGUI(std::string("pie " + std::to_string(player.x) + " " +
+                                   std::to_string(player.y) + " 1\n"));
     this->_elevatePlayer(player);
     player.setInAction(false);
     player.stopPraying();
