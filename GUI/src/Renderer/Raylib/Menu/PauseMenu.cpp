@@ -11,6 +11,8 @@ zappy::gui::raylib::PauseMenu::PauseMenu() :
     _fontSize(DEFAULT_FONT_SIZE),
     _textColor(DEFAULT_TEXT_COLOR),
     _display(false),
+    _shouldChangeScene(false),
+    _sceneType(SceneType::BASIC),
     _key(KEY_ESCAPE),
     _selectedButton(0),
     _selectedTheme(0) {}

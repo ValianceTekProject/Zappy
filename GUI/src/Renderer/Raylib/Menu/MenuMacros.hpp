@@ -26,6 +26,12 @@ namespace zappy {
             constexpr int MIN_PLAYERS_DISPLAYED = 1;
             constexpr int MAX_PLAYERS_DISPLAYED = 6;
 
+            enum class SceneType {
+                BASIC,
+                POKEMON,
+                NONE,
+            };
+
             enum class MenuState {
                 HELP,
                 BROADCASTS,

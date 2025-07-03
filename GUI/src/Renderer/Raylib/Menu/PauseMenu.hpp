@@ -23,8 +23,10 @@ namespace zappy {
                     void init();
 
                     void handleInput(const InputManager &inputManager);
-
                     void update();
+
+                    bool shouldChangeScene() const { return _shouldChangeScene; }
+                    SceneType getSceneType() const { return _sceneType; }
 
                     void render() const;
 
@@ -38,6 +40,9 @@ namespace zappy {
                     Color _normalColor;
 
                     bool _display;
+
+                    bool _shouldChangeScene;
+                    SceneType _sceneType;
 
                     int _key;
                     int _selectedButton;

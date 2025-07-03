@@ -9,7 +9,10 @@
 
 zappy::gui::RaylibRenderer::RaylibRenderer() :
     ARenderer::ARenderer(),
+    _sceneType(raylib::SceneType::BASIC),
     _scene(nullptr),
+    _gameMenu(nullptr),
+    _pauseMenu(nullptr),
     _inputManager()
 {
     SetTraceLogLevel(LOG_NONE);
@@ -23,14 +26,13 @@ void zappy::gui::RaylibRenderer::init()
     SetTargetFPS(60);
     DisableCursor();
 
-    this->_scene = std::make_unique<raylib::BasicScene>(this->_gameState);
-    this->_scene->init();
+    this->_pauseMenu = std::make_unique<raylib::PauseMenu>();
+    this->_pauseMenu->init();
+
+    this->_setScene(_pauseMenu->getSceneType());
 
     this->_gameMenu = std::make_unique<raylib::GameMenu>(this->_gameState);
     this->_gameMenu->init();
-
-    this->_pauseMenu = std::make_unique<raylib::PauseMenu>();
-    this->_pauseMenu->init();
 }
 
 void zappy::gui::RaylibRenderer::setFrequency(const size_t &frequency)
@@ -61,6 +63,9 @@ void zappy::gui::RaylibRenderer::update()
     this->_gameMenu->update();
 
     this->_pauseMenu->update();
+
+    if (this->_pauseMenu->shouldChangeScene())
+        this->_setScene(this->_pauseMenu->getSceneType());
 }
 
 void zappy::gui::RaylibRenderer::render() const
@@ -178,4 +183,26 @@ void zappy::gui::RaylibRenderer::endGame(const std::string &teamName)
 {
     ARenderer::endGame(teamName);
     this->_scene->endGame(teamName);
+}
+
+void zappy::gui::RaylibRenderer::_setScene(const raylib::SceneType &sceneType)
+{
+    if (this->_scene)
+        this->_scene.reset();
+
+        this->_sceneType = sceneType;
+    this->_scene = _scenesConstructors.at(sceneType)(this->_gameState);
+    this->_scene->init();
+
+    const auto &eggs = this->_gameState->getEggs();
+
+    for (const auto &egg : eggs)
+        this->_scene->addEgg(egg.getId());
+
+    const auto &players = this->_gameState->getPlayers();
+
+    for (const auto &player : players) {
+        this->_scene->addPlayer(player.getId());
+        this->_scene->updatePlayerInventory(player.getId(), player.getInventory());
+    }
 }

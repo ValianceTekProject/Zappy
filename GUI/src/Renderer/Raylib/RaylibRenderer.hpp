@@ -16,9 +16,12 @@
 #include "Menu/PauseMenu.hpp"
 #include "PokemonScene.hpp"
 
+#include <array>
+
 namespace zappy {
     namespace gui {
-        class RaylibRenderer : public ARenderer {
+        class RaylibRenderer : public ARenderer
+        {
             public:
                 RaylibRenderer();
                 ~RaylibRenderer() override = default;
@@ -71,12 +74,20 @@ namespace zappy {
                 void endGame(const std::string &teamName) override;
 
             private:
+                void _setScene(const raylib::SceneType &sceneType);
+
+                raylib::SceneType _sceneType;
                 std::unique_ptr<raylib::IScene> _scene;
 
                 std::unique_ptr<raylib::GameMenu> _gameMenu;
                 std::unique_ptr<raylib::PauseMenu> _pauseMenu;
 
                 raylib::InputManager _inputManager;
+
+                const std::map<raylib::SceneType, std::function< std::unique_ptr<raylib::IScene>(const std::shared_ptr<game::GameState> &)>> _scenesConstructors = {
+                    { raylib::SceneType::BASIC, [](const std::shared_ptr<game::GameState> &g) { return std::make_unique<raylib::BasicScene>(g); } },
+                    { raylib::SceneType::POKEMON, [](const std::shared_ptr<game::GameState> &g) { return std::make_unique<raylib::PokemonScene>(g); } }
+                };
         };
     }
 }
