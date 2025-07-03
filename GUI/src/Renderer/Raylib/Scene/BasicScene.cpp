@@ -15,7 +15,7 @@ void zappy::gui::raylib::BasicScene::init()
 {
     AScene::init();
 
-    this->_mapRenderer->init(assets::POKEMON_FLOOR_PATH);
+    this->_mapRenderer->init(assets::BASIC_FLOOR_PATH);
 
     for (size_t i = 0; i < zappy::game::RESOURCE_QUANTITY; ++i) {
         auto type = static_cast<zappy::game::Resource>(i);
