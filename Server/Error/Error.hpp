@@ -7,38 +7,43 @@
 
 #pragma once
 
-    #include <stdexcept>
+#include <stdexcept>
 
 namespace zappy {
     namespace error {
         class Error : std::exception {
-            public:
-                Error(std::string msg)
-                    : _errorMsg(msg)
-                {}
+           public:
+            Error(std::string msg) : _errorMsg(msg) {}
 
-                char const *getMessage() const;
+            char const *getMessage() const;
 
-                const char *what() const throw();
-            protected:
-            private:
-                std::string _errorMsg;
+            const char *what() const throw();
+
+           protected:
+           private:
+            std::string _errorMsg;
         };
 
         // Erreur spécifique pour vérification arg
         class InvalidArg : public Error {
-            public:
-                InvalidArg(std::string msg) : Error(msg) {}
+           public:
+            InvalidArg(std::string msg) : Error(msg) {}
         };
 
         // Erreur spécifique pour les erreurs de connection serveur
         class ServerConnection : public Error {
-            public:
-                ServerConnection(std::string msg) : Error(msg) {}
+           public:
+            ServerConnection(std::string msg) : Error(msg) {}
         };
-            class SocketError : public error::Error {
-               public:
-                SocketError(std::string msg): Error(msg) {};
-            };
-    }
-}
+
+        class SocketError : public error::Error {
+           public:
+            SocketError(std::string msg) : Error(msg) {};
+        };
+
+        class EggError : public Error {
+           public:
+            EggError(std::string msg) : Error(msg) {};
+        };
+    }  // namespace error
+}  // namespace zappy

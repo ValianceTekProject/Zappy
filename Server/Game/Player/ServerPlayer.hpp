@@ -57,6 +57,8 @@ namespace zappy {
             void setInAction(bool status) { _actionStarted = status; }
             zappy::game::ITeams &getTeam() { return _team; }
 
+            std::mutex msgMutex;
+
 
            private:
             zappy::server::Client _user;

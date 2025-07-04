@@ -39,7 +39,15 @@ namespace zappy {
                 this->queueMutex = std::make_unique<std::mutex>();
             };
 
-            ~Client() = default;
+            ~Client()
+            {
+                if (queueMutex) {
+                    std::lock_guard<std::mutex> lock(*queueMutex);
+                    while (!queueMessage.empty()) {
+                        queueMessage.pop();
+                    }
+                }
+            }
 
             int getSocket() const { return this->_socket; }
 
@@ -47,8 +55,10 @@ namespace zappy {
 
             void setState(ClientState state) { this->_state = state; }
 
-            void sendMessage(const std::string &buf) {
-                ssize_t bytesSent = send(this->_socket, buf.c_str(), buf.size(), 0);
+            void sendMessage(const std::string &buf)
+            {
+                ssize_t bytesSent =
+                    send(this->_socket, buf.c_str(), buf.size(), 0);
                 (void)bytesSent;
 
                 // if (bytesSent == -1) {
@@ -57,7 +67,7 @@ namespace zappy {
                 //     else
                 //         std::cerr << "Send failed: " << std::strerror(errno) << std::endl;
                 //
-                // } 
+                // }
             }
 
             std::queue<std::string> queueMessage;
