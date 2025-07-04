@@ -5,6 +5,7 @@
 // Handle commands for server
 //
 
+#include "Error.hpp"
 #include "Server.hpp"
 #include "my_macros.hpp"
 
@@ -14,7 +15,9 @@ std::string zappy::server::Server::_getClientCommand(const struct pollfd &pfd)
 
     char buffer[buffSize] = {0};
 
-    (void)read(pfd.fd, buffer, sizeof(buffer));
+    auto readValue = read(pfd.fd, buffer, sizeof(buffer));
+    if (readValue == -1)
+        throw error::SocketError("Unable to read client command");
     std::string content(buffer);
     content.erase(content.find_last_not_of(endSequence) + 1);
     return content;
