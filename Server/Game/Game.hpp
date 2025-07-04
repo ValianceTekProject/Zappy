@@ -50,6 +50,8 @@ namespace zappy {
             bool handleTeamJoin(int clientSocket, const std::string &teamName);
             void removeFromTeam(int clientSocket);
 
+            bool checkWin();
+
             int &getFreq() { return this->_baseFreqMs; }
             int getClientNb() const { return this->_clientNb; }
             MapServer &getMap() { return this->_map; }

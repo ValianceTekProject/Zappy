@@ -64,6 +64,29 @@ void zappy::game::Game::_addPlayerToTeam(
     this->_playerList.push_back(newPlayer);
 }
 
+bool zappy::game::Game::checkWin()
+{
+    // Changer 2 par 6 et 3 par 8
+    constexpr int nbPlayerWinLevel = 2;
+
+    for (auto &team : this->getTeamList()) {
+        if (team->getName() != "GRAPHIC") {
+            int nbMaxLevel = 0;
+            for (auto &player : team->getPlayerList()) {
+                if (player->level >= 3)
+                    nbMaxLevel += 1;
+            }
+            if (nbMaxLevel >= nbPlayerWinLevel) {
+                this->getCommandHandler().messageToGUI("seg " +
+                    team->getName() + "\n");
+                std::cout << "WIN !!!!!!!!!" << std::endl;
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 bool zappy::game::Game::_checkAlreadyInTeam(int clientSocket)
 {
     for (const auto &team : this->_teamList) {
@@ -169,6 +192,8 @@ void zappy::game::Game::runGame()
         auto elapsedTurn = std::chrono::duration_cast<std::chrono::milliseconds>(now - lastUpdate);
         auto elapsedRespawn = std::chrono::duration_cast<std::chrono::duration<double>>(now - lastResourceRespawn);
 
+        if (this->checkWin())
+            this->setRunningState(zappy::RunningState::STOP);
         for (auto &team : this->getTeamList()) {
             foodManager(team);
             for (auto &player : team->getPlayerList()) {
