@@ -26,7 +26,7 @@ namespace zappy {
                     void handleInput(const InputManager &inputManager);
                     void update();
 
-                    bool shouldChangeScene() const { return _shouldChangeScene; }
+                    bool shouldChangeScene();
                     SceneType getSceneType() const { return _sceneType; }
 
                     void render() const;
@@ -57,6 +57,8 @@ namespace zappy {
                     std::vector<Theme> _themes;
 
                     bool _isThemeMenu;
+
+                    int _currentThemeIndex;
 
                     float _getUniformScale() const;
                     void _renderPauseMenu(float scale, int x, int y, int w, int h) const;
