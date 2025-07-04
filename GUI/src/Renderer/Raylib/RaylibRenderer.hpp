@@ -75,6 +75,7 @@ namespace zappy {
 
             private:
                 void _setScene(const raylib::SceneType &sceneType);
+                bool _checkUnwantedInput() const;
 
                 raylib::SceneType _sceneType;
                 std::unique_ptr<raylib::IScene> _scene;

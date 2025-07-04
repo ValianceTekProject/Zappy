@@ -160,16 +160,16 @@ void zappy::gui::raylib::FlatFloor::_checkOverlap(APlayerModel &player, Vector3 
 
     Vector3 playerPos = player.getPosition();
 
-    if (playerPos.x >= widthOverlap) {
+    if (playerPos.x >= widthOverlap && destination.x >= widthOverlap) {
         player.setPosition(Vector3{playerPos.x - mapWidth, playerPos.y, playerPos.z});
         destination.x -= mapWidth;
-    } else if (playerPos.x <= (widthOverlap - mapWidth)) {
+    } else if (playerPos.x <= (widthOverlap - mapWidth) && destination.x <= (widthOverlap - mapWidth)) {
         player.setPosition(Vector3{playerPos.x + mapWidth, playerPos.y, playerPos.z});
         destination.x += mapWidth;
-    } else if (playerPos.z >= heightOverlap) {
+    } else if (playerPos.z >= heightOverlap && destination.z >= heightOverlap) {
         player.setPosition(Vector3{playerPos.x, playerPos.y, playerPos.z - mapHeight});
         destination.z -= mapHeight;
-    } else if (playerPos.z <= (widthOverlap - mapHeight)) {
+    } else if (playerPos.z <= (widthOverlap - mapHeight) && destination.z <= (widthOverlap - mapHeight)) {
         player.setPosition(Vector3{playerPos.x, playerPos.y, playerPos.z + mapHeight});
         destination.z += mapHeight;
     }

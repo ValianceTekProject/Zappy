@@ -33,6 +33,16 @@ void zappy::gui::RaylibRenderer::init()
 
     this->_gameMenu = std::make_unique<raylib::GameMenu>(this->_gameState);
     this->_gameMenu->init();
+
+    game::Player player(0, 2, 6);
+    this->addPlayer(player);
+
+    this->updatePlayerPosition(0, 2, 5, game::Orientation::NORTH);
+    this->updatePlayerPosition(0, 2, 4, game::Orientation::NORTH);
+    this->updatePlayerPosition(0, 2, 3, game::Orientation::NORTH);
+    this->updatePlayerPosition(0, 2, 2, game::Orientation::NORTH);
+    this->updatePlayerPosition(0, 2, 1, game::Orientation::NORTH);
+    this->updatePlayerPosition(0, 2, 0, game::Orientation::NORTH);
 }
 
 void zappy::gui::RaylibRenderer::setFrequency(const size_t &frequency)
@@ -55,7 +65,7 @@ void zappy::gui::RaylibRenderer::handleInput()
 
 void zappy::gui::RaylibRenderer::update()
 {
-    if (!this->_pauseMenu->isActive())
+    if (!this->_pauseMenu->isActive() && !this->_checkUnwantedInput())
         UpdateCamera(&this->_scene->getCamera(), CAMERA_FREE);
 
     this->_scene->update();
@@ -205,4 +215,19 @@ void zappy::gui::RaylibRenderer::_setScene(const raylib::SceneType &sceneType)
         this->_scene->addPlayer(player.getId());
         this->_scene->updatePlayerInventory(player.getId(), player.getInventory());
     }
+}
+
+bool zappy::gui::RaylibRenderer::_checkUnwantedInput() const
+{
+    const std::vector<int> unwantedKeys = {
+        KEY_Q, KEY_E, KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT
+    };
+
+    for (const auto &key : unwantedKeys) {
+        raylib::InputManager::KeyState keyState = this->_inputManager.getKeyState(key);
+        if (keyState == raylib::InputManager::KeyState::PRESSED ||
+            keyState == raylib::InputManager::KeyState::HELD)
+            return true;
+    }
+    return false;
 }
