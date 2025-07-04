@@ -728,7 +728,6 @@ void zappy::game::CommandHandler::processClientInput(
     if (!args.empty() && args.back() == '\n')
         args.pop_back();
 
-    std::cout << "CMD = " << cmd << std::endl;
     auto it = this->_commandMap.find(cmd);
     if (it != this->_commandMap.end())
         return this->_executeCommand(player, it->second, args);
