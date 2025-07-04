@@ -6,7 +6,6 @@
 */
 
 #include "PauseMenu.hpp"
-#include <algorithm>
 
 using namespace zappy::gui::raylib;
 
@@ -19,7 +18,8 @@ zappy::gui::raylib::PauseMenu::PauseMenu::PauseMenu() :
     _key(KEY_ESCAPE),
     _selectedButton(0),
     _selectedTheme(0),
-    _menuState(PauseMenuState::MAIN_MENU) {}
+    _menuState(PauseMenuState::MAIN_MENU),
+    _isThemeMenu(false) {}
 
 zappy::gui::raylib::PauseMenu::PauseMenu::~PauseMenu()
 {
@@ -41,13 +41,12 @@ void zappy::gui::raylib::PauseMenu::PauseMenu::init()
 
 void zappy::gui::raylib::PauseMenu::PauseMenu::handleInput(const InputManager &inputManager)
 {
-    if (inputManager.isKeyPressed(_key)) {
-        _display = !_display;
-        return;
+    if (!_display) {
+        if (inputManager.isKeyPressed(_key)) {
+            _display = true;
+            return;
+        }
     }
-
-    if (!_display)
-        return;
 
     if (_menuState == PauseMenuState::MAIN_MENU) {
         if (inputManager.isKeyPressed(KEY_UP))
@@ -69,7 +68,7 @@ void zappy::gui::raylib::PauseMenu::PauseMenu::handleInput(const InputManager &i
                     break;
             }
 
-        if (inputManager.isKeyPressed(KEY_ESCAPE))
+        if (inputManager.isKeyPressed(_key))
             _display = false;
 
     } else if (_menuState == PauseMenuState::THEME_MENU) {
@@ -79,10 +78,12 @@ void zappy::gui::raylib::PauseMenu::PauseMenu::handleInput(const InputManager &i
         if (inputManager.isKeyPressed(KEY_RIGHT))
             _selectedTheme = (_selectedTheme + 1) % _themes.size();
 
-        if (inputManager.isKeyPressed(KEY_ENTER) || inputManager.isKeyPressed(KEY_SPACE))
+        if (inputManager.isKeyPressed(KEY_ENTER)) {
             _menuState = PauseMenuState::MAIN_MENU;
+            _display = false;
+        }
 
-        if (inputManager.isKeyPressed(KEY_BACKSPACE))
+        if (inputManager.isKeyPressed(_key))
             _menuState = PauseMenuState::MAIN_MENU;
     }
 }
