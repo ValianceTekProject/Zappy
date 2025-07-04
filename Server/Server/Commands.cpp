@@ -14,7 +14,7 @@ std::string zappy::server::Server::_getClientCommand(const struct pollfd &pfd)
 
     char buffer[buffSize] = {0};
 
-    read(pfd.fd, buffer, sizeof(buffer));
+    void(read(pfd.fd, buffer, sizeof(buffer)));
     std::string content(buffer);
     content.erase(content.find_last_not_of(endSequence) + 1);
     return content;
