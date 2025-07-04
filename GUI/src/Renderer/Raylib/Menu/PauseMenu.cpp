@@ -68,6 +68,10 @@ void zappy::gui::raylib::PauseMenu::PauseMenu::handleInput(const InputManager &i
                     CloseWindow();
                     break;
             }
+
+        if (inputManager.isKeyPressed(KEY_ESCAPE))
+            _display = false;
+
     } else if (_menuState == PauseMenuState::THEME_MENU) {
         if (inputManager.isKeyPressed(KEY_LEFT))
             _selectedTheme = (_selectedTheme - 1 + _themes.size()) % _themes.size();
@@ -75,15 +79,12 @@ void zappy::gui::raylib::PauseMenu::PauseMenu::handleInput(const InputManager &i
         if (inputManager.isKeyPressed(KEY_RIGHT))
             _selectedTheme = (_selectedTheme + 1) % _themes.size();
 
-        if (inputManager.isKeyPressed(KEY_ESCAPE))
-            _menuState = PauseMenuState::MAIN_MENU;
-
         if (inputManager.isKeyPressed(KEY_ENTER) || inputManager.isKeyPressed(KEY_SPACE))
             _menuState = PauseMenuState::MAIN_MENU;
-    }
 
-    if (inputManager.isKeyPressed(KEY_ESCAPE))
-        _display = false;
+        if (inputManager.isKeyPressed(KEY_BACKSPACE))
+            _menuState = PauseMenuState::MAIN_MENU;
+    }
 }
 
 void zappy::gui::raylib::PauseMenu::PauseMenu::update() {}
@@ -185,7 +186,7 @@ void zappy::gui::raylib::PauseMenu::PauseMenu::_renderThemeMenu(float scale, int
         }
     }
 
-    const std::string backText = "ESC to return";
+    const std::string backText = "BACKSPACE to return";
     int instrY = y + h - static_cast<int>(30 * scale);
     int textSize = static_cast<int>(16 * scale);
     DrawText(backText.c_str(), x + (w - MeasureText(backText.c_str(), textSize)) / 2, instrY, textSize, LIGHTGRAY);
