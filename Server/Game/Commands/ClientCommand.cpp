@@ -414,6 +414,7 @@ void zappy::game::CommandHandler::handleFork(zappy::game::ServerPlayer &player)
         dynamic_cast<zappy::game::TeamsPlayer *>(&player.getTeam());
     if (playerTeam) {
         playerTeam->allowNewPlayer();
+        std::lock_guard<std::mutex> eggLock (this->_map._eggMutex);
         auto eggId = this->_map.addNewEgg(playerTeam->getTeamId(), player.x, player.y);
         player.setInAction(false);
         this->messageToGUI(
@@ -683,11 +684,14 @@ void zappy::game::CommandHandler::_executeCommand(
         if (player.isInAction()) {
             return;
         }
+        std::lock_guard<std::mutex> lock(*(player.getClient().queueMutex));
+        if (player.getClient().queueMessage.empty())
+            return;
+        player.getClient().queueMessage.pop();
 
         player.setInAction(true);
         player.startChrono();
 
-        player.getClient().queueMessage.pop();
         function(player, args);
         player.setInAction(false);
     });
@@ -712,6 +716,7 @@ void zappy::game::CommandHandler::processClientInput(
     if (it != this->_commandMap.end())
         return this->_executeCommand(player, it->second, args);
     if (player.isInAction() == false) {
+        std::lock_guard<std::mutex> lock(player.msgMutex);
         player.getClient().queueMessage.pop();
         player.getClient().sendMessage("ko\n");
     }

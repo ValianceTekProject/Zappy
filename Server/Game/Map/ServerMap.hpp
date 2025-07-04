@@ -10,6 +10,7 @@
 #include "Egg.hpp"
 #include "Map.hpp"
 #include "ITeams.hpp"
+#include <exception>
 #include <sstream>
 #include <list>
 #include <chrono>
@@ -37,6 +38,8 @@ namespace zappy {
 
             std::chrono::steady_clock::time_point _lastResourceRespawn = std::chrono::steady_clock::now();
             std::mutex _resourceMutex;
+            std::mutex _eggMutex;
+            std::mutex _popMutex;
 
            private:
             int _idEggTot = 2;

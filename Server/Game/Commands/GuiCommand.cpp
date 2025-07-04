@@ -242,14 +242,14 @@ void zappy::game::CommandHandlerGui::processClientInput(
         args.pop_back();
 
     auto it = this->_commandMapGui.find(cmd);
+    std::lock_guard<std::mutex> lock(*(player.getClient().queueMutex));
     if (it != this->_commandMapGui.end()) {
         it->second(player, args);
         if (!player.getClient().queueMessage.empty())
             player.getClient().queueMessage.pop();
-
-    } else {
-        player.getClient().sendMessage("suc\n");
-        if (!player.getClient().queueMessage.empty())
-            player.getClient().queueMessage.pop();
+        return;
     }
+    player.getClient().sendMessage("suc\n");
+    if (!player.getClient().queueMessage.empty())
+        player.getClient().queueMessage.pop();
 }

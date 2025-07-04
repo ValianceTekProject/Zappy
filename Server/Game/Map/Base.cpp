@@ -5,6 +5,7 @@
 // Base functions for map
 //
 
+#include "Error.hpp"
 #include "ServerMap.hpp"
 #include <chrono>
 #include <mutex>
@@ -45,6 +46,9 @@ int zappy::game::MapServer::addNewEgg(int teamId, int x, int y)
 
 zappy::game::Egg zappy::game::MapServer::popEgg()
 {
+    std::lock_guard<std::mutex> lock(this->_popMutex);
+    if (this->_eggList.empty())
+        throw error::EggError("Unable to pop new egg");
     auto egg = this->_eggList.front();
     this->_eggList.pop_front();
     return egg;
