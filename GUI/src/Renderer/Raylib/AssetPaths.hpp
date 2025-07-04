@@ -68,6 +68,28 @@ namespace zappy {
                 inline std::string POKEMON_MENDIANE_PATH = POKEMON_SCENE_RESOURCES_PATH + "mendiane.glb";
                 inline std::string POKEMON_PHIRAS_PATH = POKEMON_SCENE_RESOURCES_PATH + "phiras.glb";
                 inline std::string POKEMON_THYSTAME_PATH = POKEMON_SCENE_RESOURCES_PATH + "thystame.glb";
+
+
+                // Minecraft Scene assets
+                inline std::string MINECRAFT_SCENE_PATH = std::string(ASSETS_PATH) + "Minecraft/";
+
+                inline std::string MINECRAFT_FLOOR_PATH = std::string(MINECRAFT_SCENE_PATH) + "floor.png";
+
+                inline std::string MINECRAFT_AXOLOTL_MODEL = "axolotl.glb";
+                inline std::string MINECRAFT_BEE_MODEL = "bee.glb";
+
+                inline std::string MINECRAFT_EGG_PATH = MINECRAFT_SCENE_PATH + "egg.glb";
+
+                // Minecraft Scene resources assets
+                inline std::string MINECRAFT_SCENE_RESOURCES_PATH = std::string(MINECRAFT_SCENE_PATH) + "Resources/";
+
+                inline std::string MINECRAFT_FOOD_PATH = MINECRAFT_SCENE_RESOURCES_PATH + "food.glb";
+                inline std::string MINECRAFT_LINEMATE_PATH = MINECRAFT_SCENE_RESOURCES_PATH + "linemate.glb";
+                inline std::string MINECRAFT_DERAUMERE_PATH = MINECRAFT_SCENE_RESOURCES_PATH + "deraumere.glb";
+                inline std::string MINECRAFT_SIBUR_PATH = MINECRAFT_SCENE_RESOURCES_PATH + "sibur.glb";
+                inline std::string MINECRAFT_MENDIANE_PATH = MINECRAFT_SCENE_RESOURCES_PATH + "mendiane.glb";
+                inline std::string MINECRAFT_PHIRAS_PATH = MINECRAFT_SCENE_RESOURCES_PATH + "phiras.glb";
+                inline std::string MINECRAFT_THYSTAME_PATH = MINECRAFT_SCENE_RESOURCES_PATH + "thystame.glb";
             }
         }
     }

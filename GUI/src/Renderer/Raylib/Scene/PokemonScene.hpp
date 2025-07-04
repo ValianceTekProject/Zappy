@@ -5,6 +5,8 @@
 ** PokemonScene.hpp
 */
 
+#pragma once
+
 #include "AScene.hpp"
 
 #include "BulbasaurPlayerModel.hpp"
