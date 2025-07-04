@@ -7,15 +7,16 @@
 
 #pragma once
 
+#include <cstddef>
+#include <cstring>
 #include <functional>
 #include <memory>
 #include <mutex>
 #include <queue>
 #include <string>
+#include <sys/socket.h>
 #include <unistd.h>
 #include <vector>
-#include <cstring>
-#include <sys/socket.h>
 
 #include "Inventory.hpp"
 #include "my_macros.hpp"
@@ -38,7 +39,15 @@ namespace zappy {
                 this->queueMutex = std::make_unique<std::mutex>();
             };
 
-            ~Client() = default;
+            ~Client()
+            {
+                if (queueMutex) {
+                    std::lock_guard<std::mutex> lock(*queueMutex);
+                    while (!queueMessage.empty()) {
+                        queueMessage.pop();
+                    }
+                }
+            }
 
             int getSocket() const { return this->_socket; }
 
@@ -46,17 +55,11 @@ namespace zappy {
 
             void setState(ClientState state) { this->_state = state; }
 
-            void sendMessage(const std::string &buf) {
-                ssize_t bytesSent = send(this->_socket, buf.c_str(), buf.size(), 0);
-
-                if (bytesSent == -1) {
-                    if (errno == EPIPE)
-                        std::cerr << "Send failed: client disconnected (EPIPE)" << std::endl;
-                    else
-                        std::cerr << "Send failed: " << std::strerror(errno) << std::endl;
-
-                    throw std::runtime_error("sendMessage: send() failed");
-                } 
+            void sendMessage(const std::string &buf)
+            {
+                ssize_t bytesSent =
+                    send(this->_socket, buf.c_str(), buf.size(), 0);
+                (void)bytesSent;
             }
 
             std::queue<std::string> queueMessage;

@@ -18,7 +18,7 @@ void zappy::game::ATeams::removePlayer(int clientSocket)
     }
 }
 
-const std::vector<std::shared_ptr<zappy::game::ServerPlayer>> &zappy::game::ATeams::getPlayerList() const
+const std::vector<std::shared_ptr<zappy::game::ServerPlayer>> zappy::game::ATeams::getPlayerList() const
 {
     return this->_playerList;
 }

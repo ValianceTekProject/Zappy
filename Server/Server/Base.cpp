@@ -92,7 +92,8 @@ void zappy::server::Server::_checkParams()
         this->_freq = 100;
 }
 
-std::optional<std::shared_ptr<zappy::game::ServerPlayer>> zappy::server::Server::getPlayerBySocket(const int &socket)
+std::optional<std::shared_ptr<zappy::game::ServerPlayer>>
+    zappy::server::Server::getPlayerBySocket(const int &socket)
 {
     for (auto &team : this->_teamList) {
         for (auto &player : team->getPlayerList()) {
@@ -131,5 +132,5 @@ void zappy::server::Server::runServer()
     std::thread gameThread(&game::Game::runGame, this->_game.get());
 
     networkThread.join();
-    gameThread.join();
+    gameThread.join();  
 }

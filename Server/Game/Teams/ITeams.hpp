@@ -21,7 +21,7 @@ namespace zappy {
             public:
                 virtual std::string getName() const = 0;
                 virtual void removePlayer(int playerSocket) = 0;
-                virtual const std::vector<std::shared_ptr<ServerPlayer>> &getPlayerList() const = 0;
+                virtual const std::vector<std::shared_ptr<ServerPlayer>> getPlayerList() const = 0;
                 virtual void addPlayer(std::shared_ptr<ServerPlayer> player) = 0;
                 virtual int getTeamId() const = 0;
         };

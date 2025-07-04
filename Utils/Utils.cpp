@@ -6,6 +6,7 @@
 */
 
 #include "Utils.hpp"
+#include <csignal>
 #include <stdexcept>
 #include "Server.hpp"
 
@@ -25,6 +26,7 @@ void zappy::utils::Signal::initSignalHandling(Signal *instance)
 
     my_signal(SIGINT, signalWrapper);
     my_signal(SIGTERM, signalWrapper);
+    my_signal(SIGPIPE, SIG_IGN);
 }
 
 void zappy::utils::Signal::my_signal(int sig, sighandler_t handler)

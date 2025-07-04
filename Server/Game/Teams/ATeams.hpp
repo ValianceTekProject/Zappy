@@ -22,7 +22,7 @@ namespace zappy {
                 void addPlayer(std::shared_ptr<ServerPlayer> player);
                 void removePlayer(int playerSocket);
 
-                const std::vector<std::shared_ptr<ServerPlayer>> &getPlayerList() const;
+                const std::vector<std::shared_ptr<ServerPlayer>> getPlayerList() const;
 
                 int getTeamId() const {return this->_teamId;}
 
