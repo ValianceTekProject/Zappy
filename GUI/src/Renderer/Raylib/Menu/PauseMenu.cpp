@@ -10,6 +10,15 @@
 
 using namespace zappy::gui::raylib;
 
+constexpr const char *LABEL_RESUME = "RESUME";
+constexpr const char *LABEL_CHANGE_THEME = "CHANGE THEME";
+constexpr const char *LABEL_LEAVE = "LEAVE";
+constexpr const char *LABEL_PAUSE = "PAUSE";
+constexpr const char *LABEL_SELECT_THEME = "SELECT THEME";
+constexpr const char *LABEL_BACK = "ESCAPE to return";
+constexpr const char *THEME_CLASSIC = "CLASSIC";
+constexpr const char *THEME_POKEMON = "POKEMON";
+
 zappy::gui::raylib::PauseMenu::PauseMenu::PauseMenu() :
     _fontSize(DEFAULT_FONT_SIZE),
     _textColor(DEFAULT_TEXT_COLOR),
@@ -35,8 +44,8 @@ void zappy::gui::raylib::PauseMenu::PauseMenu::init()
     this->_normalColor = {50, 50, 50, 150};
 
     this->_themes = {
-        {"CLASSIC", LoadTexture(assets::BASIC_THEME_IMAGE_PATH.c_str())},
-        {"POKEMON", LoadTexture(assets::POKEMON_THEME_IMAGE_PATH.c_str())},
+        {THEME_CLASSIC, LoadTexture(assets::BASIC_THEME_IMAGE_PATH.c_str())},
+        {THEME_POKEMON, LoadTexture(assets::POKEMON_THEME_IMAGE_PATH.c_str())},
     };
 }
 
@@ -80,8 +89,12 @@ void zappy::gui::raylib::PauseMenu::PauseMenu::handleInput(const InputManager &i
             this->_selectedTheme = (this->_selectedTheme + 1) % this->_themes.size();
 
         if (inputManager.isKeyPressed(KEY_ENTER)) {
-            this->_shouldChangeScene = !this->_shouldChangeScene;
-            this->_sceneType = zappy::gui::raylib::SceneType::POKEMON;
+            this->_shouldChangeScene = true;
+
+            if (this->_themes[this->_selectedTheme].name == THEME_CLASSIC)
+                this->_sceneType = SceneType::BASIC;
+            else if (this->_themes[this->_selectedTheme].name == THEME_POKEMON)
+                this->_sceneType = SceneType::POKEMON;
         }
 
         if (inputManager.isKeyPressed(this->_key))
@@ -118,29 +131,39 @@ void zappy::gui::raylib::PauseMenu::PauseMenu::render() const
 void zappy::gui::raylib::PauseMenu::PauseMenu::_renderPauseMenu(float scale, int x, int y, int w, int h) const
 {
     const int titleFontSize = static_cast<int>(40 * scale);
-    const int buttonWidth = static_cast<int>(200 * scale);
-    const int buttonHeight = static_cast<int>(50 * scale);
-    const int buttonSpacing = static_cast<int>(20 * scale);
+    const int buttonWidth = static_cast<int>(300 * scale);     // élargi
+    const int buttonHeight = static_cast<int>(70 * scale);     // plus haut
+    const int buttonSpacing = static_cast<int>(30 * scale);    // plus espacé
     const int buttonX = x + (w - buttonWidth) / 2;
 
-    DrawText("PAUSE", x + (w - MeasureText("PAUSE", titleFontSize)) / 2, y + static_cast<int>(30 * scale), titleFontSize, WHITE);
+    const std::vector<std::string> labels = {LABEL_RESUME, LABEL_CHANGE_THEME, LABEL_LEAVE};
+    const int totalButtonsHeight = static_cast<int>(labels.size()) * buttonHeight +
+                                   static_cast<int>(labels.size() - 1) * buttonSpacing;
 
-    std::vector<std::string> labels = {"RESUME", "CHANGE THEME", "LEAVE"};
-    for (int i = 0; i < 3; ++i) {
-        int btnY = y + titleFontSize + static_cast<int>(50 * scale) + i * (buttonHeight + buttonSpacing);
+    const int startY = y + (h - totalButtonsHeight) / 2;
+
+    DrawText(LABEL_PAUSE,
+             x + (w - MeasureText(LABEL_PAUSE, titleFontSize)) / 2,
+             y + static_cast<int>(30 * scale),
+             titleFontSize,
+             WHITE);
+
+    for (int i = 0; i < static_cast<int>(labels.size()); ++i) {
+        int btnY = startY + i * (buttonHeight + buttonSpacing);
         Color color = (this->_selectedButton == i) ? this->_selectedColor : this->_normalColor;
+
         DrawRectangle(buttonX, btnY, buttonWidth, buttonHeight, color);
         DrawRectangleLines(buttonX, btnY, buttonWidth, buttonHeight, WHITE);
 
-        int textSize = static_cast<int>(buttonHeight * 0.4f);
+        int textSize = static_cast<int>(buttonHeight * 0.5f); // texte plus grand
         while (MeasureText(labels[i].c_str(), textSize) > buttonWidth - 20 && textSize > 5)
             textSize--;
 
         DrawText(labels[i].c_str(),
-            buttonX + (buttonWidth - MeasureText(labels[i].c_str(), textSize)) / 2,
-            btnY + (buttonHeight - textSize) / 2,
-            textSize,
-            WHITE);
+                 buttonX + (buttonWidth - MeasureText(labels[i].c_str(), textSize)) / 2,
+                 btnY + (buttonHeight - textSize) / 2,
+                 textSize,
+                 WHITE);
     }
 }
 
@@ -150,8 +173,7 @@ void zappy::gui::raylib::PauseMenu::PauseMenu::_renderThemeMenu(float scale, int
     const int spacingY = static_cast<int>(30 * scale);
     const int paddingTop = static_cast<int>(40 * scale);
 
-    const std::string title = "SELECT THEME";
-    DrawText(title.c_str(), x + (w - MeasureText(title.c_str(), titleFontSize)) / 2,
+    DrawText(LABEL_SELECT_THEME, x + (w - MeasureText(LABEL_SELECT_THEME, titleFontSize)) / 2,
         y + paddingTop, titleFontSize, WHITE);
 
     const int yPos = y + paddingTop + titleFontSize + spacingY;
@@ -188,10 +210,9 @@ void zappy::gui::raylib::PauseMenu::PauseMenu::_renderThemeMenu(float scale, int
         }
     }
 
-    const std::string backText = "BACKSPACE to return";
     int instrY = y + h - static_cast<int>(30 * scale);
     int textSize = static_cast<int>(16 * scale);
-    DrawText(backText.c_str(), x + (w - MeasureText(backText.c_str(), textSize)) / 2, instrY, textSize, LIGHTGRAY);
+    DrawText(LABEL_BACK, x + (w - MeasureText(LABEL_BACK, textSize)) / 2, instrY, textSize, LIGHTGRAY);
 }
 
 void zappy::gui::raylib::PauseMenu::PauseMenu::_renderTheme(const Theme& theme, int x, int y, int width, int height, bool selected) const
@@ -228,7 +249,7 @@ float zappy::gui::raylib::PauseMenu::_getUniformScale() const
 bool zappy::gui::raylib::PauseMenu::shouldChangeScene()
 {
     if (this->_shouldChangeScene) {
-        this->_shouldChangeScene = !this->_shouldChangeScene;
+        this->_shouldChangeScene = false;
         return true;
     }
     return false;
