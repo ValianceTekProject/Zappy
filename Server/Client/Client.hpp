@@ -60,14 +60,6 @@ namespace zappy {
                 ssize_t bytesSent =
                     send(this->_socket, buf.c_str(), buf.size(), 0);
                 (void)bytesSent;
-
-                // if (bytesSent == -1) {
-                //     if (errno == EPIPE)
-                //         std::cerr << "Send failed: client disconnected (EPIPE)" << std::endl;
-                //     else
-                //         std::cerr << "Send failed: " << std::strerror(errno) << std::endl;
-                //
-                // }
             }
 
             std::queue<std::string> queueMessage;

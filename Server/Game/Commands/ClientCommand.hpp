@@ -11,10 +11,21 @@
 #include "ITeams.hpp"
 #include "ServerMap.hpp"
 #include "ServerPlayer.hpp"
+#include "GameError.hpp"
+#include "Player.hpp"
+#include "Resource.hpp"
+
 #include <functional>
 #include <iostream>
 #include <map>
 #include <string>
+#include <algorithm>
+#include <chrono>
+#include <memory>
+#include <mutex>
+#include <thread>
+#include <unistd.h>
+
 
 namespace zappy {
     namespace game {
@@ -75,6 +86,9 @@ namespace zappy {
 
             void processClientInput(std::string &input,
                 zappy::game::ServerPlayer &player) override;
+
+            void incantationPrinting(zappy::game::ServerPlayer &player);
+            void resourceSendGui(zappy::game::ServerPlayer &player);
 
             void initCommandMap() override;
 

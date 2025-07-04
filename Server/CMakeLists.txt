@@ -62,6 +62,13 @@ set(SOURCES
     ${GAME_DIR}/Game.cpp
     ${GAME_DIR}/Turn.cpp
     ${COMMANDS_DIR}/ClientCommand.cpp
+    ${COMMANDS_DIR}/BroadcastCommand.cpp
+    ${COMMANDS_DIR}/IncantationCommand.cpp
+    ${COMMANDS_DIR}/LookCommand.cpp
+    ${COMMANDS_DIR}/MoveCommand.cpp
+    ${COMMANDS_DIR}/PlayerCommand.cpp
+    ${COMMANDS_DIR}/ResourceCommand.cpp
+    ${COMMANDS_DIR}/HandleGuiCommand.cpp
     ${COMMANDS_DIR}/GuiCommand.cpp
     ${MAP_DIR}/Base.cpp
     ${TEAMS_DIR}/Base.cpp
