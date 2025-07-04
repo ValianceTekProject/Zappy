@@ -75,7 +75,7 @@ namespace zappy {
 
                 inline std::string MINECRAFT_FLOOR_PATH = MINECRAFT_SCENE_PATH + "floor.png";
 
-                inline std::string MINECRAFT_AXOLOTL_MODEL = MINECRAFT_SCENE_PATH + "r2-d2_minecraft.glb";
+                inline std::string MINECRAFT_AXOLOTL_MODEL = MINECRAFT_SCENE_PATH + "axolotl.glb";
                 inline std::string MINECRAFT_BEE_MODEL = MINECRAFT_SCENE_PATH + "bee.glb";
 
                 inline std::string MINECRAFT_EGG_PATH = MINECRAFT_SCENE_PATH + "egg.glb";
