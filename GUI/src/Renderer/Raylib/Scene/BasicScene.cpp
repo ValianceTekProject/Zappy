@@ -24,7 +24,7 @@ void zappy::gui::raylib::BasicScene::init()
     }
 
     // Init le background
-    // this->_skybox.init(zappy::gui::raylib::assets::BASIC_SKYBOX_MODEL_PATH);
+    this->_skybox.init(zappy::gui::raylib::assets::BASIC_SKYBOX_MODEL_PATH);
 }
 
 bool zappy::gui::raylib::BasicScene::shouldClose() const

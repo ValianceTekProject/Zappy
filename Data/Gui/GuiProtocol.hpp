@@ -16,6 +16,7 @@ namespace zappy {
         enum class GuiProtocol {
             MAP_SIZE,               // msz
             TILE_CONTENT,           // bct
+            MAP_CONTENT,            // mct
             TEAM_NAME,              // tna
             NEW_PLAYER,             // pnw
             PLAYER_POSITION,        // ppo
@@ -53,6 +54,7 @@ namespace zappy {
         const std::map<std::string, GuiProtocol> guiProtocolMap = {
             { "msz", GP::MAP_SIZE },
             { "bct", GP::TILE_CONTENT },
+            { "mct", GP::MAP_CONTENT },
             { "tna", GP::TEAM_NAME },
             { "pnw", GP::NEW_PLAYER },
             { "ppo", GP::PLAYER_POSITION },
@@ -82,6 +84,14 @@ namespace zappy {
             if (it == guiProtocolMap.end())
                 return GP::UNKNOWN_COMMAND;
             return it->second;
+        }
+
+        inline std::string getGuiProtocol(GuiProtocol cmd) {
+            for (auto &[key, value] : guiProtocolMap) {
+                if (value == cmd)
+                    return key;
+            }
+            return getGuiProtocol(GP::UNKNOWN_COMMAND);
         }
     }
 }

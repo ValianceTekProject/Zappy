@@ -20,7 +20,9 @@ zappy::gui::RaylibRenderer::RaylibRenderer() :
 
 void zappy::gui::RaylibRenderer::init()
 {
-    InitWindow(1280, 720, "Zappy");
+    constexpr char *title = "Zappy";
+
+    InitWindow(1280, 720, title);
     SetExitKey(KEY_NULL);
     ToggleFullscreen();
     SetTargetFPS(60);

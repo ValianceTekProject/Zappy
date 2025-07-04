@@ -42,12 +42,11 @@ bool zappy::gui::raylib::WaveBroadcastEffect::hasEnded() const
 
 void zappy::gui::raylib::WaveBroadcastEffect::render(const Vector3 &position) const
 {
-    // Décalage vertical (par exemple : 0.5f au-dessus du joueur)
     Vector3 elevatedPos = position;
     elevatedPos.y += 0.5f;
 
     for (const auto &pulse : _pulses) {
-        float radius = pulse.elapsed * PULSE_SPEED * 2.5f; // plus grand
+        float radius = pulse.elapsed * PULSE_SPEED * 2.5f;
         float alpha  = 1.0f - (pulse.elapsed / PULSE_LIFETIME);
 
         Color faded = _color;

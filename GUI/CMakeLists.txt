@@ -148,7 +148,6 @@ set(SOURCES
 
     ${RAYLIB_SCENE_DIR}/PokemonScene.cpp
     ${RAYLIB_MODEL_POKEMON_DIR}/BulbasaurPlayerModel.cpp
-    ${RAYLIB_MODEL_POKEMON_DIR}/FlyingPikachuPlayerModel.cpp
     ${RAYLIB_MODEL_POKEMON_DIR}/PokemonEggModel.cpp
     ${RAYLIB_MODEL_POKEMON_DIR}/PokemonResourceModel.cpp
 )

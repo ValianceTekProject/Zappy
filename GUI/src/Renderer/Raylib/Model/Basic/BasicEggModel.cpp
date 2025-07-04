@@ -12,7 +12,7 @@
 
 zappy::gui::raylib::BasicEggModel::BasicEggModel(const int &id) : AEggModel::AEggModel(id)
 {
-    constexpr float scale = 0.1;
+    constexpr float scale = 0.1f;
     setScale(scale);
 }
 

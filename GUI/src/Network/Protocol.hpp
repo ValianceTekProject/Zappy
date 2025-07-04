@@ -75,6 +75,7 @@ namespace zappy {
                 void handleBadCommand(const std::string &params);
 
                 void initHandlers();
+                void initRequestsCommands();
                 void onServerMessage(const ServerMessage &msg);
 
                 bool _debug;
@@ -86,6 +87,7 @@ namespace zappy {
 
                 using HandlerFunc = std::function<void(const std::string &)>;
                 std::unordered_map<GuiProtocol, HandlerFunc> _handlers;
+                std::unordered_map<GuiProtocol, std::string> _requestsCommands;
         };
     } // namespace network
 } // namespace zappy
