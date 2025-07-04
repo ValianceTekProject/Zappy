@@ -44,6 +44,7 @@ namespace zappy {
             int getFreq() const { return this->_freq; }
 
             void runLoop();
+            void pfdLoop();
             void handleClientMessage(int clientSocket, std::string buffer);
 
             void attachObserver(std::shared_ptr<zappy::observer::IObserver> observer);
@@ -87,6 +88,10 @@ namespace zappy {
             std::string _getClientCommand(const struct pollfd &fd);
             ClientState _handleClientDisconnection(const std::string &content, struct pollfd &fd);
             void _handleClientCommand(const std::string &command, struct pollfd &pfd);
+            void _playerConnect(std::shared_ptr<zappy::game::ITeams> &team, struct pollfd &pfd);
+            void _guiConnect(std::shared_ptr<zappy::game::ITeams> &team);
+            void _initialCommandGui(std::shared_ptr<zappy::game::TeamsGui> &teamsGui);
+
         };
 
     }  // namespace server

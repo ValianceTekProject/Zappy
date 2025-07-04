@@ -33,6 +33,7 @@ namespace zappy {
             int addNewEgg(int teamId, int x, int y);
             zappy::game::Egg popEgg();
             void replaceResources();
+            void addReplaceResourceOnTile(int resourceIdx);
 
             std::list<Egg> &getEggList() { return _eggList; }
 

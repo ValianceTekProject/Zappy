@@ -60,7 +60,6 @@ set(SOURCES
 
     ${ERROR_DIR}/Error.cpp
     ${GAME_DIR}/Game.cpp
-    ${GAME_DIR}/Turn.cpp
     ${COMMANDS_DIR}/ClientCommand.cpp
     ${COMMANDS_DIR}/BroadcastCommand.cpp
     ${COMMANDS_DIR}/IncantationCommand.cpp

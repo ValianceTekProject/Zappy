@@ -45,6 +45,8 @@ namespace zappy {
             ~Game() = default;
 
             void runGame();
+            void gameLogic();
+
             void setRunningState(RunningState run) { this->_isRunning = run; };
             RunningState getRunningState() { return _isRunning; };
 
@@ -59,6 +61,8 @@ namespace zappy {
             std::vector<std::shared_ptr<zappy::game::ITeams>> &getTeamList() { return this->_teamList; };
 
             void foodManager(std::shared_ptr<ITeams> &team);
+            void removeFoodOrDiedPlayer(std::shared_ptr<zappy::game::ServerPlayer> &player,
+                std::shared_ptr<zappy::game::TeamsPlayer> itPlayerTeam);
 
             zappy::game::CommandHandler &getCommandHandler() { return _commandHandler; }
             zappy::game::CommandHandlerGui &getCommandHandlerGui() { return _commandHandlerGui; }
@@ -74,9 +78,12 @@ namespace zappy {
             int _clientNb;
             std::atomic<RunningState> _isRunning = RunningState::PAUSE;
 
-            void _playTurn();
             bool _checkAlreadyInTeam(int clientSocket);
             void _addPlayerToTeam(std::shared_ptr<ITeams> team, int clientSocket);
+            std::shared_ptr<zappy::game::ServerPlayer> _changeEggToPlayer(zappy::game::Orientation orientation,
+                std::shared_ptr<zappy::game::ITeams> team, zappy::server::Client &user);
+            void _sendNewPlayerToGui(std::shared_ptr<zappy::game::ServerPlayer> &newPlayer);
+
         };
     }  // namespace game
 }  // namespace zappy
