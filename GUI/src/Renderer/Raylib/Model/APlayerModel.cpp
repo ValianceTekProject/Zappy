@@ -110,5 +110,7 @@ void zappy::gui::raylib::APlayerModel::eject()
 void zappy::gui::raylib::APlayerModel::_initModel(const std::string &modelPath)
 {
     AModel::_initModel(modelPath);
+    std::cout << "                     Loading model animations from " << modelPath << std::endl;
     this->_modelAnimations = LoadModelAnimations(modelPath.c_str(), &this->_animsCount);
+    std::cout << "                     Anims count after load: " << this->_animsCount << std::endl;
 }

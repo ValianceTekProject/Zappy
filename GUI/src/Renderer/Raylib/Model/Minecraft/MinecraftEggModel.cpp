@@ -9,32 +9,25 @@
 
 zappy::gui::raylib::MinecraftEggModel::MinecraftEggModel(const int &id) : AEggModel::AEggModel(id)
 {
-    constexpr float scale = 0.1;
+    constexpr float scale = 0.1f;
     setScale(scale);
 }
 
 void zappy::gui::raylib::MinecraftEggModel::init()
 {
-    constexpr float scale = 0.15f;
-
     AEggModel::init();
 
-    AEggModel::_initModel(assets::POKEMON_EGG_PATH);
+    AEggModel::_initModel(assets::MINECRAFT_EGG_PATH);
 
-    setScale(scale);
+    constexpr int idle = 0;
+    constexpr int open = 2;
 
-    if (_animsCount > 0 && _modelAnimations != nullptr) {
-        std::cout << "Configuring " << _animsCount << " animation(s) for egg model" << std::endl;
+    this->_animationIndexMap[State::IDLE] = idle;
+    this->_animationIndexMap[State::OPEN] = open;
 
-        constexpr int singleAnimation = 0;
+    constexpr float idleSpeed = 7.5f;
+    constexpr float openSpeed = 7.5f;
 
-        this->_animationIndexMap[State::IDLE] = singleAnimation;
-        this->_animationIndexMap[State::OPEN] = singleAnimation;
-
-        constexpr float idleSpeed = 7.5f;
-        constexpr float openSpeed = 15.0f;
-
-        this->_animationFrameSpeedMap[State::IDLE] = idleSpeed;
-        this->_animationFrameSpeedMap[State::OPEN] = openSpeed;
-    }
+    this->_animationFrameSpeedMap[State::IDLE] = idleSpeed;
+    this->_animationFrameSpeedMap[State::OPEN] = openSpeed;
 }

@@ -9,11 +9,11 @@
 
 #include "AScene.hpp"
 
-#include "BulbasaurPlayerModel.hpp"
-#include "FlyingPikachuPlayerModel.hpp"
+#include "AxolotlPlayerModel.hpp"
+#include "BeePlayerModel.hpp"
 
-#include "PokemonEggModel.hpp"
-#include "PokemonResourceModel.hpp"
+#include "MinecraftEggModel.hpp"
+#include "MinecraftResourceModel.hpp"
 
 #include <raylib.h>
 #include <map>
@@ -37,16 +37,14 @@ namespace zappy {
                     void endGame(const std::string &teamName) override;
 
                 private:
-                    // player models constructors
-                    const std::vector<float> _constructorProbabilities = {
-                        0.7f, // Bulbasaur
-                        0.3f, // FlyingPikachu
+                    const std::vector<std::function<std::unique_ptr<APlayerModel>(const int&)>> _playerModelsConstructors = {
+                        [](const int &id) { return std::make_unique<AxolotlPlayerModel>(id); },
+                        [](const int &id) { return std::make_unique<BeePlayerModel>(id); },
                     };
 
-                    const std::map<int, std::function<std::unique_ptr<APlayerModel>(const int&)>> _playerModelsConstructors = {
-                        { 0, [](const int &id) { return std::make_unique<BulbasaurPlayerModel>(id); } },
-                        { 1, [](const int &id) { return std::make_unique<FlyingPikachuPlayerModel>(id); } },
-                    };
+                    size_t _currentModelIndex = 0;
+
+                    std::map<std::string, size_t> _playersModels;
             };
         } // namespace raylib
     } // namespace gui

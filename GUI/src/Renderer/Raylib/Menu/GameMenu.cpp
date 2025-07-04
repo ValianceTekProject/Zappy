@@ -104,7 +104,7 @@ void zappy::gui::raylib::GameMenu::addPlayer(const int &id)
         this->_numberPlayerDisplayed = 1;
     }
 
-    Texture2D icon = LoadTexture("Assets/grass.jpg");
+    Texture2D icon;
 
     MenuPlayerInfo playerInfo(id, true, icon);
 

@@ -13,6 +13,7 @@
 
 #include "BasicScene.hpp"
 #include "PokemonScene.hpp"
+#include "MinecraftScene.hpp"
 
 namespace zappy {
     namespace gui {

@@ -18,7 +18,7 @@ namespace zappy {
                 // Basic Scene assets
                 inline std::string BASIC_SCENE_PATH = std::string(ASSETS_PATH) + "Basic/";
 
-                inline std::string BASIC_FLOOR_PATH = std::string(BASIC_SCENE_PATH) + "floor.jpg";
+                inline std::string BASIC_FLOOR_PATH = BASIC_SCENE_PATH + "floor.jpg";
 
                 inline std::string BASIC_PLAYER_PATH = BASIC_SCENE_PATH + "player.glb";
 
@@ -48,7 +48,7 @@ namespace zappy {
                 // Pokemon Scene assets
                 inline std::string POKEMON_SCENE_PATH = std::string(ASSETS_PATH) + "Pokemon/";
 
-                inline std::string POKEMON_FLOOR_PATH = std::string(POKEMON_SCENE_PATH) + "floor.png";
+                inline std::string POKEMON_FLOOR_PATH = POKEMON_SCENE_PATH + "floor.png";
 
                 inline std::string POKEMON_FLYING_PIKACHU_PATH = POKEMON_SCENE_PATH + "flyingPikachu.glb";
                 inline std::string POKEMON_BULBASAUR_PATH = POKEMON_SCENE_PATH + "Bulbasaur/";
@@ -59,7 +59,7 @@ namespace zappy {
                 inline std::string POKEMON_EGG_PATH = POKEMON_SCENE_PATH + "egg.glb";
 
                 // Pokemon Scene resources assets
-                inline std::string POKEMON_SCENE_RESOURCES_PATH = std::string(POKEMON_SCENE_PATH) + "Resources/";
+                inline std::string POKEMON_SCENE_RESOURCES_PATH = POKEMON_SCENE_PATH + "Resources/";
 
                 inline std::string POKEMON_FOOD_PATH = POKEMON_SCENE_RESOURCES_PATH + "food.glb";
                 inline std::string POKEMON_LINEMATE_PATH = POKEMON_SCENE_RESOURCES_PATH + "linemate.glb";
@@ -73,15 +73,15 @@ namespace zappy {
                 // Minecraft Scene assets
                 inline std::string MINECRAFT_SCENE_PATH = std::string(ASSETS_PATH) + "Minecraft/";
 
-                inline std::string MINECRAFT_FLOOR_PATH = std::string(MINECRAFT_SCENE_PATH) + "floor.png";
+                inline std::string MINECRAFT_FLOOR_PATH = MINECRAFT_SCENE_PATH + "floor.png";
 
-                inline std::string MINECRAFT_AXOLOTL_MODEL = "axolotl.glb";
-                inline std::string MINECRAFT_BEE_MODEL = "bee.glb";
+                inline std::string MINECRAFT_AXOLOTL_MODEL = MINECRAFT_SCENE_PATH + "r2-d2_minecraft.glb";
+                inline std::string MINECRAFT_BEE_MODEL = MINECRAFT_SCENE_PATH + "bee.glb";
 
                 inline std::string MINECRAFT_EGG_PATH = MINECRAFT_SCENE_PATH + "egg.glb";
 
                 // Minecraft Scene resources assets
-                inline std::string MINECRAFT_SCENE_RESOURCES_PATH = std::string(MINECRAFT_SCENE_PATH) + "Resources/";
+                inline std::string MINECRAFT_SCENE_RESOURCES_PATH = MINECRAFT_SCENE_PATH + "Resources/";
 
                 inline std::string MINECRAFT_FOOD_PATH = MINECRAFT_SCENE_RESOURCES_PATH + "food.glb";
                 inline std::string MINECRAFT_LINEMATE_PATH = MINECRAFT_SCENE_RESOURCES_PATH + "linemate.glb";

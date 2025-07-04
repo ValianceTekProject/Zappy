@@ -42,6 +42,7 @@ set(RAYLIB_GLOBEFLOOR_DIR ${RAYLIB_FLOOR_DIR}/GlobeFloor)
 set(RAYLIB_MODEL_DIR ${RAYLIB_DIR}/Model)
 set(RAYLIB_MODEL_BASIC_DIR ${RAYLIB_MODEL_DIR}/Basic)
 set(RAYLIB_MODEL_POKEMON_DIR ${RAYLIB_MODEL_DIR}/Pokemon)
+set(RAYLIB_MODEL_MINECRAFT_DIR ${RAYLIB_MODEL_DIR}/Minecraft)
 
 set(DATA_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../Data)
 set(DATA_ERRORS_DIR ${DATA_DIR}/Errors)
@@ -79,6 +80,7 @@ include_directories(
     ${RAYLIB_MODEL_DIR}
     ${RAYLIB_MODEL_BASIC_DIR}
     ${RAYLIB_MODEL_POKEMON_DIR}
+    ${RAYLIB_MODEL_MINECRAFT_DIR}
 )
 
 # === Fichiers sources ===
@@ -149,6 +151,12 @@ set(SOURCES
     ${RAYLIB_MODEL_POKEMON_DIR}/FlyingPikachuPlayerModel.cpp
     ${RAYLIB_MODEL_POKEMON_DIR}/PokemonEggModel.cpp
     ${RAYLIB_MODEL_POKEMON_DIR}/PokemonResourceModel.cpp
+
+    ${RAYLIB_SCENE_DIR}/MinecraftScene.cpp
+    ${RAYLIB_MODEL_MINECRAFT_DIR}/AxolotlPlayerModel.cpp
+    ${RAYLIB_MODEL_MINECRAFT_DIR}/BeePlayerModel.cpp
+    ${RAYLIB_MODEL_MINECRAFT_DIR}/MinecraftEggModel.cpp
+    ${RAYLIB_MODEL_MINECRAFT_DIR}/MinecraftResourceModel.cpp
 )
 
 # === Exécutable principal ===

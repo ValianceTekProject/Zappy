@@ -12,7 +12,7 @@ zappy::gui::RaylibRenderer::RaylibRenderer() :
     _scene(nullptr),
     _inputManager()
 {
-    SetTraceLogLevel(LOG_NONE);
+    // SetTraceLogLevel(LOG_NONE);
 }
 
 void zappy::gui::RaylibRenderer::init()
@@ -22,11 +22,17 @@ void zappy::gui::RaylibRenderer::init()
     SetTargetFPS(60);
     DisableCursor();
 
-    this->_scene = std::make_unique<raylib::BasicScene>(this->_gameState);
+    this->_scene = std::make_unique<raylib::MinecraftScene>(this->_gameState);
     this->_scene->init();
 
     this->_gameMenu = std::make_unique<raylib::GameMenu>(this->_gameState);
     this->_gameMenu->init();
+
+    for (int i = 0; i < 3; ++i) {
+        game::Player player(i, i, 0);
+        player.teamName = "Team " + std::to_string(i % 2);
+        this->addPlayer(player);
+    }
 }
 
 void zappy::gui::RaylibRenderer::setFrequency(const size_t &frequency)
