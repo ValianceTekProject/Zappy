@@ -45,22 +45,7 @@ void zappy::gui::raylib::PokemonScene::addEgg(const int &id)
 
 void zappy::gui::raylib::PokemonScene::addPlayer(const int &id)
 {
-    float r = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
-
-    float cumulated = 0.0f;
-    size_t modelIndex = 0;
-    for (size_t i = 0; i < _constructorProbabilities.size(); ++i) {
-        cumulated += _constructorProbabilities[i];
-        if (r < cumulated) {
-            modelIndex = i;
-            break;
-        }
-    }
-
-    if (modelIndex >= _constructorProbabilities.size())
-        modelIndex = 0;
-
-    auto player = _playerModelsConstructors.at(0)(id);
+    auto player = std::make_unique<BulbasaurPlayerModel>(id);
 
     _mapRenderer->addPlayer(std::move(player));
 

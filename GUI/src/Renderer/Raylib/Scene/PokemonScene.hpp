@@ -8,7 +8,6 @@
 #include "AScene.hpp"
 
 #include "BulbasaurPlayerModel.hpp"
-#include "FlyingPikachuPlayerModel.hpp"
 
 #include "PokemonEggModel.hpp"
 #include "PokemonResourceModel.hpp"
@@ -35,16 +34,6 @@ namespace zappy {
                     void endGame(const std::string &teamName) override;
 
                 private:
-                    // player models constructors
-                    const std::vector<float> _constructorProbabilities = {
-                        0.7f, // Bulbasaur
-                        0.3f, // FlyingPikachu
-                    };
-
-                    const std::map<int, std::function<std::unique_ptr<APlayerModel>(const int&)>> _playerModelsConstructors = {
-                        { 0, [](const int &id) { return std::make_unique<BulbasaurPlayerModel>(id); } },
-                        { 1, [](const int &id) { return std::make_unique<FlyingPikachuPlayerModel>(id); } },
-                    };
             };
         } // namespace raylib
     } // namespace gui

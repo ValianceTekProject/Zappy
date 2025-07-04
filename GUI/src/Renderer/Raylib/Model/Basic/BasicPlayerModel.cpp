@@ -13,7 +13,7 @@
 zappy::gui::raylib::BasicPlayerModel::BasicPlayerModel(const int &id) :
     APlayerModel::APlayerModel(id)
 {
-    constexpr float scale = 0.15;
+    constexpr float scale = 0.15f;
     constexpr Vector3 headOrigin = {0, 1.5, 0};
 
     this->setScale(scale);

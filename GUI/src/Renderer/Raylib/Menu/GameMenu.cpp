@@ -99,16 +99,12 @@ void zappy::gui::raylib::GameMenu::render() const
 
 void zappy::gui::raylib::GameMenu::addPlayer(const int &id)
 {
-    if (this->_playersInfos.empty()) {
+    if (this->_playersIds.empty()) {
         this->_displayedPlayersIndex = 0;
         this->_numberPlayerDisplayed = 1;
     }
 
-    Texture2D icon = LoadTexture("Assets/grass.jpg");
-
-    MenuPlayerInfo playerInfo(id, true, icon);
-
-    this->_playersInfos.push_back(playerInfo);
+    this->_playersIds.push_back(id);
 }
 
 void zappy::gui::raylib::GameMenu::playerBroadcast(
@@ -126,39 +122,20 @@ void zappy::gui::raylib::GameMenu::playerBroadcast(
 
 void zappy::gui::raylib::GameMenu::removePlayer(const int &id)
 {
-    for (auto it = this->_playersInfos.begin(); it != this->_playersInfos.end(); ++it) {
-        if (it->id == id) {
-            this->_playersInfos.erase(it);
+    for (auto it = this->_playersIds.begin(); it != this->_playersIds.end(); ++it) {
+        if ((*it) == id) {
+            this->_playersIds.erase(it);
             break;
         }
     }
 
-    if (this->_displayedPlayersIndex >= static_cast<int>(_playersInfos.size()))
-        this->_displayedPlayersIndex = this->_displayedPlayersIndex % static_cast<int>(_playersInfos.size());
+    if (this->_displayedPlayersIndex >= static_cast<int>(_playersIds.size()))
+        this->_displayedPlayersIndex = this->_displayedPlayersIndex % static_cast<int>(_playersIds.size());
 
-    if (this->_playersInfos.empty()) {
+    if (this->_playersIds.empty()) {
         this->_displayedPlayersIndex = -1;
         this->_numberPlayerDisplayed = 0;
     }
-}
-
-zappy::gui::raylib::MenuPlayerInfo &zappy::gui::raylib::GameMenu::_getPlayerInfo(const int &id)
-{
-    for (auto &playerInfo : this->_playersInfos) {
-        if (playerInfo.id == id)
-            return playerInfo;
-    }
-    throw RendererError("Player" + std::to_string(id) + " Infos not found", "GameMenu::_getPlayerInfo");
-}
-
-const zappy::gui::raylib::MenuPlayerInfo &zappy::gui::raylib::GameMenu::_getPlayerInfo(const int &id) const
-{
-    for (const auto &playerInfo : this->_playersInfos) {
-        std::cout << "MenuPlayerInfo.id: " << playerInfo.id << std::endl;
-        if (playerInfo.id == id)
-            return playerInfo;
-    }
-    throw RendererError("Player" + std::to_string(id) + " Infos not found", "GameMenu::_getPlayerInfo");
 }
 
 std::string zappy::gui::raylib::GameMenu::_decryptBroadcast(
@@ -196,7 +173,7 @@ void zappy::gui::raylib::GameMenu::_handleFreqInput(const InputManager &inputMan
 
 void zappy::gui::raylib::GameMenu::_handlePlayersInput(const InputManager &inputManager)
 {
-    if (this->_playersInfos.size() == 0)
+    if (this->_playersIds.size() == 0)
         return;
 
     if (inputManager.isKeyPressed(KEY_UP)) {
@@ -210,13 +187,13 @@ void zappy::gui::raylib::GameMenu::_handlePlayersInput(const InputManager &input
     } else if (inputManager.isKeyPressed(KEY_LEFT)) {
         this->_displayedPlayersIndex -= this->_numberPlayerDisplayed;
         if (this->_displayedPlayersIndex < 0) {
-            this->_displayedPlayersIndex = this->_numberPlayerDisplayed * (this->_playersInfos.size() / this->_numberPlayerDisplayed);
-            if (this->_displayedPlayersIndex == static_cast<int>(this->_playersInfos.size()))
+            this->_displayedPlayersIndex = this->_numberPlayerDisplayed * (this->_playersIds.size() / this->_numberPlayerDisplayed);
+            if (this->_displayedPlayersIndex == static_cast<int>(this->_playersIds.size()))
                 this->_displayedPlayersIndex -= this->_numberPlayerDisplayed - 1;
         }
     } else if (inputManager.isKeyPressed(KEY_RIGHT)) {
         this->_displayedPlayersIndex += this->_numberPlayerDisplayed;
-        if (this->_displayedPlayersIndex >= static_cast<int>(this->_playersInfos.size()))
+        if (this->_displayedPlayersIndex >= static_cast<int>(this->_playersIds.size()))
             this->_displayedPlayersIndex = 0;
     }
 }
@@ -358,7 +335,7 @@ void zappy::gui::raylib::GameMenu::_renderPlayersInfos(const int &screenWidth, c
         return;
     }
 
-    int available = static_cast<int>(_playersInfos.size()) - _displayedPlayersIndex;
+    int available = static_cast<int>(_playersIds.size()) - _displayedPlayersIndex;
     int toDraw = std::min(_numberPlayerDisplayed, available);
 
     const int columns = 2;
@@ -372,7 +349,7 @@ void zappy::gui::raylib::GameMenu::_renderPlayersInfos(const int &screenWidth, c
         int y = paddingY + row * (boxHeight + spacingY);
 
         _renderPlayerInfo(
-            _playersInfos[dataIdx],
+            _playersIds[dataIdx],
             x, y,
             textSize,
             spacingY,
@@ -383,14 +360,14 @@ void zappy::gui::raylib::GameMenu::_renderPlayersInfos(const int &screenWidth, c
 }
 
 void zappy::gui::raylib::GameMenu::_renderPlayerInfo(
-    const MenuPlayerInfo &playerInfo,
+    const int &playerId,
     const int &screenWidth, const int &y,
     const int &textSize,
     const int &spacingY,
     const int &boxWidth,
     const int &boxHeight
 ) const {
-    const auto &player = this->_gameState->getPlayerById(playerInfo.id);
+    const auto &player = this->_gameState->getPlayerById(playerId);
     const auto &inv = player.getInventory();
 
     const int boxX = screenWidth - boxWidth;
@@ -413,7 +390,7 @@ void zappy::gui::raylib::GameMenu::_renderPlayerInfo(
         currentY += textSize + spacingY;
     };
 
-    drawCentered("ID: " + std::to_string(playerInfo.id));
+    drawCentered("ID: " + std::to_string(playerId));
     drawCentered("Team: " + player.teamName);
     drawCentered("Level: " + std::to_string(player.level));
     drawCentered("Position: " + std::to_string(player.x) + ", " + std::to_string(player.y));

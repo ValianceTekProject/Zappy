@@ -39,9 +39,13 @@ zappy::gui::raylib::PauseMenu::PauseMenu::~PauseMenu()
 
 void zappy::gui::raylib::PauseMenu::PauseMenu::init()
 {
-    this->_boxColor = {0, 0, 0, 180};
-    this->_selectedColor = {100, 100, 100, 200};
-    this->_normalColor = {50, 50, 50, 150};
+    constexpr Color boxColor = {0, 0, 0, 180};
+    constexpr Color selectedColor = {100, 100, 100, 200};
+    constexpr Color normalColor = {50, 50, 50, 150};
+
+    this->_boxColor = boxColor;
+    this->_selectedColor = selectedColor;
+    this->_normalColor = normalColor;
 
     this->_themes = {
         {THEME_CLASSIC, LoadTexture(assets::BASIC_THEME_IMAGE_PATH.c_str())},
@@ -131,9 +135,9 @@ void zappy::gui::raylib::PauseMenu::PauseMenu::render() const
 void zappy::gui::raylib::PauseMenu::PauseMenu::_renderPauseMenu(float scale, int x, int y, int w, int h) const
 {
     const int titleFontSize = static_cast<int>(40 * scale);
-    const int buttonWidth = static_cast<int>(300 * scale);     // élargi
-    const int buttonHeight = static_cast<int>(70 * scale);     // plus haut
-    const int buttonSpacing = static_cast<int>(30 * scale);    // plus espacé
+    const int buttonWidth = static_cast<int>(300 * scale);
+    const int buttonHeight = static_cast<int>(70 * scale);
+    const int buttonSpacing = static_cast<int>(30 * scale);
     const int buttonX = x + (w - buttonWidth) / 2;
 
     const std::vector<std::string> labels = {LABEL_RESUME, LABEL_CHANGE_THEME, LABEL_LEAVE};
@@ -142,11 +146,13 @@ void zappy::gui::raylib::PauseMenu::PauseMenu::_renderPauseMenu(float scale, int
 
     const int startY = y + (h - totalButtonsHeight) / 2;
 
-    DrawText(LABEL_PAUSE,
-             x + (w - MeasureText(LABEL_PAUSE, titleFontSize)) / 2,
-             y + static_cast<int>(30 * scale),
-             titleFontSize,
-             WHITE);
+    DrawText(
+        LABEL_PAUSE,
+        x + (w - MeasureText(LABEL_PAUSE, titleFontSize)) / 2,
+        y + static_cast<int>(30 * scale),
+        titleFontSize,
+        WHITE
+    );
 
     for (int i = 0; i < static_cast<int>(labels.size()); ++i) {
         int btnY = startY + i * (buttonHeight + buttonSpacing);
@@ -155,15 +161,17 @@ void zappy::gui::raylib::PauseMenu::PauseMenu::_renderPauseMenu(float scale, int
         DrawRectangle(buttonX, btnY, buttonWidth, buttonHeight, color);
         DrawRectangleLines(buttonX, btnY, buttonWidth, buttonHeight, WHITE);
 
-        int textSize = static_cast<int>(buttonHeight * 0.5f); // texte plus grand
+        int textSize = static_cast<int>(buttonHeight * 0.5f);
         while (MeasureText(labels[i].c_str(), textSize) > buttonWidth - 20 && textSize > 5)
             textSize--;
 
-        DrawText(labels[i].c_str(),
-                 buttonX + (buttonWidth - MeasureText(labels[i].c_str(), textSize)) / 2,
-                 btnY + (buttonHeight - textSize) / 2,
-                 textSize,
-                 WHITE);
+        DrawText(
+            labels[i].c_str(),
+            buttonX + (buttonWidth - MeasureText(labels[i].c_str(), textSize)) / 2,
+            btnY + (buttonHeight - textSize) / 2,
+            textSize,
+            WHITE
+        );
     }
 }
 

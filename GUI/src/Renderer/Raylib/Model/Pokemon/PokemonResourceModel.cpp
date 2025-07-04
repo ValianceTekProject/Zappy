@@ -47,7 +47,8 @@ void zappy::gui::raylib::PokemonResourceModel::init()
 
     AResourceModel::_initModel(modelIt->second);
 
-    if (_scale <= 0.0f) _scale = 1.0f;
+    if (_scale <= 0.0f)
+        _scale = 1.0f;
 
     auto scaleIt = resourceScales.find(_resourceType);
     if (scaleIt != resourceScales.end()) {

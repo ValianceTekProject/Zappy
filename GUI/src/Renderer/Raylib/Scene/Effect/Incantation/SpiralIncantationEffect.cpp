@@ -30,6 +30,7 @@ void zappy::gui::raylib::SpiralIncantationEffect::_renderSpiralParticles(const V
 {
     constexpr int numParticles = 200;
     constexpr float particleSize = 0.025f;
+
     for (int i = 0; i < numParticles; i++) {
         float particleProgress = fmod(progress + i / (float)numParticles, 1.0f);
         float angle = particleProgress * 4 * PI + i * PI / 6;

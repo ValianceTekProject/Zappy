@@ -7,9 +7,11 @@
 
 #include "Gui.hpp"
 
+constexpr char *defaultIp = "127.0.0.1";
+
 zappy::gui::Gui::Gui() :
     _debug(false),
-    _ip("127.0.0.1"),
+    _ip(defaultIp),
     _port(4242),
     _protocol(nullptr),
     _gameState(nullptr),
@@ -18,10 +20,10 @@ zappy::gui::Gui::Gui() :
 
 void zappy::gui::Gui::parseArgs(int argc, char const *argv[])
 {
-    if (argc < 2)
+    if (argc < 3)
         throw ParsingError("Not enough arguments\n\tUsage: ./zappy_gui -p port -h host", "Parsing");
 
-    if (argc == 2 && std::string(argv[1]) == "-help") {
+    if (argc == 2 && (std::string(argv[1]) == "--help" || std::string(argv[1]) == "-h")) {
         std::cout << "Usage: ./zappy_gui -p port -h host" << std::endl;
         exit(0);
     }
@@ -49,12 +51,10 @@ void zappy::gui::Gui::parseArgs(int argc, char const *argv[])
             throw ParsingError("Unknown option: " + arg, "Parsing");
     }
 
-    if (_ip.empty()) {
+    if (_ip.empty())
         throw ParsingError("Host (-h) not specified", "Parsing");
-    }
-    if (_port <= 0 || _port > 65535) {
+    if (_port <= 0 || _port > 65535)
         throw ParsingError("Port out of range: " + std::to_string(_port), "Parsing");
-    }
 
     if (!raylib && _debug) {
         _renderer = std::make_shared<DebugRenderer>();
