@@ -31,17 +31,17 @@ void zappy::gui::raylib::GameMenu::init()
     this->_modifiedSectionHandlers[MenuModifiedSection::FREQ] = &GameMenu::_handleFreqInput;
     this->_modifiedSectionHandlers[MenuModifiedSection::PLAYERS] = &GameMenu::_handlePlayersInput;
 
-    this->_menuStatesKeys[MenuState::HELP] = KEY_H;
-    this->_menuStates[MenuState::HELP] = false;
-    this->_menuRenderFunctions[MenuState::HELP] = &GameMenu::_renderHelp;
+    this->_menuStatesKeys[GameMenuState::HELP] = KEY_H;
+    this->_menuStates[GameMenuState::HELP] = false;
+    this->_menuRenderFunctions[GameMenuState::HELP] = &GameMenu::_renderHelp;
 
-    this->_menuStatesKeys[MenuState::BROADCASTS] = KEY_B;
-    this->_menuStates[MenuState::BROADCASTS] = false;
-    this->_menuRenderFunctions[MenuState::BROADCASTS] = &GameMenu::_renderBroadcasts;
+    this->_menuStatesKeys[GameMenuState::BROADCASTS] = KEY_B;
+    this->_menuStates[GameMenuState::BROADCASTS] = false;
+    this->_menuRenderFunctions[GameMenuState::BROADCASTS] = &GameMenu::_renderBroadcasts;
 
-    this->_menuStatesKeys[MenuState::PLAYERS] = KEY_P;
-    this->_menuStates[MenuState::PLAYERS] = false;
-    this->_menuRenderFunctions[MenuState::PLAYERS] = &GameMenu::_renderPlayersInfos;
+    this->_menuStatesKeys[GameMenuState::PLAYERS] = KEY_P;
+    this->_menuStates[GameMenuState::PLAYERS] = false;
+    this->_menuRenderFunctions[GameMenuState::PLAYERS] = &GameMenu::_renderPlayersInfos;
 }
 
 bool zappy::gui::raylib::GameMenu::hasFrequencyChanged()

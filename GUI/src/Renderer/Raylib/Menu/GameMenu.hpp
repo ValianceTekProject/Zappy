@@ -93,9 +93,9 @@ namespace zappy {
                     std::map<MenuModifiedSection, void (GameMenu::*)(const InputManager&)> _modifiedSectionHandlers;
 
                     bool _displayAll;
-                    std::map<MenuState, int> _menuStatesKeys;
-                    std::map<MenuState, bool> _menuStates;
-                    std::map<MenuState, void (GameMenu::*)(const int&, const int&) const> _menuRenderFunctions;
+                    std::map<GameMenuState, int> _menuStatesKeys;
+                    std::map<GameMenuState, bool> _menuStates;
+                    std::map<GameMenuState, void (GameMenu::*)(const int&, const int&) const> _menuRenderFunctions;
 
                     const std::map<int, int> _frequencyKeyModifiers = {
                         { KEY_UP, 1 },

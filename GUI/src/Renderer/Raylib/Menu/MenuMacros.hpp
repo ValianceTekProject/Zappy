@@ -32,10 +32,15 @@ namespace zappy {
                 NONE,
             };
 
-            enum class MenuState {
+            enum class GameMenuState {
                 HELP,
                 BROADCASTS,
                 PLAYERS,
+            };
+
+            enum class PauseMenuState {
+                MAIN_MENU,
+                THEME_MENU
             };
 
             enum class MenuModifiedSection {
