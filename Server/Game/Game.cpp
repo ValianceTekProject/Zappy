@@ -66,22 +66,22 @@ void zappy::game::Game::_addPlayerToTeam(
 
 bool zappy::game::Game::checkWin()
 {
-    // Changer 2 par 6 et 3 par 8
-    constexpr int nbPlayerWinLevel = 2;
+    constexpr int nbPlayerWinLevel = 6;
+    constexpr int winLevel = 8;
 
     for (auto &team : this->getTeamList()) {
-        if (team->getName() != "GRAPHIC") {
-            int nbMaxLevel = 0;
-            for (auto &player : team->getPlayerList()) {
-                if (player->level >= 3)
-                    nbMaxLevel += 1;
-            }
-            if (nbMaxLevel >= nbPlayerWinLevel) {
-                this->getCommandHandler().messageToGUI("seg " +
-                    team->getName() + "\n");
-                std::cout << "WIN !!!!!!!!!" << std::endl;
-                return true;
-            }
+        if (team->getName() == "GRAPHIC")
+            continue;
+        int nbMaxLevel = 0;
+        for (auto &player : team->getPlayerList()) {
+            if (player->level >= winLevel)
+                nbMaxLevel += 1;
+        }
+        if (nbMaxLevel >= nbPlayerWinLevel) {
+            this->getCommandHandler().messageToGUI("seg " +
+                team->getName() + "\n");
+            std::cout << "Team " << team->getName() << " has won !" << std::endl;
+            return true;
         }
     }
     return false;

@@ -61,6 +61,8 @@ void zappy::server::Server::runLoop()
     while (this->_serverRun == RunningState::RUN) {
         this->_socket->getData(this->_fds);
 
+        if (this->_game->getRunningState() == RunningState::STOP)
+            this->setRunningState(RunningState::STOP);
         for (size_t i = 0; i < this->_fds.size(); i += 1) {
             auto &pfd = this->_fds[i];
             if (pfd.revents & POLLIN) {

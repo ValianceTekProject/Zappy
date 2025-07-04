@@ -131,5 +131,5 @@ void zappy::server::Server::runServer()
     std::thread gameThread(&game::Game::runGame, this->_game.get());
 
     networkThread.join();
-    gameThread.join();
+    gameThread.join();  
 }

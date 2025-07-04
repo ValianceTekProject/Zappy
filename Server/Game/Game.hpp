@@ -46,6 +46,7 @@ namespace zappy {
 
             void runGame();
             void setRunningState(RunningState run) { this->_isRunning = run; };
+            RunningState getRunningState() { return _isRunning; };
 
             bool handleTeamJoin(int clientSocket, const std::string &teamName);
             void removeFromTeam(int clientSocket);
