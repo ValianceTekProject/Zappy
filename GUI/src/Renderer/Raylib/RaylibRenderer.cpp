@@ -22,7 +22,7 @@ void zappy::gui::RaylibRenderer::init()
 {
     InitWindow(1280, 720, "Zappy");
     SetExitKey(KEY_NULL);
-    // ToggleFullscreen();
+    ToggleFullscreen();
     SetTargetFPS(60);
     DisableCursor();
 

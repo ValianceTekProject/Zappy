@@ -13,7 +13,7 @@
 #include "PauseMenu.hpp"
 
 #include "BasicScene.hpp"
-#include "Menu/PauseMenu.hpp"
+#include "PauseMenu.hpp"
 #include "PokemonScene.hpp"
 
 #include <array>
