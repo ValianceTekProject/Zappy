@@ -81,18 +81,5 @@ void zappy::server::Server::runLoop()
         if (this->_game->getRunningState() == RunningState::STOP)
             this->setRunningState(RunningState::STOP);
         this->pfdLoop();
-        // for (size_t i = 0; i < this->_fds.size(); i += 1) {
-        //     auto &pfd = this->_fds[i];
-        //     if (pfd.revents & POLLIN) {
-        //         if (this->_handleNewConnection(pfd) == true)
-        //             continue;
-        //         auto content = this->_getClientCommand(pfd);
-        //         if (this->_handleClientDisconnection(content, pfd) ==
-        //             ClientState::DISCONNECTED) {
-        //             break;
-        //         }
-        //         this->_handleClientCommand(content, pfd);
-        //     }
-        // }
     }
 }
