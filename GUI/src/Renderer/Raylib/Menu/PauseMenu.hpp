@@ -56,8 +56,9 @@ namespace zappy {
                     PauseMenuState _menuState;
                     std::vector<Theme> _themes;
 
-                    void _renderPauseMenu(float scaleX, float scaleY, int menuX, int menuY, int menuWidth, int menuHeight) const;
-                    void _renderThemeMenu(float scaleX, float scaleY, int menuX, int menuY, int menuWidth, int menuHeight) const;
+                    float _getUniformScale() const;
+                    void _renderPauseMenu(float scale, int x, int y, int w, int h) const;
+                    void _renderThemeMenu(float scale, int x, int y, int w, int h) const;
                     void _renderTheme(const Theme& theme, int x, int y, int width, int height, bool selected) const;
             };
         }
