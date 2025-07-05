@@ -55,20 +55,37 @@ bool zappy::server::Server::_handleNewConnection(struct pollfd &pfd)
 
 void zappy::server::Server::pfdLoop()
 {
-    for (size_t i = 0; i < this->_fds.size(); i += 1) {
+    for (size_t i = 0; i < this->_fds.size();) {
         auto &pfd = this->_fds[i];
+
         if (pfd.revents & POLLIN) {
-            if (this->_handleNewConnection(pfd) == true)
+            try {
+                if (this->_handleNewConnection(pfd)) {
+                    ++i;
+                    continue;
+                }
+                auto content = this->_getClientCommand(pfd);
+
+                if (this->_handleClientDisconnection(content, pfd) ==
+                    ClientState::DISCONNECTED) {
+                    this->_fds.erase(this->_fds.begin() + i);
+                    continue;
+                }
+
+                this->_handleClientCommand(content, pfd);
+
+            } catch (const zappy::error::SocketError &e) {
+                close(pfd.fd);
+                this->_game->removeFromTeam(pfd.fd);
+                this->_fds.erase(this->_fds.begin() + i);
                 continue;
-            auto content = this->_getClientCommand(pfd);
-            if (this->_handleClientDisconnection(content, pfd) ==
-                ClientState::DISCONNECTED) {
-                break;
             }
-            this->_handleClientCommand(content, pfd);
         }
+
+        ++i;
     }
 }
+
 
 void zappy::server::Server::runLoop()
 {
