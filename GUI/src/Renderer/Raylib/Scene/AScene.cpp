@@ -9,6 +9,7 @@
 
 zappy::gui::raylib::AScene::AScene(const std::shared_ptr<game::GameState> &gameState) :
     _camera(Camera()),
+    _music(),
     _gameState(gameState),
     _skybox(),
     _mapRenderer(std::make_unique<MapRenderer>(this->_gameState->getMap()))
@@ -26,16 +27,23 @@ void zappy::gui::raylib::AScene::init()
     this->_camera.up = up;
     this->_camera.fovy = fovy;
     this->_camera.projection = CAMERA_PERSPECTIVE;
+
+    // Init la musique
+    InitAudioDevice();
+    SetMasterVolume(0.5f);
 }
 
 void zappy::gui::raylib::AScene::update()
 {
     this->_mapRenderer->update(this->_gameState->getFrequency());
     this->_skybox.update();
+    this->_music.update();
 }
 
 void zappy::gui::raylib::AScene::render() const
 {
+    this->_music.render();
+
     BeginMode3D(getCamera());
 
     this->_skybox.render();
