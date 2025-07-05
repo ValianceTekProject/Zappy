@@ -107,9 +107,6 @@ void zappy::gui::Gui::run()
     while (running) {
         this->_renderer->handleInput();
 
-        if (this->_renderer->hasFrequencyChanged())
-            this->_protocol->setTimeUnit(this->_renderer->getFrequency());
-
         this->_protocol->update();
         this->_renderer->update();
 

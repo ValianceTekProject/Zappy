@@ -89,6 +89,12 @@ void zappy::gui::RaylibRenderer::update()
 
     this->_gameMenu->update();
 
+    if (this->_gameMenu->hasFrequencyChanged()) {
+        auto it = this->_protocolRequests.find(network::GP::TIME_UNIT_MODIFICATION);
+        if (it != this->_protocolRequests.end())
+            it->second(this->_gameMenu->getFrequency(), 0);
+    }
+
     this->_pauseMenu->update();
 
     if (this->_pauseMenu->shouldChangeScene())

@@ -31,8 +31,6 @@ namespace zappy {
                 virtual void setProtocolRequests(const ProtocolRequest &protocolRequests) = 0;
 
                 virtual void setFrequency(const size_t &frequency) = 0;
-                virtual size_t getFrequency() const = 0;
-                virtual bool hasFrequencyChanged() const = 0;
 
                 virtual void handleInput() = 0;
                 virtual void update() = 0;
