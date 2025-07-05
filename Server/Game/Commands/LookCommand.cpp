@@ -73,6 +73,10 @@ std::string zappy::game::CommandHandler::_getTileContent(
     auto &tile = this->_map.getTile(x, y);
     bool hasContent = false;
 
+    auto playerList = this->_getPlayerOnTile(x, y);
+    for (auto it: playerList) {
+        content += " player";
+    }
     for (const auto &resourceName : names) {
         zappy::game::Resource resource = getResource(resourceName);
         size_t quantity = tile.getResourceQuantity(resource);
@@ -124,7 +128,7 @@ std::string zappy::game::CommandHandler::_lookLine(
 std::string zappy::game::CommandHandler::_buildLookMessage(
     zappy::game::ServerPlayer &player)
 {
-    std::string msg = "[player";
+    std::string msg = "[";
     size_t playerLevel = player.level;
 
     for (size_t line = 0; line <= playerLevel; line += 1) {
@@ -143,4 +147,5 @@ void zappy::game::CommandHandler::handleLook(zappy::game::ServerPlayer &player)
 
     player.setInAction(false);
     player.getClient().sendMessage(msg);
+    std::cout << msg << std::endl;
 }

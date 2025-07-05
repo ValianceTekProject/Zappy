@@ -7,25 +7,25 @@
 
 #pragma once
 
+#include "GameError.hpp"
 #include "GuiCommand.hpp"
 #include "ITeams.hpp"
-#include "ServerMap.hpp"
-#include "ServerPlayer.hpp"
-#include "GameError.hpp"
+#include "Orientation.hpp"
 #include "Player.hpp"
 #include "Resource.hpp"
+#include "ServerMap.hpp"
+#include "ServerPlayer.hpp"
 
+#include <algorithm>
+#include <chrono>
 #include <functional>
 #include <iostream>
 #include <map>
-#include <string>
-#include <algorithm>
-#include <chrono>
 #include <memory>
 #include <mutex>
+#include <string>
 #include <thread>
 #include <unistd.h>
-
 
 namespace zappy {
     namespace game {
@@ -128,10 +128,7 @@ namespace zappy {
             void handleConnectNbr(zappy::game::ServerPlayer &player);
             void handleFork(zappy::game::ServerPlayer &player);
 
-            void handleEject(zappy::game::ServerPlayer &player)
-            {
-                (void)player;
-            }
+            void handleEject(zappy::game::ServerPlayer &player);
 
             void handleTake(
                 zappy::game::ServerPlayer &player, const std::string &arg);
@@ -149,6 +146,9 @@ namespace zappy {
             void _elevatePlayer(ServerPlayer &player);
             void _setPrayer(zappy::game::ServerPlayer &player);
 
+            std::vector<std::weak_ptr<ServerPlayer>> _getPlayerOnTile(
+                int x, int y);
+            void ejectPlayerForward(ServerPlayer &player, Orientation &orientation);
             void _waitCommand(timeLimit limit);
 
             std::pair<size_t, size_t> _normalizeCoords(size_t x, size_t y);

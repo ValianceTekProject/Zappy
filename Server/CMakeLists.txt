@@ -61,6 +61,7 @@ set(SOURCES
     ${ERROR_DIR}/Error.cpp
     ${GAME_DIR}/Game.cpp
     ${COMMANDS_DIR}/ClientCommand.cpp
+    ${COMMANDS_DIR}/EjectCommand.cpp
     ${COMMANDS_DIR}/BroadcastCommand.cpp
     ${COMMANDS_DIR}/IncantationCommand.cpp
     ${COMMANDS_DIR}/LookCommand.cpp
