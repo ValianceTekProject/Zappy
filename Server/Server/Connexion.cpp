@@ -98,5 +98,6 @@ void zappy::server::Server::runLoop()
         if (this->_game->getRunningState() == RunningState::STOP)
             this->setRunningState(RunningState::STOP);
         this->pfdLoop();
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 }
