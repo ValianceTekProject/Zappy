@@ -14,7 +14,8 @@ zappy::gui::raylib::AEggModel::AEggModel(const int &id) :
     _gamePosition(Vector2{0, 0}),
     _modelAnimations(nullptr),
     _animsCount(0),
-    _animCurrentFrame(0)
+    _animCurrentFrame(0),
+    _frameAccumulator(0.0f)
 {
     this->_animationIndexMap[State::IDLE] = 0;
     this->_animationIndexMap[State::OPEN] = 0;
@@ -41,12 +42,11 @@ void zappy::gui::raylib::AEggModel::update(const float &deltaUnits)
         return;
     }
 
+
     ModelAnimation anim = this->_modelAnimations[currentAnimIndex];
 
-    if (anim.frameCount <= 0) {
-        std::cerr << "Warning: Animation has no frames" << std::endl;
+    if (anim.frameCount <= 0)
         return;
-    }
 
     float speed = this->_animationFrameSpeedMap[this->_state];
 
