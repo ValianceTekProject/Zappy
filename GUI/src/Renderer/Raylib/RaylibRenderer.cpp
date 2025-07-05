@@ -20,7 +20,7 @@ zappy::gui::RaylibRenderer::RaylibRenderer() :
 
 void zappy::gui::RaylibRenderer::init()
 {
-    static constexpr char *title = "Zappy";
+    static constexpr const char *title = "Zappy";
 
     InitWindow(1280, 720, title);
     SetExitKey(KEY_NULL);
@@ -36,10 +36,11 @@ void zappy::gui::RaylibRenderer::init()
     this->_gameMenu = std::make_unique<raylib::GameMenu>(this->_gameState);
     this->_gameMenu->init();
 
-    // game::Player player(0, 2, 6, game::Orientation::SOUTH);
+    // game::Orientation orientation = game::Orientation::SOUTH;
+    // game::Player player(0, 2, 6, orientation);
     // this->addPlayer(player);
 
-    // this->updatePlayerPosition(0, 2, 6, game::Orientation::EAST);
+    // this->updatePlayerPosition(0, 2, 6, game::Orientation::WEST);
     // this->updatePlayerPosition(0, 2, 6, game::Orientation::NORTH);
     // this->updatePlayerPosition(0, 2, 5, game::Orientation::NORTH);
     // this->updatePlayerPosition(0, 2, 4, game::Orientation::NORTH);
@@ -61,6 +62,11 @@ void zappy::gui::RaylibRenderer::setFrequency(const size_t &frequency)
 void zappy::gui::RaylibRenderer::handleInput()
 {
     this->_inputManager.update();
+
+    if (this->_inputManager.isKeyPressed(KEY_BACKSPACE)) {
+        CloseWindow();
+        return;
+    }
 
     this->_scene->handleInput(this->_inputManager);
 
@@ -134,13 +140,11 @@ void zappy::gui::RaylibRenderer::updatePlayerPosition(const int &id,
 
 void zappy::gui::RaylibRenderer::updatePlayerLevel(const int &id, const size_t &level)
 {
-    this->_scene->updatePlayerLevel(id, level);
     ARenderer::updatePlayerLevel(id, level);
 }
 
 void zappy::gui::RaylibRenderer::updatePlayerInventory(const int &id, const game::Inventory &inventory)
 {
-    this->_scene->updatePlayerInventory(id, inventory);
     ARenderer::updatePlayerInventory(id, inventory);
 }
 
@@ -207,7 +211,7 @@ void zappy::gui::RaylibRenderer::_setScene(const raylib::SceneType &sceneType)
     if (this->_scene)
         this->_scene.reset();
 
-        this->_sceneType = sceneType;
+    this->_sceneType = sceneType;
     this->_scene = _scenesConstructors.at(sceneType)(this->_gameState);
     this->_scene->init();
 
@@ -218,10 +222,8 @@ void zappy::gui::RaylibRenderer::_setScene(const raylib::SceneType &sceneType)
 
     const auto &players = this->_gameState->getPlayers();
 
-    for (const auto &player : players) {
+    for (const auto &player : players)
         this->_scene->addPlayer(player.getId());
-        this->_scene->updatePlayerInventory(player.getId(), player.getInventory());
-    }
 }
 
 bool zappy::gui::RaylibRenderer::_checkUnwantedInput() const

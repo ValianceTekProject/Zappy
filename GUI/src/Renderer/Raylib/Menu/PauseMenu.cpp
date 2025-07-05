@@ -63,13 +63,13 @@ void zappy::gui::raylib::PauseMenu::PauseMenu::handleInput(const InputManager &i
     }
 
     if (this->_menuState == PauseMenuState::MAIN_MENU) {
-        if (inputManager.isKeyPressed(KEY_UP))
+        if (inputManager.isKeyReleased(KEY_UP))
             this->_selectedButton = (this->_selectedButton - 1 + 3) % 3;
 
-        if (inputManager.isKeyPressed(KEY_DOWN))
+        if (inputManager.isKeyReleased(KEY_DOWN))
             this->_selectedButton = (this->_selectedButton + 1) % 3;
 
-        if (inputManager.isKeyPressed(KEY_ENTER) || inputManager.isKeyPressed(KEY_SPACE))
+        if (inputManager.isKeyReleased(KEY_ENTER) || inputManager.isKeyReleased(KEY_SPACE))
             switch (this->_selectedButton) {
                 case 0:
                     this->_display = false;
@@ -88,13 +88,13 @@ void zappy::gui::raylib::PauseMenu::PauseMenu::handleInput(const InputManager &i
             this->_display = false;
         }
     } else if (_menuState == PauseMenuState::THEME_MENU) {
-        if (inputManager.isKeyPressed(KEY_LEFT))
+        if (inputManager.isKeyReleased(KEY_LEFT))
             this->_selectedTheme = (this->_selectedTheme - 1 + this->_themes.size()) % this->_themes.size();
 
-        if (inputManager.isKeyPressed(KEY_RIGHT))
+        if (inputManager.isKeyReleased(KEY_RIGHT))
             this->_selectedTheme = (this->_selectedTheme + 1) % this->_themes.size();
 
-        if (inputManager.isKeyPressed(KEY_ENTER)) {
+        if (inputManager.isKeyReleased(KEY_ENTER)) {
             this->_shouldChangeScene = true;
 
             if (this->_themes[this->_selectedTheme].name == THEME_CLASSIC)
@@ -103,7 +103,7 @@ void zappy::gui::raylib::PauseMenu::PauseMenu::handleInput(const InputManager &i
                 this->_sceneType = SceneType::POKEMON;
         }
 
-        if (inputManager.isKeyPressed(this->_key))
+        if (inputManager.getKeyState(this->_key) == InputManager::KeyState::RELEASED)
             this->_menuState = PauseMenuState::MAIN_MENU;
     }
 }

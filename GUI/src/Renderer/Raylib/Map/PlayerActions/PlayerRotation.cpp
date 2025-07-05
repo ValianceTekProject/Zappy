@@ -33,7 +33,4 @@ void zappy::gui::raylib::PlayerRotation::finishAction(const float &deltaUnits, A
 {
     APlayerAction::finishAction(deltaUnits, player);
     player.look(this->_destination);
-
-    // Vector3 rotation = player.getRotation();
-    // std::cout << "Rotation: " << rotation.x << ", " << rotation.y << ", " << rotation.z << std::endl;
 }

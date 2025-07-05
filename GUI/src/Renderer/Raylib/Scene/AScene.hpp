@@ -39,8 +39,6 @@ namespace zappy {
                     virtual void addPlayer(const int &id) override;
 
                     virtual void updatePlayerPosition(const int &id, const int &x, const int &y, const game::Orientation &orientation) override;
-                    virtual void updatePlayerLevel(const int &id, const size_t &level) override;
-                    virtual void updatePlayerInventory(const int &id, const game::Inventory &inventory) override;
 
                     virtual void playerExpulsion(const int &id) override;
 

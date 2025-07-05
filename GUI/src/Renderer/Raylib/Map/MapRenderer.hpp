@@ -58,10 +58,17 @@ namespace zappy {
                     void setPlayerPosition(const int &id, const int &x, const int &y, const game::Orientation &orientation);
 
                     void playerLook(const int &id, const game::Orientation &orientation);
-                    void playerLookLeft(const int &id);
-                    void playerLookRight(const int &id);
+                    void playerLookLeft(const int &id, const game::Orientation &orientation);
+                    void playerLookRight(const int &id, const game::Orientation &orientation);
 
-                    void playerForward(const int &id, const int &x, const int &y);
+                    void playerForward(
+                        const int &id,
+                        const int &x,
+                        const int &y,
+                        const game::Orientation &orientation,
+                        const int &mapWidth,
+                        const int &mapHeight
+                    );
                     void playerExpulsion(const int &id, const int &x, const int &y);
 
                     void playerBroadcast(const int &id);
@@ -71,6 +78,9 @@ namespace zappy {
 
                     void removePlayer(const int &id);
                     void removeEgg(const int &id);
+
+                    void removeAllTranslations(const int &id);
+                    void removeAllRotations(const int &id);
 
                     private:
                     APlayerModel &_getPlayer(const int &id);

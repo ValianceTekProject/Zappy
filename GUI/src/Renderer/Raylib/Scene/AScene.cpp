@@ -18,7 +18,7 @@ zappy::gui::raylib::AScene::AScene(const std::shared_ptr<game::GameState> &gameS
 void zappy::gui::raylib::AScene::init()
 {
     constexpr Vector3 up = { 0.0f, 1.0f, 0.0f };
-    constexpr float fovy = 45.0f;
+    constexpr float fovy = 60.0f;
 
     const float mapWidth = this->_gameState->getMap()->getWidth();
     const float mapHeight = this->_gameState->getMap()->getHeight();
@@ -86,52 +86,43 @@ void zappy::gui::raylib::AScene::updatePlayerPosition(const int &id, const int &
     game::Player player = this->_gameState->getPlayerById(id);
 
     if (player.orientation != orientation) {
-        if (orientation == player.orientation - 1)
-            this->_mapRenderer->playerLookLeft(player.getId());
-        else if (orientation == player.orientation + 1)
-            this->_mapRenderer->playerLookRight(player.getId());
-        else
+        if (player.orientation == orientation + 1)
+            this->_mapRenderer->playerLookLeft(player.getId(), orientation);
+        else if (player.orientation == orientation - 1)
+            this->_mapRenderer->playerLookRight(player.getId(), orientation);
+        else {
             this->_mapRenderer->playerLook(player.getId(), orientation);
+            this->_mapRenderer->removeAllRotations(player.getId());
+        }
     }
 
     // determine if the player go forward
     if (player.x == x && player.y == y)
         return;
 
-    int mapWidth = (this->_gameState->getMap()->getWidth());
-    int mapHeight = (this->_gameState->getMap()->getHeight());
+    const int mapWidth = this->_gameState->getMap()->getWidth();
+    const int mapHeight = this->_gameState->getMap()->getHeight();
 
     if (player.x == x) {
         if ((y == (player.y - 1 + mapHeight) % mapHeight && player.orientation == game::Orientation::NORTH) ||
             (y == (player.y + 1) % mapHeight && player.orientation == game::Orientation::SOUTH)) {
-                this->_mapRenderer->playerForward(player.getId(), x, y);
+                this->_mapRenderer->playerForward(player.getId(), x, y, orientation, mapWidth, mapHeight);
         } else  {
             this->_mapRenderer->setPlayerPosition(player.getId(), x, y, orientation);
+            this->_mapRenderer->removeAllTranslations(player.getId());
         }
     } else if (player.y == y) {
         if ((x == (player.x + 1) % mapWidth && player.orientation == game::Orientation::EAST) ||
             (x == (player.x - 1 + mapWidth) % mapWidth && player.orientation == game::Orientation::WEST)) {
-                this->_mapRenderer->playerForward(player.getId(), x, y);
+                this->_mapRenderer->playerForward(player.getId(), x, y, orientation, mapWidth, mapHeight);
         } else {
             this->_mapRenderer->setPlayerPosition(player.getId(), x, y, orientation);
+            this->_mapRenderer->removeAllTranslations(player.getId());
         }
     } else {
         this->_mapRenderer->setPlayerPosition(player.getId(), x, y, orientation);
+        this->_mapRenderer->removeAllTranslations(player.getId());
     }
-}
-
-void zappy::gui::raylib::AScene::updatePlayerLevel(const int &id, const size_t &level)
-{
-    // Mettre à jour le niveau d'un joueur
-    (void)id;
-    (void)level;
-}
-
-void zappy::gui::raylib::AScene::updatePlayerInventory(const int &id, const game::Inventory &inventory)
-{
-    // Mettre à jour l'inventaire d'un joueur
-    (void)id;
-    (void)inventory;
 }
 
 void zappy::gui::raylib::AScene::playerExpulsion(const int &id)

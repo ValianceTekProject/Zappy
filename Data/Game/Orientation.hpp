@@ -34,6 +34,10 @@ namespace zappy {
             "N", "E", "S", "W"
         };
 
+        constexpr std::array<const char*, 4> orientationFullStrings = {
+            "North", "East", "South", "West"
+        };
+
         Orientation convertOrientation(const std::string &orientation);
 
         std::ostream &operator<<(std::ostream &os, const Orientation &orientation);

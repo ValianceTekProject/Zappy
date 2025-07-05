@@ -60,9 +60,6 @@ Vector3 zappy::gui::raylib::APlayerModel::getHeadOrigin() const
 
 void zappy::gui::raylib::APlayerModel::look(const game::Orientation &orientation)
 {
-    if (this->_orientation == orientation)
-        return;
-
     this->_orientation = orientation;
     this->_rotation = this->getOrientationRotation();
 }
@@ -79,7 +76,6 @@ void zappy::gui::raylib::APlayerModel::lookRight()
 
 void zappy::gui::raylib::APlayerModel::update(const float &deltaUnits)
 {
-    std::cout << "player " << _id << " rotation: " << _rotation.x << ", " << _rotation.y << ", " << _rotation.z << std::endl;
     if (this->_modelAnimations == nullptr || this->_animsCount == 0)
         return;
 

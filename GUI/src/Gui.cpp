@@ -7,7 +7,7 @@
 
 #include "Gui.hpp"
 
-constexpr char *defaultIp = "127.0.0.1";
+static constexpr const char *defaultIp = "127.0.0.1";
 
 zappy::gui::Gui::Gui() :
     _debug(false),

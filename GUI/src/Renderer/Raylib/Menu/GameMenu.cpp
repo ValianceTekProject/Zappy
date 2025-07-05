@@ -55,18 +55,18 @@ bool zappy::gui::raylib::GameMenu::hasFrequencyChanged()
 
 void zappy::gui::raylib::GameMenu::handleInput(const InputManager &inputManager)
 {
-    if (inputManager.isKeyPressed(KEY_F11))
+    if (inputManager.isKeyReleased(KEY_F11))
         ToggleFullscreen();
 
     for (const auto &[state, key] : _menuStatesKeys) {
-        if (inputManager.isKeyPressed(key))
+        if (inputManager.isKeyReleased(key))
             this->_menuStates[state] = !this->_menuStates[state];
     }
 
-    if (inputManager.isKeyPressed(KEY_F1))
+    if (inputManager.isKeyReleased(KEY_F1))
         _displayAll = !_displayAll;
 
-    if (inputManager.isKeyPressed(KEY_F))
+    if (inputManager.isKeyReleased(KEY_F))
         this->_modifiedSection++;
 
     (this->*_modifiedSectionHandlers[this->_modifiedSection])(inputManager);
@@ -155,7 +155,7 @@ std::string zappy::gui::raylib::GameMenu::_decryptBroadcast(
 void zappy::gui::raylib::GameMenu::_handleFreqInput(const InputManager &inputManager)
 {
     for (const auto &[key, modifier]: _frequencyKeyModifiers) {
-        if (inputManager.isKeyPressed(key)) {
+        if (inputManager.isKeyReleased(key)) {
             if (modifier < 0 && this->_frequency == MIN_FREQ)
                 continue;
             else if (modifier > 0 && this->_frequency == MAX_FREQ)
@@ -176,22 +176,22 @@ void zappy::gui::raylib::GameMenu::_handlePlayersInput(const InputManager &input
     if (this->_playersIds.size() == 0)
         return;
 
-    if (inputManager.isKeyPressed(KEY_UP)) {
+    if (inputManager.isKeyReleased(KEY_UP)) {
         this->_numberPlayerDisplayed++;
         if (this->_numberPlayerDisplayed > MAX_PLAYERS_DISPLAYED)
             this->_numberPlayerDisplayed = MAX_PLAYERS_DISPLAYED;
-    } else if (inputManager.isKeyPressed(KEY_DOWN)) {
+    } else if (inputManager.isKeyReleased(KEY_DOWN)) {
         this->_numberPlayerDisplayed--;
         if (this->_numberPlayerDisplayed < MIN_PLAYERS_DISPLAYED)
             this->_numberPlayerDisplayed = MIN_PLAYERS_DISPLAYED;
-    } else if (inputManager.isKeyPressed(KEY_LEFT)) {
+    } else if (inputManager.isKeyReleased(KEY_LEFT)) {
         this->_displayedPlayersIndex -= this->_numberPlayerDisplayed;
         if (this->_displayedPlayersIndex < 0) {
             this->_displayedPlayersIndex = this->_numberPlayerDisplayed * (this->_playersIds.size() / this->_numberPlayerDisplayed);
             if (this->_displayedPlayersIndex == static_cast<int>(this->_playersIds.size()))
                 this->_displayedPlayersIndex -= this->_numberPlayerDisplayed - 1;
         }
-    } else if (inputManager.isKeyPressed(KEY_RIGHT)) {
+    } else if (inputManager.isKeyReleased(KEY_RIGHT)) {
         this->_displayedPlayersIndex += this->_numberPlayerDisplayed;
         if (this->_displayedPlayersIndex >= static_cast<int>(this->_playersIds.size()))
             this->_displayedPlayersIndex = 0;
@@ -322,7 +322,7 @@ void zappy::gui::raylib::GameMenu::_renderPlayersInfos(const int &screenWidth, c
     const int spacingY = 5 * scaleY;
     const int textSize = static_cast<int>(this->_fontSize * scaleY);
     const int boxWidth = textSize * 10;
-    const int totalLines = 5 + game::RESOURCE_QUANTITY;
+    const int totalLines = 6 + game::RESOURCE_QUANTITY;
     const int boxHeight = totalLines * textSize + (totalLines - 1) * spacingY;
 
     const int x = screenWidth - paddingX;
@@ -394,6 +394,7 @@ void zappy::gui::raylib::GameMenu::_renderPlayerInfo(
     drawCentered("Team: " + player.teamName);
     drawCentered("Level: " + std::to_string(player.level));
     drawCentered("Position: " + std::to_string(player.x) + ", " + std::to_string(player.y));
+    drawCentered("Look: " + std::string(game::orientationFullStrings[static_cast<int>(player.orientation)]));
 
     for (size_t i = 0; i < game::RESOURCE_QUANTITY; ++i) {
         game::Resource res = static_cast<game::Resource>(i);

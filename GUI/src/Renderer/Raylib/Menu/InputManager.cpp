@@ -52,6 +52,11 @@ bool zappy::gui::raylib::InputManager::isKeyPressed(int key) const
     return getKeyState(key) == KeyState::PRESSED;
 }
 
+bool zappy::gui::raylib::InputManager::isKeyReleased(int key) const
+{
+    return getKeyState(key) == KeyState::RELEASED;
+}
+
 /**
  * @brief Get the state of a mouse button
  *
