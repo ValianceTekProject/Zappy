@@ -119,6 +119,8 @@ set(SOURCES
 
     ${RAYLIB_SCENE_DIR}/AScene.cpp
 
+    ${RAYLIB_SCENE_DIR}/MusicGame.cpp
+
     ${RAYLIB_EFFECT_DIR}/AEffect.cpp
     ${RAYLIB_EFFECT_DIR}/EffectFactory.cpp
 

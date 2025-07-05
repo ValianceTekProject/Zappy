@@ -27,6 +27,9 @@ void zappy::gui::raylib::PokemonScene::init()
 
     // Init le background
     this->_skybox.init(zappy::gui::raylib::assets::BASIC_SKYBOX_MODEL_PATH);
+
+    // Init la musique
+    this->_music.init(zappy::gui::raylib::assets::POKEMON_MUSIC_PATH);
 }
 
 bool zappy::gui::raylib::PokemonScene::shouldClose() const

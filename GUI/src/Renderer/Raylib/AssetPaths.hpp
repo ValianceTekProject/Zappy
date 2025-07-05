@@ -31,6 +31,9 @@ namespace zappy {
 
                 inline std::string BASIC_BG_PATH = BASIC_SCENE_PATH + "bg.glb";
 
+                // Basic Music asset
+                inline std::string BASIC_MUSIC_PATH = std::string(BASIC_SCENE_PATH) + "music.mp3";
+
                 // Basic Scene resources assets
                 inline std::string BASIC_SCENE_RESOURCES_PATH = BASIC_SCENE_PATH + "Resources/";
 
@@ -62,6 +65,9 @@ namespace zappy {
                 inline std::string POKEMON_BULBASAUR_TEXTURE_EXTENSION = POKEMON_BULBASAUR_PATH + ".jpeg";
 
                 inline std::string POKEMON_EGG_PATH = POKEMON_SCENE_PATH + "egg.glb";
+
+                // Pokemon Music asset
+                inline std::string POKEMON_MUSIC_PATH = std::string(POKEMON_SCENE_PATH) + "music.mp3";
 
                 // Pokemon Scene resources assets
                 inline std::string POKEMON_SCENE_RESOURCES_PATH = std::string(POKEMON_SCENE_PATH) + "Resources/";
