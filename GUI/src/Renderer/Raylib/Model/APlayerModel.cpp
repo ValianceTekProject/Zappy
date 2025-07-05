@@ -80,13 +80,15 @@ void zappy::gui::raylib::APlayerModel::update(const float &deltaUnits)
     if (anim.frameCount <= 0)
         return;
 
-    while (this->_frameAccumulator >= 1.0f) {
-        this->_animCurrentFrame = (this->_animCurrentFrame + 1) % anim.frameCount;
-        this->_frameAccumulator -= 1.0f;
+    if (this->_frameAccumulator >= 1.0f) {
+        const int frameAdvance = static_cast<int>(this->_frameAccumulator);
+
+        this->_animCurrentFrame = (this->_animCurrentFrame + frameAdvance) % anim.frameCount;
+        this->_frameAccumulator -= static_cast<float>(frameAdvance);
     }
 
     if (this->_frameAccumulator < 0)
-        this->_frameAccumulator = 0;
+        this->_frameAccumulator = 0.f;
 
     UpdateModelAnimation(this->_model, anim, this->_animCurrentFrame);
 }

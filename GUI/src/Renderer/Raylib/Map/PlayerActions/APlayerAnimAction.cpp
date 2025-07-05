@@ -21,13 +21,13 @@ zappy::gui::raylib::APlayerAnimAction::APlayerAnimAction(
 
 void zappy::gui::raylib::APlayerAnimAction::update(const float &deltaUnits, APlayerModel &player)
 {
+    APlayerAction::update(deltaUnits, player);
+
     if (player.getState() != APlayerModel::State::IDLE)
         player.idle();
 
     if (this->_effect)
         this->_effect->update(deltaUnits);
-
-    APlayerAction::update(deltaUnits, player);
 }
 
 void zappy::gui::raylib::APlayerAnimAction::render(const Vector3 &position)

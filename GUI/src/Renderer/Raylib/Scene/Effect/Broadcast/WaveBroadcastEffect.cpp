@@ -45,6 +45,9 @@ void zappy::gui::raylib::WaveBroadcastEffect::render(const Vector3 &position) co
     Vector3 elevatedPos = position;
     elevatedPos.y += 0.5f;
 
+    constexpr Vector3 rotationAxis = {1.0f, 0.0f, 0.0f};
+    constexpr float rotationAngle = 90.0f;
+
     for (const auto &pulse : _pulses) {
         float radius = pulse.elapsed * PULSE_SPEED * 2.5f;
         float alpha  = 1.0f - (pulse.elapsed / PULSE_LIFETIME);
@@ -55,8 +58,8 @@ void zappy::gui::raylib::WaveBroadcastEffect::render(const Vector3 &position) co
         DrawCircle3D(
             elevatedPos,
             radius,
-            {1, 0, 0},
-            90.0f,
+            rotationAxis,
+            rotationAngle,
             faded
         );
     }

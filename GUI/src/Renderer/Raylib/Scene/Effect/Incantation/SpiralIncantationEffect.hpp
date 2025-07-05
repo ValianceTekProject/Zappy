@@ -33,6 +33,7 @@ namespace zappy {
                     private:
                         Vector2 _tile;
                         float _animationTime;
+
                         void _renderSpiralParticles(const Vector3 &center, float progress) const;
                         bool isAt(int x, int y) const;
             };

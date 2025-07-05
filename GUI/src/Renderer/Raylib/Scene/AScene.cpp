@@ -83,27 +83,31 @@ void zappy::gui::raylib::AScene::updatePlayerPosition(const int &id, const int &
             this->_mapRenderer->playerLookRight(player.getId());
         else
             this->_mapRenderer->playerLook(player.getId(), orientation);
-    } else {
-        // determine if the player go forward
-        if (player.x == x && player.y == y)
-            return;
+    }
 
-        int mapWidth = (this->_gameState->getMap()->getWidth());
-        int mapHeight = (this->_gameState->getMap()->getHeight());
+    // determine if the player go forward
+    if (player.x == x && player.y == y)
+        return;
 
-        if (player.x == x) {
-            if ((y == (player.y - 1 + mapHeight) % mapHeight && player.orientation == game::Orientation::NORTH) ||
-                (y == (player.y + 1) % mapHeight && player.orientation == game::Orientation::SOUTH)) {
-                    this->_mapRenderer->playerForward(player.getId(), x, y);
-            }
-        } else if (player.y == y) {
-            if ((x == (player.x + 1) % mapWidth && player.orientation == game::Orientation::EAST) ||
-                (x == (player.x - 1 + mapWidth) % mapWidth && player.orientation == game::Orientation::WEST)) {
-                    this->_mapRenderer->playerForward(player.getId(), x, y);
-            }
+    int mapWidth = (this->_gameState->getMap()->getWidth());
+    int mapHeight = (this->_gameState->getMap()->getHeight());
+
+    if (player.x == x) {
+        if ((y == (player.y - 1 + mapHeight) % mapHeight && player.orientation == game::Orientation::NORTH) ||
+            (y == (player.y + 1) % mapHeight && player.orientation == game::Orientation::SOUTH)) {
+                this->_mapRenderer->playerForward(player.getId(), x, y);
+        } else  {
+            this->_mapRenderer->setPlayerPosition(player.getId(), x, y, orientation);
+        }
+    } else if (player.y == y) {
+        if ((x == (player.x + 1) % mapWidth && player.orientation == game::Orientation::EAST) ||
+            (x == (player.x - 1 + mapWidth) % mapWidth && player.orientation == game::Orientation::WEST)) {
+                this->_mapRenderer->playerForward(player.getId(), x, y);
         } else {
             this->_mapRenderer->setPlayerPosition(player.getId(), x, y, orientation);
         }
+    } else {
+        this->_mapRenderer->setPlayerPosition(player.getId(), x, y, orientation);
     }
 }
 
@@ -170,7 +174,7 @@ void zappy::gui::raylib::AScene::endIncantation(const int &x, const int &y, cons
 
 void zappy::gui::raylib::AScene::hatchEgg(const int &id)
 {
-    (void)id;
+    this->removeEgg(id);
 }
 
 void zappy::gui::raylib::AScene::removeEgg(const int &id)

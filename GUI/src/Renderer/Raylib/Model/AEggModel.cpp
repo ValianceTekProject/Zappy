@@ -36,12 +36,8 @@ void zappy::gui::raylib::AEggModel::update(const float &deltaUnits)
 
     int currentAnimIndex = this->_animationIndexMap[this->_state];
 
-    if (currentAnimIndex < 0 || currentAnimIndex >= this->_animsCount) {
-        std::cerr << "Warning: Invalid animation index " << currentAnimIndex
-                  << " (available: 0-" << (this->_animsCount - 1) << ")" << std::endl;
+    if (currentAnimIndex < 0 || currentAnimIndex >= this->_animsCount)
         return;
-    }
-
 
     ModelAnimation anim = this->_modelAnimations[currentAnimIndex];
 
@@ -52,10 +48,15 @@ void zappy::gui::raylib::AEggModel::update(const float &deltaUnits)
 
     this->_frameAccumulator += deltaUnits * speed;
 
-    while (this->_frameAccumulator >= 1.0f) {
-        this->_animCurrentFrame = (this->_animCurrentFrame + 1) % anim.frameCount;
-        this->_frameAccumulator -= 1.0f;
+    if (this->_frameAccumulator >= 1.0f) {
+        const int frameAdvance = static_cast<int>(this->_frameAccumulator);
+
+        this->_animCurrentFrame = (this->_animCurrentFrame + frameAdvance) % anim.frameCount;
+        this->_frameAccumulator -= static_cast<float>(frameAdvance);
     }
+
+    if (this->_frameAccumulator < 0)
+        this->_frameAccumulator = 0.f;
 
     UpdateModelAnimation(this->_model, anim, this->_animCurrentFrame);
 }

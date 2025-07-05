@@ -7,42 +7,61 @@
 
 #include "SpiralIncantationEffect.hpp"
 
+constexpr float animationSpeed = 50.f;
+
 zappy::gui::raylib::SpiralIncantationEffect::SpiralIncantationEffect(const int &playerId, const float &duration, const Color &color) :
-    AIncantationEffect(playerId, duration, color) {}
+    AIncantationEffect(playerId, duration, color),
+    _tile( {0, 0} ),
+    _animationTime(0.f)
+{}
 
 void zappy::gui::raylib::SpiralIncantationEffect::update(const float &deltaUnits)
 {
     AEffect::update(deltaUnits);
 
     _animationTime += deltaUnits;
-    if (_animationTime > 3.0f)
-        _animationTime -= 3.0f;
+
+    if (_animationTime >= animationSpeed) {
+        const int numCycles = static_cast<int>(_animationTime / animationSpeed);
+
+        this->_animationTime -= numCycles * animationSpeed;
+    }
 }
 
 void zappy::gui::raylib::SpiralIncantationEffect::render(const Vector3 &position) const
 {
-    float progress = _animationTime / 3.0f;
+    const float progress = _animationTime / animationSpeed;
 
     _renderSpiralParticles(position, progress);
 }
 
 void zappy::gui::raylib::SpiralIncantationEffect::_renderSpiralParticles(const Vector3& center, float progress) const
 {
-    constexpr int numParticles = 200;
-    constexpr float particleSize = 0.025f;
+    constexpr int numParticles = 50;
+    constexpr float particleSize = 0.03125f;
+    constexpr float heightMax  = 0.8f;
+    constexpr float radiusMax  = 0.4f;
+    constexpr float radiusMin  = 0.2f;
+    constexpr float TWO_PI  = PI * 2.0f;
+    constexpr float turns  = 5.0f;
 
     for (int i = 0; i < numParticles; i++) {
-        float particleProgress = fmod(progress + i / (float)numParticles, 1.0f);
-        float angle = particleProgress * 4 * PI + i * PI / 6;
-        float height = particleProgress * 1.5f;
-        float radius = 0.4f * (1.0f - particleProgress * 0.5f);
+        float initialOffset    = (static_cast<float>(i) / numParticles) * TWO_PI;
+        float particleProgress = fmodf(progress + static_cast<float>(i) / numParticles, 1.0f);
+        float angle  = particleProgress * TWO_PI * turns + initialOffset;
+        float height = particleProgress * heightMax;
+        float radius = radiusMin + (radiusMax - radiusMin) * (1.0f - particleProgress * heightMax);
 
-        Vector3 particlePos = center;
-        particlePos.x += cos(angle) * radius;
-        particlePos.z += sin(angle) * radius;
-        particlePos.y += height;
+        Vector3 p = center;
+        p.x += cosf(angle) * radius;
+        p.z += sinf(angle) * radius;
+        p.y += height;
 
-        DrawSphere(particlePos, particleSize, _color);
+        float sizeVariation = 1.0f + 0.1f * sinf(TWO_PI * particleProgress);
+        float sizeDecay = powf(1.0f - particleProgress, 0.25f);
+        float size = particleSize * sizeVariation * sizeDecay;
+
+        DrawSphere(p, size, _color);
     }
 }
 
