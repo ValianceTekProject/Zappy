@@ -51,6 +51,8 @@ void zappy::gui::RaylibRenderer::init()
 
     // this->startIncantation(2, 2, 1, {0});
     // this->endIncantation(2, 2, true);
+
+    ARenderer::init();
 }
 
 void zappy::gui::RaylibRenderer::setFrequency(const size_t &frequency)
@@ -78,6 +80,8 @@ void zappy::gui::RaylibRenderer::handleInput()
 
 void zappy::gui::RaylibRenderer::update()
 {
+    ARenderer::update();
+
     if (!this->_pauseMenu->isActive() && !this->_checkUnwantedInput())
         UpdateCamera(&this->_scene->getCamera(), CAMERA_FREE);
 

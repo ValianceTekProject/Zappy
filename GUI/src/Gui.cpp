@@ -37,52 +37,66 @@ void zappy::gui::Gui::parseArgs(int argc, char const *argv[])
             if (i + 1 >= argc)
                 throw ParsingError("Missing value for -p", "Parsing");
             std::istringstream ss(argv[++i]);
-            if (!(ss >> _port) || !_port)
+            if (!(ss >> this->_port) || !this->_port)
                 throw ParsingError("Invalid port number: " + std::string(argv[i]), "Parsing");
         } else if (arg == "-h") {
             if (i + 1 >= argc)
                 throw ParsingError("Missing value for -h", "Parsing");
-            _ip = argv[++i];
+            this->_ip = argv[++i];
         } else if (arg == "-debug" || arg == "-d") {
-            _debug = true;
+            this->_debug = true;
         } else if (arg == "-raylib" || arg == "-r") {
             raylib = true;
         } else
             throw ParsingError("Unknown option: " + arg, "Parsing");
     }
 
-    if (_ip.empty())
+    if (this->_ip.empty())
         throw ParsingError("Host (-h) not specified", "Parsing");
-    if (_port <= 0 || _port > 65535)
-        throw ParsingError("Port out of range: " + std::to_string(_port), "Parsing");
+    if (this->_port <= 0 || this->_port > 65535)
+        throw ParsingError("Port out of range: " + std::to_string(this->_port), "Parsing");
 
-    if (!raylib && _debug) {
-        _renderer = std::make_shared<DebugRenderer>();
-    } else if (!_renderer) {
+    if (!raylib && this->_debug) {
+        this->_renderer = std::make_shared<DebugRenderer>();
+    } else if (!this->_renderer) {
         if (raylib)
-            _renderer = std::make_shared<RaylibRenderer>();
+            this->_renderer = std::make_shared<RaylibRenderer>();
         else
-            _renderer = std::make_shared<NcursesRenderer>();
+            this->_renderer = std::make_shared<NcursesRenderer>();
     }
 }
 
 void zappy::gui::Gui::init()
 {
-    _gameState = std::make_shared<game::GameState>();
+    this->_gameState = std::make_shared<game::GameState>();
 
-    _renderer->setGameState(_gameState);
+    this->_renderer->setGameState(this->_gameState);
 
     _initNetwork();
 
     while(!_isMapCreated())
-        _protocol->update();
+        this->_protocol->update();
 }
 
 void zappy::gui::Gui::_initNetwork()
 {
-    _protocol = std::make_unique<network::Protocol>(_renderer, _gameState, _debug);
-    if (!_protocol->connectToServer(_ip, _port))
+    this->_protocol = std::make_unique<network::Protocol>(this->_renderer, this->_gameState, this->_debug);
+    if (!this->_protocol->connectToServer(this->_ip, this->_port))
         throw network::NetworkError("Connection failed", "Network");
+
+    const ProtocolRequest protocolRequests = {
+        { network::GP::MAP_SIZE, [this](const int &, const int &){ this->_protocol->requestMapContent(); } },
+        { network::GP::TILE_CONTENT, [this](const int &x, const int &y){ this->_protocol->requestTileContent(x, y); } },
+        { network::GP::MAP_CONTENT, [this](const int &, const int &){ this->_protocol->requestMapContent(); } },
+        { network::GP::TEAM_NAME, [this](const int &, const int &){ this->_protocol->requestTeamNames(); } },
+        { network::GP::PLAYER_POSITION, [this](const int &id, const int &){ this->_protocol->requestPlayerPosition(id); } },
+        { network::GP::PLAYER_LEVEL, [this](const int &id, const int &){ this->_protocol->requestPlayerLevel(id); } },
+        { network::GP::PLAYER_INVENTORY, [this](const int &id, const int &){ this->_protocol->requestPlayerInventory(id); } },
+        { network::GP::TIME_UNIT_REQUEST, [this](const int &, const int &){ this->_protocol->requestTimeUnit(); } },
+        { network::GP::TIME_UNIT_MODIFICATION, [this](const int &timeUnit, const int &){ this->_protocol->setTimeUnit(timeUnit); } },
+    };
+
+    this->_renderer->setProtocolRequests(protocolRequests);
 }
 
 void zappy::gui::Gui::run()
@@ -91,27 +105,27 @@ void zappy::gui::Gui::run()
 
     bool running = true;
     while (running) {
-        _renderer->handleInput();
+        this->_renderer->handleInput();
 
-        if (_renderer->hasFrequencyChanged())
-            _protocol->setTimeUnit(_renderer->getFrequency());
+        if (this->_renderer->hasFrequencyChanged())
+            this->_protocol->setTimeUnit(this->_renderer->getFrequency());
 
-        _protocol->update();
-        _renderer->update();
+        this->_protocol->update();
+        this->_renderer->update();
 
-        if (_renderer->shouldClose()) {
+        if (this->_renderer->shouldClose()) {
             running = false;
             continue;
         }
 
-        if (!_protocol->isConnected()) {
+        if (!this->_protocol->isConnected()) {
             running = false;
             std::cerr << "Connection lost" << std::endl;
             continue;
         }
 
-        _renderer->render();
+        this->_renderer->render();
     }
 
-    _protocol->disconnect();
+    this->_protocol->disconnect();
 }
