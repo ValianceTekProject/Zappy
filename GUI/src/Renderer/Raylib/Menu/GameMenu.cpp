@@ -338,7 +338,7 @@ void zappy::gui::raylib::GameMenu::_renderPlayersInfos(const int &screenWidth, c
     int available = static_cast<int>(_playersIds.size()) - _displayedPlayersIndex;
     int toDraw = std::min(_numberPlayerDisplayed, available);
 
-    const int columns = 2;
+    constexpr int columns = 2;
 
     for (int i = 0; i < toDraw; ++i) {
         int dataIdx = _displayedPlayersIndex + i;

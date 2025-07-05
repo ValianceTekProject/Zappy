@@ -37,8 +37,9 @@ void zappy::gui::raylib::BulbasaurPlayerModel::init()
         _model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = tex;
     }
 
-    constexpr Vector3 rotation = {0, -180, 0};
-    AModel::rotate(rotation);
+    constexpr Vector3 rotation = {0, 180, 0};
+    this->_northRotation = rotation;
+    AModel::setRotation(this->_northRotation);
 
     constexpr int idle = 1;
     constexpr int walk = 8;

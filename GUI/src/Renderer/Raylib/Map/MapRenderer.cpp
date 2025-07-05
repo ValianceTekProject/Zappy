@@ -150,7 +150,7 @@ void zappy::gui::raylib::MapRenderer::playerLookLeft(const int &id)
 
     constexpr float rotationAngle = 90.0f;
 
-    _addRotation(player, rotationAngle);
+    _addRotation(player, rotationAngle, player.getOrientation());
 }
 
 void zappy::gui::raylib::MapRenderer::playerLookRight(const int &id)
@@ -163,7 +163,7 @@ void zappy::gui::raylib::MapRenderer::playerLookRight(const int &id)
 
     constexpr float rotationAngle = -90.0f;
 
-    _addRotation(player, rotationAngle);
+    _addRotation(player, rotationAngle, player.getOrientation());
 }
 
 void zappy::gui::raylib::MapRenderer::playerForward(const int &id, const int &x, const int &y)
@@ -339,9 +339,12 @@ const zappy::gui::raylib::AEggModel &zappy::gui::raylib::MapRenderer::_getEgg(co
     throw RendererError("Egg " + std::to_string(id) + " not found", "MapRenderer");
 }
 
-void zappy::gui::raylib::MapRenderer::_addRotation(const APlayerModel &player, const float &angle)
-{
-    Vector3 current = player.getRotation();
+void zappy::gui::raylib::MapRenderer::_addRotation(
+    const APlayerModel &player,
+    const float &angle,
+    const game::Orientation &orientation
+) {
+    Vector3 current = player.getOrientationRotation();
     Vector3 destination = {current.x, current.y + angle, current.z};
 
     Vector3 totalDelta = Vector3Subtract(destination, current);
@@ -356,6 +359,7 @@ void zappy::gui::raylib::MapRenderer::_addRotation(const APlayerModel &player, c
     auto action = PlayerActionFactory::createRotation(
         player.getId(),
         rotation,
+        orientation,
         ROTATION_TIME
     );
 

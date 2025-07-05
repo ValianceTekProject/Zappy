@@ -17,18 +17,27 @@ zappy::gui::raylib::AScene::AScene(const std::shared_ptr<game::GameState> &gameS
 
 void zappy::gui::raylib::AScene::init()
 {
-    constexpr Vector3 position = { 0, 10.0f, 10.0f };
-    constexpr Vector3 target = { 0.0f, 0.0f, 0.0f };
-    constexpr Vector3 up = { 0.0f, 0.45f, 0.0f };
+    constexpr Vector3 up = { 0.0f, 1.0f, 0.0f };
     constexpr float fovy = 45.0f;
 
-    this->_camera.position = position;
-    this->_camera.target = target;
+    const float mapWidth = this->_gameState->getMap()->getWidth();
+    const float mapHeight = this->_gameState->getMap()->getHeight();
+
+    const float centerX = -mapWidth / 2.0f;
+    const float centerZ = mapHeight / 2.0f;
+
+    const float camHeight = std::max(centerX, centerZ);
+
+    const float targetX = centerX / 2.5f;
+    const float targetZ = centerZ / 2.5f;
+
+    this->_camera.position = { centerX * 1.5f, camHeight, centerZ * 1.5f };
+    this->_camera.target = { targetX, 0.0f, targetZ };
     this->_camera.up = up;
     this->_camera.fovy = fovy;
     this->_camera.projection = CAMERA_PERSPECTIVE;
 
-    // Init la musique
+    // Init audio
     InitAudioDevice();
     SetMasterVolume(0.5f);
 }
@@ -156,6 +165,7 @@ void zappy::gui::raylib::AScene::playerExpulsion(const int &id)
 void zappy::gui::raylib::AScene::playerBroadcast(const int &id, const std::string &message)
 {
     this->_mapRenderer->playerBroadcast(id);
+    (void)message;
 }
 
 void zappy::gui::raylib::AScene::startIncantation(

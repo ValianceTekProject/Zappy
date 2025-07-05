@@ -31,6 +31,7 @@ std::shared_ptr<zappy::gui::raylib::IPlayerAction> zappy::gui::raylib::PlayerAct
 std::shared_ptr<zappy::gui::raylib::IPlayerAction> zappy::gui::raylib::PlayerActionFactory::createRotation(
     const int &playerId,
     const Rotation &rotation,
+    const game::Orientation &destination,
     const float &timeUnit,
     const float &elapsedTime
 ) {
@@ -38,6 +39,7 @@ std::shared_ptr<zappy::gui::raylib::IPlayerAction> zappy::gui::raylib::PlayerAct
         playerId,
         ActionType::ROTATION,
         rotation,
+        destination,
         timeUnit,
         elapsedTime
     );

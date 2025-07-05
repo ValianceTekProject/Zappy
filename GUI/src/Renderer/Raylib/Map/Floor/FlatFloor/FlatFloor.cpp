@@ -6,11 +6,6 @@
 */
 
 #include "FlatFloor.hpp"
-#include "IFloor.hpp"
-#include "Orientation.hpp"
-#include "raylib.h"
-#include <algorithm>
-#include "raymath.h"
 
 zappy::gui::raylib::FlatFloor::FlatFloor(
     const size_t &width,

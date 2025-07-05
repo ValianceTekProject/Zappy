@@ -8,18 +8,15 @@
 #include "AModel.hpp"
 
 zappy::gui::raylib::AModel::AModel() :
-    _position(Vector3{0, 0, 0}),
+    _position({ 0.0f, 0.0f, 0.0f }),
     _scale(1),
-    _rotation(Vector3{0, 0, 0}),
-    _rotationMatrix(MatrixIdentity()),
+    _rotation({ 0.0f, 0.0f, 0.0f }),
     _color(WHITE),
     _model()
 {}
 
 void zappy::gui::raylib::AModel::init()
-{
-    _updateTransform();
-}
+{}
 
 void zappy::gui::raylib::AModel::setRotation(const Vector3 &rotation)
 {
@@ -36,27 +33,19 @@ void zappy::gui::raylib::AModel::rotate(const Vector3 &rotation)
     this->_rotation.x += rotation.x;
     this->_rotation.y += rotation.y;
     this->_rotation.z += rotation.z;
-
-    _updateTransform();
 }
 
 void zappy::gui::raylib::AModel::render()
 {
-    DrawModel(_model, _position, _scale, _color);
-}
+    const Vector3 scale = { _scale, _scale, _scale };
 
-void zappy::gui::raylib::AModel::_updateTransform()
-{
-    Vector3 rotationRad = {
-        this->_rotation.x * DEG2RAD,
-        this->_rotation.y * DEG2RAD,
-        this->_rotation.z * DEG2RAD
-    };
+    Vector3 axis = Vector3Normalize(_rotation);
+    float angle = Vector3Length(_rotation);
 
-    Matrix R = MatrixRotateXYZ(rotationRad);
+    if (angle == 0.0f)
+        axis = { 0.0f, 1.0f, 0.0f };
 
-    this->_rotationMatrix = R;
-    _model.transform = _rotationMatrix;
+    DrawModelEx(_model, _position, axis, angle, scale, _color);
 }
 
 void zappy::gui::raylib::AModel::_initModel(const std::string &modelPath)

@@ -52,13 +52,11 @@ namespace zappy {
                 protected:
                     virtual void _initModel(const std::string &modelPath);
 
-                    void _updateTransform();
-
                     Vector3 _position;
 
                     float _scale;
+
                     Vector3 _rotation;
-                    Matrix  _rotationMatrix;
 
                     Color _color;
 

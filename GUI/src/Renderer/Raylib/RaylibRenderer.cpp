@@ -20,7 +20,7 @@ zappy::gui::RaylibRenderer::RaylibRenderer() :
 
 void zappy::gui::RaylibRenderer::init()
 {
-    constexpr char *title = "Zappy";
+    static constexpr char *title = "Zappy";
 
     InitWindow(1280, 720, title);
     SetExitKey(KEY_NULL);
@@ -35,6 +35,21 @@ void zappy::gui::RaylibRenderer::init()
 
     this->_gameMenu = std::make_unique<raylib::GameMenu>(this->_gameState);
     this->_gameMenu->init();
+
+    // game::Player player(0, 2, 6, game::Orientation::SOUTH);
+    // this->addPlayer(player);
+
+    // this->updatePlayerPosition(0, 2, 6, game::Orientation::EAST);
+    // this->updatePlayerPosition(0, 2, 6, game::Orientation::NORTH);
+    // this->updatePlayerPosition(0, 2, 5, game::Orientation::NORTH);
+    // this->updatePlayerPosition(0, 2, 4, game::Orientation::NORTH);
+    // this->updatePlayerPosition(0, 2, 3, game::Orientation::NORTH);
+    // this->updatePlayerPosition(0, 2, 2, game::Orientation::NORTH);
+    // this->updatePlayerPosition(0, 2, 1, game::Orientation::NORTH);
+    // this->updatePlayerPosition(0, 2, 0, game::Orientation::NORTH);
+
+    // this->startIncantation(2, 2, 1, {0});
+    // this->endIncantation(2, 2, true);
 }
 
 void zappy::gui::RaylibRenderer::setFrequency(const size_t &frequency)

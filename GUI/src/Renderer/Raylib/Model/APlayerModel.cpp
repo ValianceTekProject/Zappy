@@ -11,9 +11,10 @@ zappy::gui::raylib::APlayerModel::APlayerModel(const int &id) :
     AModel::AModel(),
     _id(id),
     _state(State::IDLE),
-    _gamePosition(Vector2{0, 0}),
+    _gamePosition({ 0.0f, 0.0f }),
     _orientation(game::Orientation::NORTH),
-    _headOrigin(Vector3{0, 1, 0}),
+    _headOrigin({ 0.0f, 1.0f, 0.0f }),
+    _northRotation({ 0.0f, 0.0f, 0.0f }),
     _modelAnimations(nullptr),
     _animsCount(0),
     _animCurrentFrame(0),
@@ -33,6 +34,21 @@ void zappy::gui::raylib::APlayerModel::init()
     AModel::init();
 }
 
+Vector3 zappy::gui::raylib::APlayerModel::getOrientationRotation() const
+{
+    switch (this->_orientation) {
+        case game::Orientation::NORTH:
+            return this->_northRotation;
+        case game::Orientation::EAST:
+            return Vector3Add(this->_northRotation, { 0.0f, -90.0f, 0.0f });
+        case game::Orientation::SOUTH:
+            return Vector3Add(this->_northRotation, { 0.0f, 180.0f, 0.0f });
+        case game::Orientation::WEST:
+            return Vector3Add(this->_northRotation, { 0.0f, 90.0f, 0.0f });
+    }
+    return this->_northRotation;
+}
+
 Vector3 zappy::gui::raylib::APlayerModel::getHeadOrigin() const
 {
     return Vector3{
@@ -47,14 +63,8 @@ void zappy::gui::raylib::APlayerModel::look(const game::Orientation &orientation
     if (this->_orientation == orientation)
         return;
 
-    if (orientation - 1 == this->_orientation) {
-        AModel::rotate(Vector3{0, -90, 0});
-    } else if (orientation + 1 == this->_orientation) {
-        AModel::rotate(Vector3{0, 90, 0});
-    } else {
-        AModel::rotate(Vector3{0, 180, 0});
-    }
     this->_orientation = orientation;
+    this->_rotation = this->getOrientationRotation();
 }
 
 void zappy::gui::raylib::APlayerModel::lookLeft()
@@ -69,6 +79,7 @@ void zappy::gui::raylib::APlayerModel::lookRight()
 
 void zappy::gui::raylib::APlayerModel::update(const float &deltaUnits)
 {
+    std::cout << "player " << _id << " rotation: " << _rotation.x << ", " << _rotation.y << ", " << _rotation.z << std::endl;
     if (this->_modelAnimations == nullptr || this->_animsCount == 0)
         return;
 

@@ -24,7 +24,7 @@ namespace zappy {
             constexpr static int ROTATION_TIME = 7;
             constexpr static int EXPULSION_TIME = 1;
             constexpr static int BROADCAST_TIME = 7;
-            constexpr static int INCANTATION_TIME = 1;
+            constexpr static int INCANTATION_TIME = 300;
             constexpr static int NO_ANIMATION = 0;
 
             class PlayerActionFactory
@@ -44,6 +44,7 @@ namespace zappy {
                     static std::shared_ptr<IPlayerAction> createRotation(
                         const int &playerId,
                         const Rotation &rotation,
+                        const game::Orientation &destination,
                         const float &timeUnit,
                         const float &elapsedTime = 0.f
                     );

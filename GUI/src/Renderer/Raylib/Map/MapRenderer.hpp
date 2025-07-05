@@ -79,7 +79,11 @@ namespace zappy {
                     AEggModel &_getEgg(const int &id);
                     const AEggModel &_getEgg(const int &id) const;
 
-                    void _addRotation(const APlayerModel &player, const float &angle);
+                    void _addRotation(
+                        const APlayerModel &player,
+                        const float &angle,
+                        const game::Orientation &orientation
+                    );
 
                     void _updatePlayersAndEggs(const float &deltaUnits);
                     void _updateActions(const float &deltaUnits);

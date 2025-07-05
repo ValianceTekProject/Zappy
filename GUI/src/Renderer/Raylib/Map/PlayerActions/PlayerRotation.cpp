@@ -11,11 +11,13 @@ zappy::gui::raylib::PlayerRotation::PlayerRotation(
     const int &playerId,
     const ActionType &actionType,
     const Rotation &movement,
+    const game::Orientation &destination,
     const float &timeUnit,
     const float &elapsedTime
 ) :
     APlayerAction(playerId, actionType, timeUnit, elapsedTime),
-    _movement(movement)
+    _movement(movement),
+    _destination(destination)
 {}
 
 void zappy::gui::raylib::PlayerRotation::update(const float &deltaUnits, APlayerModel &player)
@@ -30,5 +32,8 @@ void zappy::gui::raylib::PlayerRotation::update(const float &deltaUnits, APlayer
 void zappy::gui::raylib::PlayerRotation::finishAction(const float &deltaUnits, APlayerModel &player)
 {
     APlayerAction::finishAction(deltaUnits, player);
-    player.rotate(Vector3Subtract(this->_movement.destination, player.getRotation()));
+    player.look(this->_destination);
+
+    // Vector3 rotation = player.getRotation();
+    // std::cout << "Rotation: " << rotation.x << ", " << rotation.y << ", " << rotation.z << std::endl;
 }

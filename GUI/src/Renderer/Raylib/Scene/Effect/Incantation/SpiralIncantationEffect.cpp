@@ -7,7 +7,7 @@
 
 #include "SpiralIncantationEffect.hpp"
 
-constexpr float animationSpeed = 50.f;
+static constexpr float animationSpeed = 50.f;
 
 zappy::gui::raylib::SpiralIncantationEffect::SpiralIncantationEffect(const int &playerId, const float &duration, const Color &color) :
     AIncantationEffect(playerId, duration, color),
