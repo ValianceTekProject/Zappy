@@ -83,14 +83,6 @@ void zappy::game::MapServer::addReplaceResourceOnTile(int resourceIdx)
     zappy::game::Tile &tile = this->getTile(randX, randY);
     tile.addResource(
         static_cast<zappy::game::Resource>(resourceIdx), 1);
-    for (auto &team : this->_commandHandlerGui._teamList) {
-        if (team->getName() == "GRAPHIC") {
-            for (auto &players : team->getPlayerList()) {
-                this->_commandHandlerGui.handleBct(*players, std::string(std::to_string(randX)) +
-                " " + std::string(std::to_string(randY)));
-            }
-        }
-    }
 }
 
 void zappy::game::MapServer::replaceResources()
