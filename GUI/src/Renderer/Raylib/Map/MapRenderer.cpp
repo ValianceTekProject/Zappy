@@ -448,6 +448,7 @@ void zappy::gui::raylib::MapRenderer::removePlayer(const int &id)
     for (auto it = this->_players.begin(); it != this->_players.end(); it++) {
         if ((*it)->getId() == id) {
             this->_players.erase(it);
+            this->_playerActionQueues.erase(id);
             break;
         }
     }

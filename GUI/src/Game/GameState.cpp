@@ -53,29 +53,10 @@ void zappy::game::GameState::playerExpulsion(const int &id)
 void zappy::game::GameState::playerBroadcast(const int &, const std::string &)
 {}
 
-void zappy::game::GameState::startIncantation(
-    const int &, const int &,
-    const int &,
-    const std::vector<int> &playerIds
-) {
-    for (int id : playerIds) {
-        Player &player = getPlayerById(id);
-        player.pray();
-    }
-}
+void zappy::game::GameState::startIncantation(const int &, const int &, const int &, const std::vector<int> &) {}
 
-void zappy::game::GameState::endIncantation(const int &x, const int &y, const bool &result)
-{
-    auto players = getPlayersByCoord(x, y);
-
-    for (Player &player : players) {
-        if (!player.isPraying())
-            continue;
-        player.stopPraying();
-        if (result)
-            player.level += 1;
-    }
-}
+void zappy::game::GameState::endIncantation(const int &, const int &, const bool &)
+{}
 
 void zappy::game::GameState::hatchEgg(const int &eggId)
 {

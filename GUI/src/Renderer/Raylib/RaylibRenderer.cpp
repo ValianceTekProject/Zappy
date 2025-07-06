@@ -62,6 +62,13 @@ void zappy::gui::RaylibRenderer::handleInput()
         return;
     }
 
+    for (auto &[key, value] : this->_defaultKeysFrequencies) {
+        if (this->_inputManager.isKeyReleased(key)) {
+            this->_protocolRequests[network::GP::TIME_UNIT_MODIFICATION](value, 0);
+            break;
+        }
+    }
+
     this->_scene->handleInput(this->_inputManager);
 
     this->_pauseMenu->handleInput(this->_inputManager);
