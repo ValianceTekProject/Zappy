@@ -21,7 +21,7 @@ namespace zappy {
                         const int &playerId,
                         const float &duration,
                         const Color &color
-                    ) : AEffect::AEffect(playerId, duration, color) {}
+                    ) : AEffect::AEffect(playerId, duration, color), _defaultColor(color) {}
                     virtual ~AIncantationEffect() = default;
 
                     void incantationResult(const bool &res)
@@ -33,6 +33,13 @@ namespace zappy {
                         this->_elapsedTime = elapsedTime;
                         this->_duration = duration;
                     }
+
+                    bool hasEnded() const override {
+                        return !ColorIsEqual(_color, _defaultColor) && AEffect::hasEnded();
+                    }
+
+                private:
+                    Color _defaultColor;
             };
         } // namespace raylib
     } // namespace gui

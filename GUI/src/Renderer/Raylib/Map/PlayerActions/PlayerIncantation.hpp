@@ -28,6 +28,8 @@ namespace zappy {
 
                     const Vector2 &getPosition() const { return _pos ;}
 
+                    bool ActionWillEnd(const float &) const override { return false; }
+
                     void incantationResult(const bool &res)
                     {
                         AIncantationEffect &effect = static_cast<AIncantationEffect &>(*_effect);

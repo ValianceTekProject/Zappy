@@ -21,6 +21,7 @@ namespace zappy {
                         const int &playerId,
                         const ActionType &actionType,
                         const Rotation &movement,
+                        const game::Orientation &destination,
                         const float &timeUnit,
                         const float &elapsedTime = 0.f
                     );
@@ -32,6 +33,8 @@ namespace zappy {
 
                 private:
                     Movement _movement;
+
+                    game::Orientation _destination;
             };
         } // namespace raylib
     } // namespace gui

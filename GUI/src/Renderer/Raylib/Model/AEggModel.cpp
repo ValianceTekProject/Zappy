@@ -14,7 +14,8 @@ zappy::gui::raylib::AEggModel::AEggModel(const int &id) :
     _gamePosition(Vector2{0, 0}),
     _modelAnimations(nullptr),
     _animsCount(0),
-    _animCurrentFrame(0)
+    _animCurrentFrame(0),
+    _frameAccumulator(0.0f)
 {
     this->_animationIndexMap[State::IDLE] = 0;
     this->_animationIndexMap[State::OPEN] = 0;
@@ -30,37 +31,32 @@ void zappy::gui::raylib::AEggModel::init()
 
 void zappy::gui::raylib::AEggModel::update(const float &deltaUnits)
 {
-    // Vérifications de sécurité avant d'accéder aux animations
-    if (this->_modelAnimations == nullptr || this->_animsCount == 0) {
-        // Pas d'animations - rien à mettre à jour
+    if (this->_modelAnimations == nullptr || this->_animsCount == 0)
         return;
-    }
 
     int currentAnimIndex = this->_animationIndexMap[this->_state];
-    
-    // Vérifier que l'index d'animation est valide
-    if (currentAnimIndex < 0 || currentAnimIndex >= this->_animsCount) {
-        std::cerr << "Warning: Invalid animation index " << currentAnimIndex 
-                  << " (available: 0-" << (this->_animsCount - 1) << ")" << std::endl;
+
+    if (currentAnimIndex < 0 || currentAnimIndex >= this->_animsCount)
         return;
-    }
 
     ModelAnimation anim = this->_modelAnimations[currentAnimIndex];
-    
-    // Vérifier que l'animation a des frames
-    if (anim.frameCount <= 0) {
-        std::cerr << "Warning: Animation has no frames" << std::endl;
+
+    if (anim.frameCount <= 0)
         return;
-    }
 
     float speed = this->_animationFrameSpeedMap[this->_state];
 
     this->_frameAccumulator += deltaUnits * speed;
 
-    while (this->_frameAccumulator >= 1.0f) {
-        this->_animCurrentFrame = (this->_animCurrentFrame + 1) % anim.frameCount;
-        this->_frameAccumulator -= 1.0f;
+    if (this->_frameAccumulator >= 1.0f) {
+        const int frameAdvance = static_cast<int>(this->_frameAccumulator);
+
+        this->_animCurrentFrame = (this->_animCurrentFrame + frameAdvance) % anim.frameCount;
+        this->_frameAccumulator -= static_cast<float>(frameAdvance);
     }
+
+    if (this->_frameAccumulator < 0)
+        this->_frameAccumulator = 0.f;
 
     UpdateModelAnimation(this->_model, anim, this->_animCurrentFrame);
 }

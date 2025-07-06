@@ -26,10 +26,21 @@ namespace zappy {
             constexpr int MIN_PLAYERS_DISPLAYED = 1;
             constexpr int MAX_PLAYERS_DISPLAYED = 6;
 
-            enum class MenuState {
+            enum class SceneType {
+                BASIC,
+                POKEMON,
+                NONE,
+            };
+
+            enum class GameMenuState {
                 HELP,
                 BROADCASTS,
                 PLAYERS,
+            };
+
+            enum class PauseMenuState {
+                MAIN_MENU,
+                THEME_MENU
             };
 
             enum class MenuModifiedSection {
@@ -44,15 +55,6 @@ namespace zappy {
             MenuModifiedSection &operator+=(MenuModifiedSection &modifiedSection, int offset) noexcept;
             MenuModifiedSection &operator++(MenuModifiedSection &ms) noexcept;
             MenuModifiedSection  operator++(MenuModifiedSection &ms, int) noexcept;
-
-            struct MenuPlayerInfo {
-                int id;
-                bool hasIcon;
-                Texture2D icon;
-
-                MenuPlayerInfo(const int &id, const bool &hasIcon, const Texture2D &icon)
-                    : id(id), hasIcon(hasIcon), icon(icon) {}
-            };
         } // namespace raylib
     } // namespace gui
 } // namespace zappy

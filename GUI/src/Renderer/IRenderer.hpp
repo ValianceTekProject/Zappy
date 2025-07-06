@@ -8,12 +8,17 @@
 #pragma once
 
 #include "GameState.hpp"
+#include "GuiProtocol.hpp"
 
 #include <iostream>
 #include <memory>
+#include <unordered_map>
+#include <functional>
 
 namespace zappy {
     namespace gui {
+        using ProtocolRequest = std::unordered_map<network::GuiProtocol, std::function<void(const int &f, const int &d)>>;
+
         class IRenderer
         {
             public:
@@ -23,9 +28,9 @@ namespace zappy {
 
                 virtual void setGameState(std::shared_ptr<game::GameState> &gameState) = 0;
 
+                virtual void setProtocolRequests(const ProtocolRequest &protocolRequests) = 0;
+
                 virtual void setFrequency(const size_t &frequency) = 0;
-                virtual size_t getFrequency() const = 0;
-                virtual bool hasFrequencyChanged() const = 0;
 
                 virtual void handleInput() = 0;
                 virtual void update() = 0;

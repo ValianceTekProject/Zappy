@@ -18,7 +18,7 @@ zappy::gui::raylib::PokemonResourceModel::PokemonResourceModel(const int &id, co
 void zappy::gui::raylib::PokemonResourceModel::init()
 {
     AResourceModel::init();
-    _scale = 0.8f;
+    _scale = 1.8f;
 
     static const std::unordered_map<zappy::game::Resource, std::string> modelPaths = {
         { zappy::game::Resource::FOOD, assets::POKEMON_FOOD_PATH },
@@ -31,13 +31,13 @@ void zappy::gui::raylib::PokemonResourceModel::init()
     };
 
     static const std::unordered_map<zappy::game::Resource, float> resourceScales = {
-        { zappy::game::Resource::FOOD, 2.0f },
+        { zappy::game::Resource::FOOD, 0.1f },
         { zappy::game::Resource::LINEMATE, 0.1f },
-        { zappy::game::Resource::DERAUMERE, 0.002f },
-        { zappy::game::Resource::SIBUR, 0.001f },
-        { zappy::game::Resource::MENDIANE, 0.32f },
-        { zappy::game::Resource::PHIRAS, 0.003f },
-        { zappy::game::Resource::THYSTAME, 0.1f }
+        { zappy::game::Resource::DERAUMERE, 0.1f },
+        { zappy::game::Resource::SIBUR, 0.1f },
+        { zappy::game::Resource::MENDIANE, 0.01 },
+        { zappy::game::Resource::PHIRAS, 0.1f },
+        { zappy::game::Resource::THYSTAME, 0.001f }
     };
 
     auto modelIt = modelPaths.find(_resourceType);
@@ -47,7 +47,8 @@ void zappy::gui::raylib::PokemonResourceModel::init()
 
     AResourceModel::_initModel(modelIt->second);
 
-    if (_scale <= 0.0f) _scale = 1.0f;
+    if (_scale <= 0.0f)
+        _scale = 1.0f;
 
     auto scaleIt = resourceScales.find(_resourceType);
     if (scaleIt != resourceScales.end()) {

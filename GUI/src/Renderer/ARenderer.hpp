@@ -11,25 +11,27 @@
 #include "GuiError.hpp"
 
 #include <memory>
+#include <chrono>
 
 namespace zappy {
     namespace gui {
+        constexpr float RequestMapContentTimeUnit = 20.0f;
+
         class ARenderer : public IRenderer {
             public:
-                ARenderer() : _gameState(nullptr) {}
+                ARenderer();
                 virtual ~ARenderer() override = default;
 
-                virtual void init() override = 0;
+                virtual void init() override;
 
-                void setGameState(std::shared_ptr<game::GameState> &gameState) override
-                    { _gameState = gameState; }
+                void setGameState(std::shared_ptr<game::GameState> &gameState) override;
+
+                void setProtocolRequests(const ProtocolRequest &protocolRequests) override;
 
                 virtual void setFrequency(const size_t &frequency) override;
-                virtual size_t getFrequency() const override { return this->_gameState->getFrequency(); }
-                virtual bool hasFrequencyChanged() const override { return false; }
 
                 virtual void handleInput() override = 0;
-                virtual void update() override = 0;
+                virtual void update() override;
 
                 virtual void render() const override = 0;
 
@@ -74,6 +76,11 @@ namespace zappy {
                 void _checkGameState() const;
 
                 std::shared_ptr<game::GameState> _gameState;
+
+                ProtocolRequest _protocolRequests;
+
+                std::chrono::steady_clock::time_point _lastTime;
+                float _elapsedTime;
         };
     }
 }

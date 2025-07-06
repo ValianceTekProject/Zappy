@@ -38,7 +38,7 @@ namespace zappy {
                     MapRenderer(const std::shared_ptr<game::Map> map);
                     ~MapRenderer() = default;
 
-                    void init();
+                    void init(const std::string &tileTexturePath = assets::BASIC_FLOOR_PATH);
 
                     void update(const int &frequency);
 
@@ -58,10 +58,17 @@ namespace zappy {
                     void setPlayerPosition(const int &id, const int &x, const int &y, const game::Orientation &orientation);
 
                     void playerLook(const int &id, const game::Orientation &orientation);
-                    void playerLookLeft(const int &id);
-                    void playerLookRight(const int &id);
+                    void playerLookLeft(const int &id, const game::Orientation &orientation);
+                    void playerLookRight(const int &id, const game::Orientation &orientation);
 
-                    void playerForward(const int &id, const int &x, const int &y);
+                    void playerForward(
+                        const int &id,
+                        const int &x,
+                        const int &y,
+                        const game::Orientation &orientation,
+                        const int &mapWidth,
+                        const int &mapHeight
+                    );
                     void playerExpulsion(const int &id, const int &x, const int &y);
 
                     void playerBroadcast(const int &id);
@@ -72,6 +79,9 @@ namespace zappy {
                     void removePlayer(const int &id);
                     void removeEgg(const int &id);
 
+                    void removeAllTranslations(const int &id);
+                    void removeAllRotations(const int &id);
+
                     private:
                     APlayerModel &_getPlayer(const int &id);
                     const APlayerModel &_getPlayer(const int &id) const;
@@ -79,7 +89,11 @@ namespace zappy {
                     AEggModel &_getEgg(const int &id);
                     const AEggModel &_getEgg(const int &id) const;
 
-                    void _addRotation(const APlayerModel &player, const float &angle);
+                    void _addRotation(
+                        const APlayerModel &player,
+                        const float &angle,
+                        const game::Orientation &orientation
+                    );
 
                     void _updatePlayersAndEggs(const float &deltaUnits);
                     void _updateActions(const float &deltaUnits);

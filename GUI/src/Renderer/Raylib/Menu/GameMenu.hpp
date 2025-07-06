@@ -46,9 +46,6 @@ namespace zappy {
                     void removePlayer(const int &id);
 
                 private:
-                    MenuPlayerInfo &_getPlayerInfo(const int &id);
-                    const MenuPlayerInfo &_getPlayerInfo(const int &id) const;
-
                     std::string _decryptBroadcast(
                         const int &id,
                         const std::string &message,
@@ -64,7 +61,7 @@ namespace zappy {
                     void _renderFreq(const int &screenWidth, const int &screenHeight) const;
                     void _renderPlayersInfos(const int &screenWidth, const int &screenHeight) const;
                     void _renderPlayerInfo(
-                        const MenuPlayerInfo &playerInfo,
+                        const int &playerId,
                         const int &x, const int &y,
                         const int &textSize,
                         const int &spacingY,
@@ -81,7 +78,7 @@ namespace zappy {
                     size_t _frequency;
                     bool _freqChanged;
 
-                    std::vector<MenuPlayerInfo> _playersInfos;
+                    std::vector<int> _playersIds;
                     int _displayedPlayersIndex;
                     int _numberPlayerDisplayed;
 
@@ -93,9 +90,9 @@ namespace zappy {
                     std::map<MenuModifiedSection, void (GameMenu::*)(const InputManager&)> _modifiedSectionHandlers;
 
                     bool _displayAll;
-                    std::map<MenuState, int> _menuStatesKeys;
-                    std::map<MenuState, bool> _menuStates;
-                    std::map<MenuState, void (GameMenu::*)(const int&, const int&) const> _menuRenderFunctions;
+                    std::map<GameMenuState, int> _menuStatesKeys;
+                    std::map<GameMenuState, bool> _menuStates;
+                    std::map<GameMenuState, void (GameMenu::*)(const int&, const int&) const> _menuRenderFunctions;
 
                     const std::map<int, int> _frequencyKeyModifiers = {
                         { KEY_UP, 1 },

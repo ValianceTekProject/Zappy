@@ -40,6 +40,7 @@ namespace zappy {
                     Vector2 getGamePosition() const { return _gamePosition; }
 
                     game::Orientation getOrientation() const { return _orientation; }
+                    Vector3 getOrientationRotation() const;
                     Vector3 getHeadOrigin() const;
 
                     virtual void look(const game::Orientation &orientation);
@@ -48,9 +49,9 @@ namespace zappy {
 
                     virtual void update(const float &deltaUnits) override;
 
-                    void idle();
-                    void walk();
-                    void eject();
+                    virtual void idle();
+                    virtual void walk();
+                    virtual void eject();
 
                 protected:
                     virtual void _initModel(const std::string &modelPath) override;
@@ -63,6 +64,8 @@ namespace zappy {
                     game::Orientation _orientation;
 
                     Vector3 _headOrigin;
+
+                    Vector3 _northRotation;
 
                     ModelAnimation *_modelAnimations;
 

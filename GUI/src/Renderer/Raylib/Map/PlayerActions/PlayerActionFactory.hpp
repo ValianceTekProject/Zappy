@@ -44,6 +44,7 @@ namespace zappy {
                     static std::shared_ptr<IPlayerAction> createRotation(
                         const int &playerId,
                         const Rotation &rotation,
+                        const game::Orientation &destination,
                         const float &timeUnit,
                         const float &elapsedTime = 0.f
                     );

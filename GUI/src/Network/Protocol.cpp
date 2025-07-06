@@ -18,13 +18,15 @@ zappy::network::Protocol::Protocol(
     _authenticated(false)
 {
     initHandlers();
+    initHandlers();
+
     this->_network->setMessageCallback([this](const ServerMessage &msg) {
         printDebug("Received message: " + msg.command + " " + msg.params);
 
         GP cmd = getGuiProtocol(msg.command);
 
         try {
-            _handlers[cmd](msg.params);
+            this->_handlers[cmd](msg.params);
         } catch (const std::exception &e) {
             printDebug("Error handling command \"" + msg.command + " " + msg.params + "\": " + e.what(), std::cerr);
         }
@@ -37,7 +39,7 @@ zappy::network::Protocol::~Protocol() {
 
 void zappy::network::Protocol::initHandlers()
 {
-    _handlers = {
+    this->_handlers = {
         {GP::MAP_SIZE,               [this](auto &p){ handleMapSize(p); }},
         {GP::TILE_CONTENT,           [this](auto &p){ handleTileContent(p); }},
         {GP::TEAM_NAME,              [this](auto &p){ handleTeamNames(p); }},
@@ -142,53 +144,90 @@ void zappy::network::Protocol::update() {
     auto messages = this->_network->receiveMessages();
 }
 
-// Commandes GUI vers serveur selon le protocole officiel
+// Request handlers
 void zappy::network::Protocol::requestMapSize()
 {
-    this->_network->sendCommand("msz");
+    this->_network->sendCommand(getGuiProtocol(GuiProtocol::MAP_SIZE));
+
+    printDebug("Sent: " + getGuiProtocol(GuiProtocol::MAP_SIZE));
 }
 
 void zappy::network::Protocol::requestTileContent(int x, int y)
 {
-    this->_network->sendCommand("bct " + std::to_string(x) + " " + std::to_string(y));
+    this->_network->sendCommand(
+        getGuiProtocol(GuiProtocol::TILE_CONTENT) + " " + std::to_string(x) + " " + std::to_string(y)
+    );
+
+    printDebug("Sent: " + getGuiProtocol(GuiProtocol::TILE_CONTENT) + " " + std::to_string(x) + " " + std::to_string(y));
 }
 
 void zappy::network::Protocol::requestMapContent()
 {
-    this->_network->sendCommand("mct");
+    this->_network->sendCommand(getGuiProtocol(GuiProtocol::MAP_CONTENT));
+
+    printDebug("Sent: " + getGuiProtocol(GuiProtocol::MAP_CONTENT));
 }
 
 void zappy::network::Protocol::requestTeamNames()
 {
-    this->_network->sendCommand("tna");
+    this->_network->sendCommand(getGuiProtocol(GuiProtocol::TEAM_NAME));
+
+    printDebug("Sent: " + getGuiProtocol(GuiProtocol::TEAM_NAME));
 }
 
 void zappy::network::Protocol::requestPlayerPosition(int playerId)
 {
-    this->_network->sendCommand("ppo #" + std::to_string(playerId));
+    this->_network->sendCommand(
+        getGuiProtocol(GuiProtocol::PLAYER_POSITION) + " #" + std::to_string(playerId)
+    );
+
+    printDebug("Sent: " + getGuiProtocol(GuiProtocol::PLAYER_POSITION) + " #" + std::to_string(playerId));
 }
 
 void zappy::network::Protocol::requestPlayerLevel(int playerId)
 {
-    this->_network->sendCommand("plv #" + std::to_string(playerId));
+    this->_network->sendCommand(
+        getGuiProtocol(GuiProtocol::PLAYER_LEVEL) + " #" + std::to_string(playerId)
+    );
+
+    printDebug("Sent: " + getGuiProtocol(GuiProtocol::PLAYER_LEVEL) + " #" + std::to_string(playerId));
 }
 
 void zappy::network::Protocol::requestPlayerInventory(int playerId)
 {
-    this->_network->sendCommand("pin #" + std::to_string(playerId));
+    this->_network->sendCommand(
+        getGuiProtocol(GuiProtocol::PLAYER_INVENTORY) + " #" + std::to_string(playerId)
+    );
+
+    printDebug("Sent: " + getGuiProtocol(GuiProtocol::PLAYER_INVENTORY) + " #" + std::to_string(playerId));
 }
 
 void zappy::network::Protocol::requestTimeUnit()
 {
-    this->_network->sendCommand("sgt");
+    this->_network->sendCommand(getGuiProtocol(GuiProtocol::TIME_UNIT_REQUEST));
+
+    printDebug("Sent: " + getGuiProtocol(GuiProtocol::TIME_UNIT_REQUEST));
 }
 
 void zappy::network::Protocol::setTimeUnit(int timeUnit)
 {
-    this->_network->sendCommand("sst " + std::to_string(timeUnit));
+    this->_network->sendCommand(
+        getGuiProtocol(GuiProtocol::TIME_UNIT_MODIFICATION) + " " + std::to_string(timeUnit)
+    );
+
+    printDebug("Sent: " + getGuiProtocol(GuiProtocol::TIME_UNIT_MODIFICATION) + " " + std::to_string(timeUnit));
 }
 
-// Handlers selon le protocole officiel
+/**
+ * @brief Handles the map size information received from the server
+ *
+ * Parses the map width and height from the received parameters,
+ * initializes the game map with the specified dimensions, and
+ * initializes the renderer. Prints a debug message with the map size.
+ *
+ * @param params A string containing map width and height
+ *               Format: "WIDTH HEIGHT"
+ */
 void zappy::network::Protocol::handleMapSize(const std::string &params)
 {
     std::istringstream iss(params);
@@ -240,6 +279,7 @@ void zappy::network::Protocol::handleTileContent(const std::string &params)
  * Prints a debug message indicating the team has been added.
  *
  * @param params A string containing the team name
+ *               Example: "N"
  */
 void zappy::network::Protocol::handleTeamNames(const std::string &params)
 {
@@ -259,7 +299,7 @@ void zappy::network::Protocol::handleTeamNames(const std::string &params)
  * level, and team name. Creates a new Player object and adds it to the renderer.
  *
  * @param params A string containing the new player's details
- *               Example: "#n X Y N L TeamName"
+ *               Example: "#n X Y O L TeamName"
  */
 void zappy::network::Protocol::handleNewPlayer(const std::string &params)
 {

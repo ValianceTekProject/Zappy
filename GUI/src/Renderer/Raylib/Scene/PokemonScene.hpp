@@ -6,12 +6,15 @@
 */
 
 #include "AScene.hpp"
-#include "PokemonPlayerModel.hpp"
+
+#include "BulbasaurPlayerModel.hpp"
+
 #include "PokemonEggModel.hpp"
 #include "PokemonResourceModel.hpp"
 
 #include <raylib.h>
-#include <unordered_map>
+#include <map>
+#include <functional>
 
 namespace zappy {
     namespace gui {

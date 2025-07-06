@@ -31,17 +31,17 @@ void zappy::gui::raylib::GameMenu::init()
     this->_modifiedSectionHandlers[MenuModifiedSection::FREQ] = &GameMenu::_handleFreqInput;
     this->_modifiedSectionHandlers[MenuModifiedSection::PLAYERS] = &GameMenu::_handlePlayersInput;
 
-    this->_menuStatesKeys[MenuState::HELP] = KEY_H;
-    this->_menuStates[MenuState::HELP] = false;
-    this->_menuRenderFunctions[MenuState::HELP] = &GameMenu::_renderHelp;
+    this->_menuStatesKeys[GameMenuState::HELP] = KEY_H;
+    this->_menuStates[GameMenuState::HELP] = false;
+    this->_menuRenderFunctions[GameMenuState::HELP] = &GameMenu::_renderHelp;
 
-    this->_menuStatesKeys[MenuState::BROADCASTS] = KEY_B;
-    this->_menuStates[MenuState::BROADCASTS] = false;
-    this->_menuRenderFunctions[MenuState::BROADCASTS] = &GameMenu::_renderBroadcasts;
+    this->_menuStatesKeys[GameMenuState::BROADCASTS] = KEY_B;
+    this->_menuStates[GameMenuState::BROADCASTS] = false;
+    this->_menuRenderFunctions[GameMenuState::BROADCASTS] = &GameMenu::_renderBroadcasts;
 
-    this->_menuStatesKeys[MenuState::PLAYERS] = KEY_P;
-    this->_menuStates[MenuState::PLAYERS] = false;
-    this->_menuRenderFunctions[MenuState::PLAYERS] = &GameMenu::_renderPlayersInfos;
+    this->_menuStatesKeys[GameMenuState::PLAYERS] = KEY_P;
+    this->_menuStates[GameMenuState::PLAYERS] = false;
+    this->_menuRenderFunctions[GameMenuState::PLAYERS] = &GameMenu::_renderPlayersInfos;
 }
 
 bool zappy::gui::raylib::GameMenu::hasFrequencyChanged()
@@ -55,18 +55,18 @@ bool zappy::gui::raylib::GameMenu::hasFrequencyChanged()
 
 void zappy::gui::raylib::GameMenu::handleInput(const InputManager &inputManager)
 {
-    if (inputManager.isKeyPressed(KEY_F11))
+    if (inputManager.isKeyReleased(KEY_F11))
         ToggleFullscreen();
 
     for (const auto &[state, key] : _menuStatesKeys) {
-        if (inputManager.isKeyPressed(key))
+        if (inputManager.isKeyReleased(key))
             this->_menuStates[state] = !this->_menuStates[state];
     }
 
-    if (inputManager.isKeyPressed(KEY_F1))
+    if (inputManager.isKeyReleased(KEY_F1))
         _displayAll = !_displayAll;
 
-    if (inputManager.isKeyPressed(KEY_F))
+    if (inputManager.isKeyReleased(KEY_F))
         this->_modifiedSection++;
 
     (this->*_modifiedSectionHandlers[this->_modifiedSection])(inputManager);
@@ -99,16 +99,12 @@ void zappy::gui::raylib::GameMenu::render() const
 
 void zappy::gui::raylib::GameMenu::addPlayer(const int &id)
 {
-    if (this->_playersInfos.empty()) {
+    if (this->_playersIds.empty()) {
         this->_displayedPlayersIndex = 0;
         this->_numberPlayerDisplayed = 1;
     }
 
-    Texture2D icon = LoadTexture("Assets/grass.jpg");
-
-    MenuPlayerInfo playerInfo(id, true, icon);
-
-    this->_playersInfos.push_back(playerInfo);
+    this->_playersIds.push_back(id);
 }
 
 void zappy::gui::raylib::GameMenu::playerBroadcast(
@@ -126,39 +122,20 @@ void zappy::gui::raylib::GameMenu::playerBroadcast(
 
 void zappy::gui::raylib::GameMenu::removePlayer(const int &id)
 {
-    for (auto it = this->_playersInfos.begin(); it != this->_playersInfos.end(); ++it) {
-        if (it->id == id) {
-            this->_playersInfos.erase(it);
+    for (auto it = this->_playersIds.begin(); it != this->_playersIds.end(); ++it) {
+        if ((*it) == id) {
+            this->_playersIds.erase(it);
             break;
         }
     }
 
-    if (this->_displayedPlayersIndex >= static_cast<int>(_playersInfos.size()))
-        this->_displayedPlayersIndex = this->_displayedPlayersIndex % static_cast<int>(_playersInfos.size());
+    if (this->_displayedPlayersIndex >= static_cast<int>(_playersIds.size()))
+        this->_displayedPlayersIndex = this->_displayedPlayersIndex % static_cast<int>(_playersIds.size());
 
-    if (this->_playersInfos.empty()) {
+    if (this->_playersIds.empty()) {
         this->_displayedPlayersIndex = -1;
         this->_numberPlayerDisplayed = 0;
     }
-}
-
-zappy::gui::raylib::MenuPlayerInfo &zappy::gui::raylib::GameMenu::_getPlayerInfo(const int &id)
-{
-    for (auto &playerInfo : this->_playersInfos) {
-        if (playerInfo.id == id)
-            return playerInfo;
-    }
-    throw RendererError("Player" + std::to_string(id) + " Infos not found", "GameMenu::_getPlayerInfo");
-}
-
-const zappy::gui::raylib::MenuPlayerInfo &zappy::gui::raylib::GameMenu::_getPlayerInfo(const int &id) const
-{
-    for (const auto &playerInfo : this->_playersInfos) {
-        std::cout << "MenuPlayerInfo.id: " << playerInfo.id << std::endl;
-        if (playerInfo.id == id)
-            return playerInfo;
-    }
-    throw RendererError("Player" + std::to_string(id) + " Infos not found", "GameMenu::_getPlayerInfo");
 }
 
 std::string zappy::gui::raylib::GameMenu::_decryptBroadcast(
@@ -178,7 +155,7 @@ std::string zappy::gui::raylib::GameMenu::_decryptBroadcast(
 void zappy::gui::raylib::GameMenu::_handleFreqInput(const InputManager &inputManager)
 {
     for (const auto &[key, modifier]: _frequencyKeyModifiers) {
-        if (inputManager.isKeyPressed(key)) {
+        if (inputManager.isKeyReleased(key)) {
             if (modifier < 0 && this->_frequency == MIN_FREQ)
                 continue;
             else if (modifier > 0 && this->_frequency == MAX_FREQ)
@@ -196,27 +173,27 @@ void zappy::gui::raylib::GameMenu::_handleFreqInput(const InputManager &inputMan
 
 void zappy::gui::raylib::GameMenu::_handlePlayersInput(const InputManager &inputManager)
 {
-    if (this->_playersInfos.size() == 0)
+    if (this->_playersIds.size() == 0)
         return;
 
-    if (inputManager.isKeyPressed(KEY_UP)) {
+    if (inputManager.isKeyReleased(KEY_UP)) {
         this->_numberPlayerDisplayed++;
         if (this->_numberPlayerDisplayed > MAX_PLAYERS_DISPLAYED)
             this->_numberPlayerDisplayed = MAX_PLAYERS_DISPLAYED;
-    } else if (inputManager.isKeyPressed(KEY_DOWN)) {
+    } else if (inputManager.isKeyReleased(KEY_DOWN)) {
         this->_numberPlayerDisplayed--;
         if (this->_numberPlayerDisplayed < MIN_PLAYERS_DISPLAYED)
             this->_numberPlayerDisplayed = MIN_PLAYERS_DISPLAYED;
-    } else if (inputManager.isKeyPressed(KEY_LEFT)) {
+    } else if (inputManager.isKeyReleased(KEY_LEFT)) {
         this->_displayedPlayersIndex -= this->_numberPlayerDisplayed;
         if (this->_displayedPlayersIndex < 0) {
-            this->_displayedPlayersIndex = this->_numberPlayerDisplayed * (this->_playersInfos.size() / this->_numberPlayerDisplayed);
-            if (this->_displayedPlayersIndex == static_cast<int>(this->_playersInfos.size()))
+            this->_displayedPlayersIndex = this->_numberPlayerDisplayed * (this->_playersIds.size() / this->_numberPlayerDisplayed);
+            if (this->_displayedPlayersIndex == static_cast<int>(this->_playersIds.size()))
                 this->_displayedPlayersIndex -= this->_numberPlayerDisplayed - 1;
         }
-    } else if (inputManager.isKeyPressed(KEY_RIGHT)) {
+    } else if (inputManager.isKeyReleased(KEY_RIGHT)) {
         this->_displayedPlayersIndex += this->_numberPlayerDisplayed;
-        if (this->_displayedPlayersIndex >= static_cast<int>(this->_playersInfos.size()))
+        if (this->_displayedPlayersIndex >= static_cast<int>(this->_playersIds.size()))
             this->_displayedPlayersIndex = 0;
     }
 }
@@ -292,7 +269,8 @@ void zappy::gui::raylib::GameMenu::_renderHelp(const int &screenWidth, const int
         "[F11] Toggle fullscreen",
         "z/q/s/d to move",
         "mouse to look around",
-        "Arrow keys to modify frequency",
+        "Arrow keys to modify frequency/players",
+        "[F] to switch modified section (frequency/players)",
         "[B] Broadcasts messages",
         "[P] Players infos",
     };
@@ -322,7 +300,9 @@ void zappy::gui::raylib::GameMenu::_renderFreq(const int &screenWidth, const int
     const std::string freqText = "Frequency: " + std::to_string(this->_gameState->getFrequency());
 
     DrawRectangle(boxX, boxY, boxWidth, boxHeight, _boxColor);
-    DrawRectangleLines(boxX, boxY, boxWidth, boxHeight, WHITE);
+
+    const Color linesColor = _modifiedSection == MenuModifiedSection::FREQ ? WHITE : BLACK;
+    DrawRectangleLines(boxX, boxY, boxWidth, boxHeight, linesColor);
 
     const int textWidth = MeasureText(freqText.c_str(), fontSize);
     const int textX = boxX + (boxWidth - textWidth) / 2;
@@ -342,7 +322,7 @@ void zappy::gui::raylib::GameMenu::_renderPlayersInfos(const int &screenWidth, c
     const int spacingY = 5 * scaleY;
     const int textSize = static_cast<int>(this->_fontSize * scaleY);
     const int boxWidth = textSize * 10;
-    const int totalLines = 5 + game::RESOURCE_QUANTITY;
+    const int totalLines = 6 + game::RESOURCE_QUANTITY;
     const int boxHeight = totalLines * textSize + (totalLines - 1) * spacingY;
 
     const int x = screenWidth - paddingX;
@@ -355,10 +335,10 @@ void zappy::gui::raylib::GameMenu::_renderPlayersInfos(const int &screenWidth, c
         return;
     }
 
-    int available = static_cast<int>(_playersInfos.size()) - _displayedPlayersIndex;
+    int available = static_cast<int>(_playersIds.size()) - _displayedPlayersIndex;
     int toDraw = std::min(_numberPlayerDisplayed, available);
 
-    const int columns = 2;
+    constexpr int columns = 2;
 
     for (int i = 0; i < toDraw; ++i) {
         int dataIdx = _displayedPlayersIndex + i;
@@ -369,7 +349,7 @@ void zappy::gui::raylib::GameMenu::_renderPlayersInfos(const int &screenWidth, c
         int y = paddingY + row * (boxHeight + spacingY);
 
         _renderPlayerInfo(
-            _playersInfos[dataIdx],
+            _playersIds[dataIdx],
             x, y,
             textSize,
             spacingY,
@@ -380,19 +360,26 @@ void zappy::gui::raylib::GameMenu::_renderPlayersInfos(const int &screenWidth, c
 }
 
 void zappy::gui::raylib::GameMenu::_renderPlayerInfo(
-    const MenuPlayerInfo &playerInfo,
+    const int &playerId,
     const int &screenWidth, const int &y,
     const int &textSize,
     const int &spacingY,
     const int &boxWidth,
     const int &boxHeight
 ) const {
-    const auto &player = this->_gameState->getPlayerById(playerInfo.id);
+    const auto &player = this->_gameState->getPlayerById(playerId);
     const auto &inv = player.getInventory();
 
     const int boxX = screenWidth - boxWidth;
 
     DrawRectangle(boxX, y, boxWidth, boxHeight, Fade(GRAY, 0.5f));
+
+    const Color linesColor = _modifiedSection == MenuModifiedSection::PLAYERS ? WHITE : BLACK;
+    DrawRectangleLinesEx(
+        Rectangle{ (float)boxX, (float)y, (float)boxWidth, (float)boxHeight },
+        2.0f,
+        linesColor
+    );
 
     const int centerX = boxX + boxWidth / 2;
     int currentY = y + textSize / 2;
@@ -403,10 +390,11 @@ void zappy::gui::raylib::GameMenu::_renderPlayerInfo(
         currentY += textSize + spacingY;
     };
 
-    drawCentered("ID: " + std::to_string(playerInfo.id));
+    drawCentered("ID: " + std::to_string(playerId));
     drawCentered("Team: " + player.teamName);
     drawCentered("Level: " + std::to_string(player.level));
     drawCentered("Position: " + std::to_string(player.x) + ", " + std::to_string(player.y));
+    drawCentered("Look: " + std::string(game::orientationFullStrings[static_cast<int>(player.orientation)]));
 
     for (size_t i = 0; i < game::RESOURCE_QUANTITY; ++i) {
         game::Resource res = static_cast<game::Resource>(i);

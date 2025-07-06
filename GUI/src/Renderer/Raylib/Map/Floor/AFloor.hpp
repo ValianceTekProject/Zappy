@@ -14,12 +14,17 @@ namespace zappy {
         namespace raylib {
             class AFloor : public IFloor {
                 public:
-                    AFloor(const size_t &width, const size_t &height, const float &tileSize);
+                    AFloor(
+                        const size_t &width,
+                        const size_t &height,
+                        const std::string &tileTexturePath = assets::BASIC_FLOOR_PATH,
+                        const float &tileSize = 1.0f
+                    );
                     ~AFloor() = default;
 
-                    virtual void init() override;
-                    virtual void update() const override;
-                    virtual void render() const override;
+                    virtual void init() override = 0;
+                    virtual void update() const override = 0;
+                    virtual void render() const override = 0;
 
                     // Setters
                     void setWidth(const size_t &width) override { this->_width = width; }
@@ -40,11 +45,15 @@ namespace zappy {
 
                     virtual void translate(const float &deltaUnits, const Vector3 &translationVector, Vector3 &destination, APlayerModel &player) override = 0;
 
-                private:
+                protected:
                     size_t _width;
                     size_t _height;
 
                     float _tileSize;
+
+                    std::string _tileTexturePath;
+                    Texture2D _tileTexture;
+                    Model _model;
             };
         }
     } // namespace gui

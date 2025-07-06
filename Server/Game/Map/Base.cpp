@@ -76,35 +76,26 @@ void zappy::game::MapServer::_placeResources()
     }
 }
 
+void zappy::game::MapServer::addReplaceResourceOnTile(int resourceIdx)
+{
+    int randX = std::rand() % this->_width;
+    int randY = std::rand() % this->_height;
+    zappy::game::Tile &tile = this->getTile(randX, randY);
+    tile.addResource(
+        static_cast<zappy::game::Resource>(resourceIdx), 1);
+}
+
 void zappy::game::MapServer::replaceResources()
 {
     size_t nbResources = zappy::game::coeff.size();
 
     std::lock_guard<std::mutex> lock(this->_resourceMutex);
     for (size_t resourceIdx = 0; resourceIdx < nbResources; resourceIdx += 1) {
-
         int totResources = coeff[resourceIdx] * this->_width * this->_height;
         int actualResources =
             this->getResourceQuantity(static_cast<zappy::game::Resource>(resourceIdx));
-
         for (int count = actualResources; count < totResources; count += 1) {
-
-            int randX = std::rand() % this->_width;
-            int randY = std::rand() % this->_height;
-
-
-            zappy::game::Tile &tile = this->getTile(randX, randY);
-            tile.addResource(
-                static_cast<zappy::game::Resource>(resourceIdx), 1);
-            for (auto &team : this->_commandHandlerGui._teamList) {
-                if (team->getName() == "GRAPHIC") {
-                    for (auto &players : team->getPlayerList()) {
-                        this->_commandHandlerGui.handleBct(*players, std::string(std::to_string(randX)) +
-                                                " " +
-                                                std::string(std::to_string(randY)));
-                    }
-                }
-            }
+            addReplaceResourceOnTile(resourceIdx);
         }
     }
 }

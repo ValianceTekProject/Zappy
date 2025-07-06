@@ -23,7 +23,6 @@ namespace zappy {
                 void init() override;
 
                 void handleInput() override;
-                void update() override;
 
                 void render() const override;
 

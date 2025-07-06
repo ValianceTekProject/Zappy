@@ -18,6 +18,8 @@ void zappy::gui::NcursesRenderer::init()
 {
     _initWindow();
     _initColors();
+
+    ARenderer::init();
 }
 
 void zappy::gui::NcursesRenderer::_initWindow()
@@ -48,8 +50,6 @@ void zappy::gui::NcursesRenderer::handleInput()
     else if (ch == 'h')
         _help = !_help;
 }
-
-void zappy::gui::NcursesRenderer::update() {}
 
 void zappy::gui::NcursesRenderer::render() const
 {

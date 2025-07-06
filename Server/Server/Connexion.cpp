@@ -53,6 +53,40 @@ bool zappy::server::Server::_handleNewConnection(struct pollfd &pfd)
     return false;
 }
 
+void zappy::server::Server::pfdLoop()
+{
+    for (size_t i = 0; i < this->_fds.size();) {
+        auto &pfd = this->_fds[i];
+
+        if (pfd.revents & POLLIN) {
+            try {
+                if (this->_handleNewConnection(pfd)) {
+                    ++i;
+                    continue;
+                }
+                auto content = this->_getClientCommand(pfd);
+
+                if (this->_handleClientDisconnection(content, pfd) ==
+                    ClientState::DISCONNECTED) {
+                    this->_fds.erase(this->_fds.begin() + i);
+                    continue;
+                }
+
+                this->_handleClientCommand(content, pfd);
+
+            } catch (const zappy::error::SocketError &e) {
+                close(pfd.fd);
+                this->_game->removeFromTeam(pfd.fd);
+                this->_fds.erase(this->_fds.begin() + i);
+                continue;
+            }
+        }
+
+        ++i;
+    }
+}
+
+
 void zappy::server::Server::runLoop()
 {
     auto signalHandler = std::make_shared<zappy::utils::Signal>(*this, *_game);
@@ -63,18 +97,7 @@ void zappy::server::Server::runLoop()
 
         if (this->_game->getRunningState() == RunningState::STOP)
             this->setRunningState(RunningState::STOP);
-        for (size_t i = 0; i < this->_fds.size(); i += 1) {
-            auto &pfd = this->_fds[i];
-            if (pfd.revents & POLLIN) {
-                if (this->_handleNewConnection(pfd) == true)
-                    continue;
-                auto content = this->_getClientCommand(pfd);
-                if (this->_handleClientDisconnection(content, pfd) ==
-                    ClientState::DISCONNECTED) {
-                    break;
-                }
-                this->_handleClientCommand(content, pfd);
-            }
-        }
+        this->pfdLoop();
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 }

@@ -11,7 +11,7 @@
 
 zappy::gui::raylib::BasicResourceModel::BasicResourceModel(const int &id, const zappy::game::Resource &resourceType) : AResourceModel::AResourceModel(id, resourceType)
 {
-    constexpr float scale = 0.1;
+    constexpr float scale = 0.1f;
     setScale(scale);
 }
 

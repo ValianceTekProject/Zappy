@@ -11,12 +11,14 @@ zappy::gui::raylib::APlayerModel::APlayerModel(const int &id) :
     AModel::AModel(),
     _id(id),
     _state(State::IDLE),
-    _gamePosition(Vector2{0, 0}),
+    _gamePosition({ 0.0f, 0.0f }),
     _orientation(game::Orientation::NORTH),
-    _headOrigin(Vector3{0, 1, 0}),
+    _headOrigin({ 0.0f, 1.0f, 0.0f }),
+    _northRotation({ 0.0f, 0.0f, 0.0f }),
     _modelAnimations(nullptr),
     _animsCount(0),
-    _animCurrentFrame(0)
+    _animCurrentFrame(0),
+    _frameAccumulator(0)
 {
     this->_animationIndexMap[State::IDLE] = 0;
     this->_animationIndexMap[State::WALK] = 0;
@@ -32,6 +34,21 @@ void zappy::gui::raylib::APlayerModel::init()
     AModel::init();
 }
 
+Vector3 zappy::gui::raylib::APlayerModel::getOrientationRotation() const
+{
+    switch (this->_orientation) {
+        case game::Orientation::NORTH:
+            return this->_northRotation;
+        case game::Orientation::EAST:
+            return Vector3Add(this->_northRotation, { 0.0f, -90.0f, 0.0f });
+        case game::Orientation::SOUTH:
+            return Vector3Add(this->_northRotation, { 0.0f, 180.0f, 0.0f });
+        case game::Orientation::WEST:
+            return Vector3Add(this->_northRotation, { 0.0f, 90.0f, 0.0f });
+    }
+    return this->_northRotation;
+}
+
 Vector3 zappy::gui::raylib::APlayerModel::getHeadOrigin() const
 {
     return Vector3{
@@ -43,17 +60,8 @@ Vector3 zappy::gui::raylib::APlayerModel::getHeadOrigin() const
 
 void zappy::gui::raylib::APlayerModel::look(const game::Orientation &orientation)
 {
-    if (this->_orientation == orientation)
-        return;
-
-    if (orientation - 1 == this->_orientation) {
-        AModel::rotate(Vector3{0, -90, 0});
-    } else if (orientation + 1 == this->_orientation) {
-        AModel::rotate(Vector3{0, 90, 0});
-    } else {
-        AModel::rotate(Vector3{0, 180, 0});
-    }
     this->_orientation = orientation;
+    this->_rotation = this->getOrientationRotation();
 }
 
 void zappy::gui::raylib::APlayerModel::lookLeft()
@@ -68,15 +76,26 @@ void zappy::gui::raylib::APlayerModel::lookRight()
 
 void zappy::gui::raylib::APlayerModel::update(const float &deltaUnits)
 {
+    if (this->_modelAnimations == nullptr || this->_animsCount == 0)
+        return;
+
     ModelAnimation anim = this->_modelAnimations[this->_animationIndexMap[this->_state]];
     float speed = (this->_animationFrameSpeedMap[this->_state]);
 
     this->_frameAccumulator += deltaUnits * speed;
 
-    while (this->_frameAccumulator >= 1.0f) {
-        this->_animCurrentFrame = (this->_animCurrentFrame + 1) % anim.frameCount;
-        this->_frameAccumulator -= 1.0f;
+    if (anim.frameCount <= 0)
+        return;
+
+    if (this->_frameAccumulator >= 1.0f) {
+        const int frameAdvance = static_cast<int>(this->_frameAccumulator);
+
+        this->_animCurrentFrame = (this->_animCurrentFrame + frameAdvance) % anim.frameCount;
+        this->_frameAccumulator -= static_cast<float>(frameAdvance);
     }
+
+    if (this->_frameAccumulator < 0)
+        this->_frameAccumulator = 0.f;
 
     UpdateModelAnimation(this->_model, anim, this->_animCurrentFrame);
 }

@@ -15,14 +15,19 @@ void zappy::gui::raylib::BasicScene::init()
 {
     AScene::init();
 
+    this->_mapRenderer->init(assets::BASIC_FLOOR_PATH);
+
     for (size_t i = 0; i < zappy::game::RESOURCE_QUANTITY; ++i) {
         auto type = static_cast<zappy::game::Resource>(i);
-        auto model = std::make_unique<zappy::gui::raylib::BasicResourceModel>(-1, type); // ou AResourceModel si tu préfères
+        auto model = std::make_unique<zappy::gui::raylib::BasicResourceModel>(-1, type);
         _mapRenderer->addResourceModel(type, std::move(model));
     }
 
     // Init le background
-    // this->_skybox.init(zappy::gui::raylib::assets::BASIC_SKYBOX_MODEL_PATH);
+    this->_skybox.init(zappy::gui::raylib::assets::BASIC_SKYBOX_MODEL_PATH);
+
+    // Init la musique
+    this->_music.init(zappy::gui::raylib::assets::BASIC_MUSIC_PATH);
 }
 
 bool zappy::gui::raylib::BasicScene::shouldClose() const

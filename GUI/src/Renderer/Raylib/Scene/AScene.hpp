@@ -10,6 +10,7 @@
 #include "IScene.hpp"
 #include "MapRenderer.hpp"
 #include "Skybox.hpp"
+#include "MusicGame.hpp"
 
 #include <memory>
 #include <unordered_map>
@@ -22,7 +23,7 @@ namespace zappy {
             {
                 public:
                     AScene(const std::shared_ptr<game::GameState> &gameState);
-                    ~AScene() override = default;
+                    ~AScene() override { _music.unload(); }
 
                     virtual void init() override;
 
@@ -38,8 +39,6 @@ namespace zappy {
                     virtual void addPlayer(const int &id) override;
 
                     virtual void updatePlayerPosition(const int &id, const int &x, const int &y, const game::Orientation &orientation) override;
-                    virtual void updatePlayerLevel(const int &id, const size_t &level) override;
-                    virtual void updatePlayerInventory(const int &id, const game::Inventory &inventory) override;
 
                     virtual void playerExpulsion(const int &id) override;
 
@@ -59,6 +58,8 @@ namespace zappy {
 
                 protected:
                     Camera _camera;
+
+                    MusicGame _music;
 
                     const std::shared_ptr<game::GameState> _gameState;
 

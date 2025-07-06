@@ -22,10 +22,10 @@ zappy::gui::raylib::MapRenderer::MapRenderer(const std::shared_ptr<game::Map> ma
     _players()
 {}
 
-void zappy::gui::raylib::MapRenderer::init()
+void zappy::gui::raylib::MapRenderer::init(const std::string &tileTexturePath)
 {
     // Init la carte
-    this->_floor = std::make_shared<FlatFloor>(_map->getWidth(), _map->getHeight(), 1);
+    this->_floor = std::make_shared<FlatFloor>(_map->getWidth(), _map->getHeight(), tileTexturePath, 1);
     this->_floor->init();
 
     this->_lastTime = std::chrono::steady_clock::now();
@@ -114,7 +114,6 @@ void zappy::gui::raylib::MapRenderer::setEggPosition(const int &id, const int &x
 
 void zappy::gui::raylib::MapRenderer::setPlayerPosition(const int &id, const int &x, const int &y, const game::Orientation &orientation)
 {
-
     if (this->_players.empty())
         return;
 
@@ -140,38 +139,81 @@ void zappy::gui::raylib::MapRenderer::playerLook(const int &id, const game::Orie
     player.look(orientation);
 }
 
-void zappy::gui::raylib::MapRenderer::playerLookLeft(const int &id)
+void zappy::gui::raylib::MapRenderer::playerLookLeft(const int &id, const game::Orientation &orientation)
 {
     if (this->_players.empty())
         return;
 
     auto &player = _getPlayer(id);
+
+    if (orientation != player.getOrientation() - 1) {
+        player.look(orientation);
+        this->removeAllRotations(id);
+        return;
+    }
+
     player.lookLeft();
 
     constexpr float rotationAngle = 90.0f;
 
-    _addRotation(player, rotationAngle);
+    _addRotation(player, rotationAngle, player.getOrientation());
 }
 
-void zappy::gui::raylib::MapRenderer::playerLookRight(const int &id)
+void zappy::gui::raylib::MapRenderer::playerLookRight(const int &id, const game::Orientation &orientation)
 {
     if (this->_players.empty())
         return;
 
     auto &player = _getPlayer(id);
+
+    if (orientation != player.getOrientation() + 1) {
+        player.look(orientation);
+        this->removeAllRotations(id);
+        return;
+    }
+
     player.lookRight();
 
     constexpr float rotationAngle = -90.0f;
 
-    _addRotation(player, rotationAngle);
+    _addRotation(player, rotationAngle, player.getOrientation());
 }
 
-void zappy::gui::raylib::MapRenderer::playerForward(const int &id, const int &x, const int &y)
-{
+void zappy::gui::raylib::MapRenderer::playerForward(
+    const int &id,
+    const int &x,
+    const int &y,
+    const game::Orientation &orientation,
+    const int &mapWidth,
+    const int &mapHeight
+) {
     if (this->_players.empty())
         return;
 
     APlayerModel &player = _getPlayer(id);
+
+    const Vector2 gamePos = player.getGamePosition();
+    const game::Orientation playerOrientation = player.getOrientation();
+
+    bool valid = false;
+    if (playerOrientation != orientation)
+        valid = true;
+    else if (playerOrientation == game::Orientation::NORTH && gamePos.y != (y + 1) % mapHeight)
+        valid = true;
+    else if (playerOrientation == game::Orientation::SOUTH && gamePos.y != (y - 1 + mapHeight) % mapHeight)
+        valid = true;
+    else if (playerOrientation == game::Orientation::WEST && gamePos.x != (x + 1) % mapWidth)
+        valid = true;
+    else if (playerOrientation == game::Orientation::EAST && gamePos.x != (x - 1 + mapWidth) % mapWidth)
+        valid = true;
+
+    if (valid) {
+        this->removeAllTranslations(id);
+        this->removeAllRotations(id);
+        this->setPlayerPosition(id, x, y, orientation);
+        return;
+    }
+
     Translation translation = this->_floor->createTranslation(player, x, y, FORWARD_TIME);
 
     std::shared_ptr<IPlayerAction> action = PlayerActionFactory::createTranslation(
@@ -303,6 +345,37 @@ void zappy::gui::raylib::MapRenderer::removePlayer(const int &id)
     }
 }
 
+void zappy::gui::raylib::MapRenderer::removeAllTranslations(const int &id)
+{
+    std::queue<std::shared_ptr<IPlayerAction>> &queue = this->_playerActionQueues[id];
+    std::queue<std::shared_ptr<IPlayerAction>> newQueue;
+
+    while (!queue.empty()) {
+        auto action = queue.front();
+        queue.pop();
+        if (action->getActionType() != ActionType::FORWARD &&
+            action->getActionType() != ActionType::EXPULSION) {
+            newQueue.push(action);
+        }
+    }
+    queue = std::move(newQueue);
+}
+
+void zappy::gui::raylib::MapRenderer::removeAllRotations(const int &id)
+{
+    std::queue<std::shared_ptr<IPlayerAction>> &queue = this->_playerActionQueues[id];
+    std::queue<std::shared_ptr<IPlayerAction>> newQueue;
+
+    while (!queue.empty()) {
+        auto action = queue.front();
+        queue.pop();
+        if (action->getActionType() != ActionType::ROTATION) {
+            newQueue.push(action);
+        }
+    }
+    queue = std::move(newQueue);
+}
+
 zappy::gui::raylib::APlayerModel &zappy::gui::raylib::MapRenderer::_getPlayer(const int &id)
 {
     for (auto &player : this->_players) {
@@ -339,9 +412,12 @@ const zappy::gui::raylib::AEggModel &zappy::gui::raylib::MapRenderer::_getEgg(co
     throw RendererError("Egg " + std::to_string(id) + " not found", "MapRenderer");
 }
 
-void zappy::gui::raylib::MapRenderer::_addRotation(const APlayerModel &player, const float &angle)
-{
-    Vector3 current = player.getRotation();
+void zappy::gui::raylib::MapRenderer::_addRotation(
+    const APlayerModel &player,
+    const float &angle,
+    const game::Orientation &orientation
+) {
+    Vector3 current = player.getOrientationRotation();
     Vector3 destination = {current.x, current.y + angle, current.z};
 
     Vector3 totalDelta = Vector3Subtract(destination, current);
@@ -356,6 +432,7 @@ void zappy::gui::raylib::MapRenderer::_addRotation(const APlayerModel &player, c
     auto action = PlayerActionFactory::createRotation(
         player.getId(),
         rotation,
+        orientation,
         ROTATION_TIME
     );
 
