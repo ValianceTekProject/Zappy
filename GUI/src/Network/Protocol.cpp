@@ -395,8 +395,10 @@ void zappy::network::Protocol::handlePlayerInventory(const std::string &params)
 
     std::istringstream iss(trueParams);
     int playerId;
+    size_t x;
+    size_t y;
 
-    iss >> playerId;
+    iss >> playerId >> x >> y;
 
     game::Inventory inventory;
     size_t resourceCount;
