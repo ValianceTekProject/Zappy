@@ -140,7 +140,8 @@ void zappy::game::CommandHandler::incantationPrinting(zappy::game::ServerPlayer 
 {
     std::string guiMsg = "pic " + std::to_string(player.x) + " " +
                          std::to_string(player.y) + " " +
-                         std::to_string(player.level);
+                         std::to_string(player.level) + " #" +
+                         std::to_string(player.getId());
     auto otherPlayers =
         this->_getPlayersForIncant(player.x, player.y, player.level);
 
