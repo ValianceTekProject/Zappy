@@ -448,10 +448,26 @@ void zappy::gui::raylib::MapRenderer::removePlayer(const int &id)
     for (auto it = this->_players.begin(); it != this->_players.end(); it++) {
         if ((*it)->getId() == id) {
             this->_players.erase(it);
-            this->_playerActionQueues.erase(id);
+            this->removeAllActions(id);
             break;
         }
     }
+}
+
+void zappy::gui::raylib::MapRenderer::removeAllActions(const int &id)
+{
+    this->_playerActionQueues.erase(id);
+
+    this->_playerAnimAction.erase(
+        std::remove_if(
+            this->_playerAnimAction.begin(),
+            this->_playerAnimAction.end(),
+            [id](const std::shared_ptr<APlayerAnimAction> &action) {
+                return action->getPlayerId() == id;
+            }
+        ),
+        this->_playerAnimAction.end()
+    );
 }
 
 /**

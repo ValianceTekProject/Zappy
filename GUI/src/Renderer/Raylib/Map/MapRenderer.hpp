@@ -79,6 +79,7 @@ namespace zappy {
                     void removePlayer(const int &id);
                     void removeEgg(const int &id);
 
+                    void removeAllActions(const int &id);
                     void removeAllTranslations(const int &id);
                     void removeAllRotations(const int &id);
 
