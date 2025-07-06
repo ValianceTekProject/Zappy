@@ -93,7 +93,7 @@ void zappy::game::CommandHandlerGui::handlePpo(
                 std::string msg =
                     msg + std::to_string(playerId) + " " +
                     std::to_string(p->x) + " " + std::to_string(p->y) + " " +
-                    std::to_string(static_cast<int>(player.orientation + 1)) +
+                    std::to_string(static_cast<int>(player.orientation) + 1) +
                     "\n";
 
                 player.getClient().sendMessage(msg);
