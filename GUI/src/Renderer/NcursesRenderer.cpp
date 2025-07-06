@@ -7,6 +7,9 @@
 
 #include "NcursesRenderer.hpp"
 
+/**
+ * @brief Construct a new zappy::gui::Ncurses Renderer::Ncurses Renderer object
+ */
 zappy::gui::NcursesRenderer::NcursesRenderer() :
     ARenderer::ARenderer(),
     _shouldClose(false),
@@ -14,6 +17,11 @@ zappy::gui::NcursesRenderer::NcursesRenderer() :
     _help(false)
 {}
 
+/**
+ * @brief Initialize the NcursesRenderer
+ * 
+ * Initializes the window, sets up colors, and calls the parent renderer's initialization method
+ */
 void zappy::gui::NcursesRenderer::init()
 {
     _initWindow();
@@ -22,6 +30,11 @@ void zappy::gui::NcursesRenderer::init()
     ARenderer::init();
 }
 
+/**
+ * @brief Initialize the window
+ * 
+ * Initializes the window and sets up the window size
+ */
 void zappy::gui::NcursesRenderer::_initWindow()
 {
     initscr();
@@ -34,6 +47,11 @@ void zappy::gui::NcursesRenderer::_initWindow()
     _window = stdscr;
 }
 
+/**
+ * @brief Initialize the colors
+ * 
+ * Initialize the colors
+ */
 void zappy::gui::NcursesRenderer::_initColors()
 {
     init_pair(1, COLOR_WHITE, COLOR_BLACK);
@@ -42,6 +60,12 @@ void zappy::gui::NcursesRenderer::_initColors()
     init_pair(4, COLOR_YELLOW, COLOR_BLACK);
 }
 
+/**
+ * @brief Handle the input
+ * 
+ * Handles the input from the user
+ * Handles the help menu
+ */
 void zappy::gui::NcursesRenderer::handleInput()
 {
     int ch = getch();
@@ -51,6 +75,11 @@ void zappy::gui::NcursesRenderer::handleInput()
         _help = !_help;
 }
 
+/**
+ * @brief Update the renderer
+ *
+ * Handles the input and calls the parent renderer's update method
+ */
 void zappy::gui::NcursesRenderer::render() const
 {
     werase(_window);
@@ -60,6 +89,11 @@ void zappy::gui::NcursesRenderer::render() const
     wrefresh(_window);
 }
 
+/**
+ * @brief Draw the map
+ * 
+ * @return true or false
+ */
 bool zappy::gui::NcursesRenderer::shouldClose() const
 {
     if (_shouldClose) {
@@ -69,12 +103,20 @@ bool zappy::gui::NcursesRenderer::shouldClose() const
     return _shouldClose;
 }
 
+/**
+ * @brief handle the end of the game
+ *
+ * @param teamName close the game and call the parent renderer's endGame method
+ */
 void zappy::gui::NcursesRenderer::endGame(const std::string &teamName)
 {
     _shouldClose = true;
     ARenderer::endGame(teamName);
 }
 
+/**
+ * @brief Draw the map
+ */
 void zappy::gui::NcursesRenderer::_drawMap() const
 {
     const auto &map = _gameState->getMap();
@@ -91,6 +133,15 @@ void zappy::gui::NcursesRenderer::_drawMap() const
     }
 }
 
+/**
+ * @brief Draw a tile
+ * 
+ * @param tile The tile to draw containing the resources
+ * @param eggs The list of eggs on the tile
+ * @param players The list of players on the tile
+ * @param row row where to draw the tile
+ * @param col col where to draw the tile
+ */
 void zappy::gui::NcursesRenderer::_drawTile(
     const zappy::game::Tile &tile,
     const game::EggList &eggs,

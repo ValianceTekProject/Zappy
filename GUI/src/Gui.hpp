@@ -22,6 +22,7 @@
 #include <string>
 #include <sstream>
 #include <memory>
+#include <thread>
 
 namespace zappy {
     namespace gui {

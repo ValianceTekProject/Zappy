@@ -56,10 +56,9 @@ void zappy::gui::raylib::PauseMenu::PauseMenu::init()
 void zappy::gui::raylib::PauseMenu::PauseMenu::handleInput(const InputManager &inputManager)
 {
     if (!this->_display) {
-        if (inputManager.getKeyState(this->_key) == InputManager::KeyState::RELEASED) {
+        if (inputManager.getKeyState(this->_key) == InputManager::KeyState::RELEASED)
             this->_display = true;
-            return;
-        }
+        return;
     }
 
     if (this->_menuState == PauseMenuState::MAIN_MENU) {
@@ -96,6 +95,7 @@ void zappy::gui::raylib::PauseMenu::PauseMenu::handleInput(const InputManager &i
 
         if (inputManager.isKeyReleased(KEY_ENTER)) {
             this->_shouldChangeScene = true;
+            this->_menuState = PauseMenuState::MAIN_MENU;
 
             if (this->_themes[this->_selectedTheme].name == THEME_CLASSIC)
                 this->_sceneType = SceneType::BASIC;
