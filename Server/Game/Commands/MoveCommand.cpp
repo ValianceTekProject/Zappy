@@ -10,7 +10,8 @@
 void zappy::game::CommandHandler::handleForward(
     zappy::game::ServerPlayer &player)
 {
-    this->_waitCommand(timeLimit::FORWARD);
+    if (!this->_waitCommand(player, timeLimit::FORWARD))
+        return;
     player.stepForward(this->_widthMap, this->_heightMap);
     player.setInAction(false);
     player.getClient().sendMessage("ok\n");
@@ -24,7 +25,8 @@ void zappy::game::CommandHandler::handleForward(
 void zappy::game::CommandHandler::handleRight(
     zappy::game::ServerPlayer &player)
 {
-    this->_waitCommand(timeLimit::RIGHT);
+    if (!this->_waitCommand(player, timeLimit::RIGHT))
+        return;
     player.lookRight();
     player.setInAction(false);
     player.getClient().sendMessage("ok\n");
@@ -37,7 +39,8 @@ void zappy::game::CommandHandler::handleRight(
 
 void zappy::game::CommandHandler::handleLeft(zappy::game::ServerPlayer &player)
 {
-    this->_waitCommand(timeLimit::LEFT);
+    if (!this->_waitCommand(player, timeLimit::LEFT))
+        return;
     player.lookLeft();
     player.setInAction(false);
     player.getClient().sendMessage("ok\n");

@@ -10,7 +10,8 @@
 void zappy::game::CommandHandler::handleInventory(
     zappy::game::ServerPlayer &player)
 {
-    this->_waitCommand(timeLimit::INVENTORY);
+    if (!this->_waitCommand(player, timeLimit::INVENTORY))
+        return;
     zappy::game::Inventory playerInv = player.getInventory();
     std::string msg = "[";
     for (auto foodName : names)
@@ -40,7 +41,8 @@ void zappy::game::CommandHandler::resourceSendGui(zappy::game::ServerPlayer &pla
 void zappy::game::CommandHandler::handleTake(
     zappy::game::ServerPlayer &player, const std::string &arg)
 {
-    this->_waitCommand(timeLimit::TAKE);
+    if (!this->_waitCommand(player, timeLimit::TAKE))
+        return;
     auto objectTake = std::find_if(names.begin(), names.end(),
         [&arg](const std::string &name) { return name == arg; });
 
@@ -66,7 +68,8 @@ void zappy::game::CommandHandler::handleTake(
 void zappy::game::CommandHandler::handleDrop(
     zappy::game::ServerPlayer &player, const std::string &arg)
 {
-    this->_waitCommand(timeLimit::SET);
+    if (!this->_waitCommand(player, timeLimit::SET))
+        return;
     auto objectDrop = std::find_if(names.begin(), names.end(),
         [&arg](const std::string &name) { return name == arg; });
 

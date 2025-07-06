@@ -154,7 +154,8 @@ void zappy::game::CommandHandler::incantationPrinting(zappy::game::ServerPlayer 
         });
     guiMsg += "\n";
     this->messageToGUI(guiMsg);
-    this->_waitCommand(timeLimit::INCANTATION);
+    if (!this->_waitCommand(player, timeLimit::INCANTATION))
+        return;
     if (!this->_checkIncantationConditions(player)) {
         this->messageToGUI(
             std::string("pie " + std::to_string(player.x) + " " +

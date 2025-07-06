@@ -148,8 +148,13 @@ namespace zappy {
 
             std::vector<std::weak_ptr<ServerPlayer>> _getPlayerOnTile(
                 int x, int y);
-            void ejectPlayerForward(ServerPlayer &player, Orientation &orientation);
-            void _waitCommand(timeLimit limit);
+            void ejectPlayerForward(ServerPlayer &player,
+                Orientation &orientation, ServerPlayer &pushingPlayer);
+            void _sendExpulseMsg(
+                ServerPlayer &player, ServerPlayer &pushingPlayer);
+
+            [[nodiscard]] bool _waitCommand(
+                ServerPlayer &player, timeLimit limit);
 
             std::pair<size_t, size_t> _normalizeCoords(size_t x, size_t y);
             void _getDirectionVector(const Player &player, int &dx, int &dy);

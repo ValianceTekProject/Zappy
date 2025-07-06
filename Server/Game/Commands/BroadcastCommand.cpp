@@ -92,12 +92,11 @@ int zappy::game::CommandHandler::_computeSoundDirection(
 void zappy::game::CommandHandler::handleBroadcast(
     zappy::game::ServerPlayer &player, const std::string &arg)
 {
-    this->_waitCommand(timeLimit::BROADCAST);
+    if (this->_waitCommand(player, timeLimit::BROADCAST) == false)
+        return;
 
     for (auto &team : this->_teamList) {
         for (auto &teamPlayer : team->getPlayerList()) {
-            std::cout << "PlayerPos: " << teamPlayer->x << " " << teamPlayer->y
-                      << std::endl;
             if (teamPlayer->getClient().getSocket() !=
                 player.getClient().getSocket()) {
                 int direction =

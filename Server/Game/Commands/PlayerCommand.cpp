@@ -23,7 +23,8 @@ void zappy::game::CommandHandler::handleConnectNbr(
 void zappy::game::CommandHandler::handleFork(zappy::game::ServerPlayer &player)
 {
     this->messageToGUI("pfk #" + std::to_string(player.getId()) + "\n");
-    this->_waitCommand(timeLimit::FORK);
+    if (!this->_waitCommand(player, timeLimit::FORK))
+        return;
 
     auto playerTeam =
         dynamic_cast<zappy::game::TeamsPlayer *>(&player.getTeam());

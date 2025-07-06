@@ -72,11 +72,25 @@ void zappy::game::CommandHandler::initCommandMap()
          }}};
 }
 
-void zappy::game::CommandHandler::_waitCommand(timeLimit limit)
+bool zappy::game::CommandHandler::_waitCommand(ServerPlayer &player, timeLimit limit)
 {
     auto commandTime = static_cast<double>(limit) / this->_freq;
     auto timeNeeded = std::chrono::duration<double>(commandTime);
-    std::this_thread::sleep_for(std::chrono::duration<double>(timeNeeded));
+    
+    auto startTime = std::chrono::steady_clock::now();
+    auto endTime = startTime + timeNeeded;
+    
+    while (std::chrono::steady_clock::now() < endTime) {
+        auto tickDuration = std::chrono::duration<double>(1.0 / this->_freq);
+        std::this_thread::sleep_for(tickDuration);
+
+        if (player.interrupted) {
+            player.stopPraying();
+            player.setInAction(false);
+            return false;
+        }
+    }
+    return true;
 }
 
 void zappy::game::CommandHandler::_executeCommand(

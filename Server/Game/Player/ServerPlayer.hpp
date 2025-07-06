@@ -7,11 +7,11 @@
 
 #pragma once
 
+#include <atomic>
 #include <chrono>
 
 #include "Client.hpp"
 #include "Player.hpp"
-#include "ITeams.hpp"
 
 namespace zappy {
     namespace game {
@@ -58,6 +58,7 @@ namespace zappy {
             zappy::game::ITeams &getTeam() { return _team; }
 
             std::mutex msgMutex;
+            std::atomic<bool> interrupted;
 
 
            private:
@@ -65,7 +66,7 @@ namespace zappy {
             std::chrono::steady_clock::time_point _startTime;
             std::chrono::steady_clock::time_point _lifeTime;
 
-            bool _actionStarted = false;
+            std::atomic<bool> _actionStarted = false;
             zappy::game::ITeams &_team;
         };
     }

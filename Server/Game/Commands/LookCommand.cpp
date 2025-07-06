@@ -142,10 +142,10 @@ std::string zappy::game::CommandHandler::_buildLookMessage(
 
 void zappy::game::CommandHandler::handleLook(zappy::game::ServerPlayer &player)
 {
-    this->_waitCommand(timeLimit::LOOK);
+    if (!this->_waitCommand(player, timeLimit::LOOK))
+        return;
     std::string msg = this->_buildLookMessage(player);
 
     player.setInAction(false);
     player.getClient().sendMessage(msg);
-    std::cout << msg << std::endl;
 }
