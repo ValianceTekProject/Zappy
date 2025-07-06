@@ -12,20 +12,20 @@
 #include <iostream>
 #include <mutex>
 #include <netinet/in.h>
+#include <optional>
 #include <poll.h>
 #include <sstream>
 #include <string>
 #include <thread>
 #include <vector>
-#include <optional>
 
 #include "Client/Client.hpp"
-#include "SocketServer.hpp"
 #include "Error/Error.hpp"
 #include "Game.hpp"
-#include "my_macros.hpp"
-#include "Utils.hpp"
+#include "SocketServer.hpp"
 #include "TeamsGui.hpp"
+#include "Utils.hpp"
+#include "my_macros.hpp"
 
 namespace zappy {
 
@@ -102,7 +102,8 @@ namespace zappy {
              * @brief Attache un observateur au serveur.
              * @param observer Observateur à attacher.
              */
-            void attachObserver(std::shared_ptr<zappy::observer::IObserver> observer);
+            void attachObserver(
+                std::shared_ptr<zappy::observer::IObserver> observer);
 
             /**
              * @brief Notifie tous les observateurs d'un signal.
@@ -126,36 +127,46 @@ namespace zappy {
              * @param buf Le message à envoyer.
              * @param socket Le socket client.
              */
-            void sendMessage(const std::string &buf, int socket) { send(socket, buf.c_str(), buf.size(), 0); }
+            void sendMessage(const std::string &buf, int socket)
+            {
+                send(socket, buf.c_str(), buf.size(), 0);
+            }
 
             /**
              * @brief Recherche un joueur par son socket.
              * @param socket Le socket du client.
              * @return Un optional contenant le joueur si trouvé, sinon vide.
              */
-            std::optional<std::shared_ptr<zappy::game::ServerPlayer>> getPlayerBySocket(const int &socket);
+            std::optional<std::shared_ptr<zappy::game::ServerPlayer>>
+            getPlayerBySocket(const int &socket);
 
            private:
-            std::vector<std::shared_ptr<zappy::observer::IObserver>> _observers; ///< Liste des observateurs.
-            std::unique_ptr<zappy::game::Game> _game = nullptr;                   ///< Instance du jeu.
-            std::unique_ptr<server::SocketServer> _socket = nullptr;             ///< Instance du serveur socket.
+            std::vector<std::shared_ptr<zappy::observer::IObserver>>
+                _observers;  ///< Liste des observateurs.
+            std::unique_ptr<zappy::game::Game> _game =
+                nullptr;  ///< Instance du jeu.
+            std::unique_ptr<server::SocketServer> _socket =
+                nullptr;  ///< Instance du serveur socket.
 
-            RunningState _serverRun = RunningState::RUN;                         ///< État de fonctionnement du serveur.
+            RunningState _serverRun =
+                RunningState::RUN;  ///< État de fonctionnement du serveur.
 
-            std::vector<struct pollfd> _fds;                                     ///< Liste des pollfd.
+            std::vector<struct pollfd> _fds;  ///< Liste des pollfd.
 
-            std::vector<std::shared_ptr<zappy::game::ITeams>> _teamList;         ///< Liste des équipes.
-            std::unordered_map<std::string, std::function<void(int)>> _flags;    ///< Flags et leurs fonctions associées.
+            std::vector<std::shared_ptr<zappy::game::ITeams>>
+                _teamList;  ///< Liste des équipes.
+            std::unordered_map<std::string, std::function<void(int)>>
+                _flags;  ///< Flags et leurs fonctions associées.
 
-            std::mutex _socketLock;                                              ///< Mutex pour accès socket.
-            std::mutex _endLock;                                                 ///< Mutex pour fin de boucle.
+            std::mutex _socketLock;  ///< Mutex pour accès socket.
+            std::mutex _endLock;     ///< Mutex pour fin de boucle.
 
-            int _port = noValue;                                                 ///< Port d'écoute.
-            int _width = noValue;                                                ///< Largeur de la carte.
-            int _height = noValue;                                               ///< Hauteur de la carte.
-            int _clientNb = noValue;                                             ///< Nombre maximal de clients.
-            int _freq = noValue;                                                 ///< Fréquence du serveur.
-            std::vector<std::string> _namesTeam;                                ///< Noms des équipes.
+            int _port = noValue;      ///< Port d'écoute.
+            int _width = noValue;     ///< Largeur de la carte.
+            int _height = noValue;    ///< Hauteur de la carte.
+            int _clientNb = noValue;  ///< Nombre maximal de clients.
+            int _freq = noValue;      ///< Fréquence du serveur.
+            std::vector<std::string> _namesTeam;  ///< Noms des équipes.
 
             /**
              * @brief Analyse les flags passés en arguments.
@@ -177,7 +188,8 @@ namespace zappy {
              * @param arg Le flag.
              * @param value La valeur associée.
              */
-            void _parseFlagsInt(int &index, std::string arg, std::string value);
+            void _parseFlagsInt(
+                int &index, std::string arg, std::string value);
 
             /**
              * @brief Vérifie que tous les paramètres sont corrects.
@@ -204,21 +216,24 @@ namespace zappy {
              * @param fd Le pollfd du client.
              * @return L'état du client après traitement.
              */
-            ClientState _handleClientDisconnection(const std::string &content, struct pollfd &fd);
+            ClientState _handleClientDisconnection(
+                const std::string &content, struct pollfd &fd);
 
             /**
              * @brief Gère la commande envoyée par un client.
              * @param command La commande reçue.
              * @param pfd Le pollfd du client.
              */
-            void _handleClientCommand(const std::string &command, struct pollfd &pfd);
+            void _handleClientCommand(
+                const std::string &command, struct pollfd &pfd);
 
             /**
              * @brief Ajoute un joueur à une équipe après connexion.
              * @param team L'équipe concernée.
              * @param pfd Le pollfd du client.
              */
-            void _playerConnect(std::shared_ptr<zappy::game::ITeams> &team, struct pollfd &pfd);
+            void _playerConnect(std::shared_ptr<zappy::game::ITeams> &team,
+                struct pollfd &pfd);
 
             /**
              * @brief Gère la connexion d'une interface graphique.
@@ -230,8 +245,8 @@ namespace zappy {
              * @brief Envoie les commandes initiales à la GUI.
              * @param teamsGui Instance de TeamsGui.
              */
-            void _initialCommandGui(std::shared_ptr<zappy::game::TeamsGui> &teamsGui);
-
+            void _initialCommandGui(
+                std::shared_ptr<zappy::game::TeamsGui> &teamsGui);
         };
 
     }  // namespace server

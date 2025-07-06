@@ -169,9 +169,7 @@ void zappy::game::CommandHandler::incantationPrinting(zappy::game::ServerPlayer 
 void zappy::game::CommandHandler::handleIncantation(
     zappy::game::ServerPlayer &player)
 {
-    std::cout << "Start incantation" << std::endl;
     if (!this->_checkIncantationConditions(player)) {
-        std::cout << "Condition not good for incant" << std::endl;
         this->messageToGUI(
             std::string("pie " + std::to_string(player.x) + " " +
                         std::to_string(player.y) + " 0\n"));
@@ -189,5 +187,4 @@ void zappy::game::CommandHandler::handleIncantation(
     this->_elevatePlayer(player);
     player.setInAction(false);
     player.stopPraying();
-    std::cout << "SERV: Incantation Réussi !: " << player.isPraying() << player.isInAction() << std::endl;
 }
