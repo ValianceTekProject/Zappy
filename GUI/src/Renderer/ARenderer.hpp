@@ -16,6 +16,7 @@
 namespace zappy {
     namespace gui {
         constexpr float RequestMapContentTimeUnit = 20.0f;
+        constexpr float RequestPlayersInventoryTimeUnit = 126.0f;
 
         class ARenderer : public IRenderer {
             public:

@@ -10,6 +10,7 @@
 zappy::gui::raylib::AScene::AScene(const std::shared_ptr<game::GameState> &gameState) :
     _camera(Camera()),
     _music(),
+    _isMusicPlaying(true),
     _gameState(gameState),
     _skybox(),
     _mapRenderer(std::make_unique<MapRenderer>(this->_gameState->getMap()))
@@ -47,6 +48,16 @@ void zappy::gui::raylib::AScene::init()
     SetMasterVolume(0.5f);
 }
 
+/** @brief Gère les entrées utilisateur.
+ *
+ * @param inputManager Le gestionnaire d'entrée.
+ */
+void zappy::gui::raylib::AScene::handleInput(InputManager &inputManager)
+{
+    if (inputManager.isKeyPressed(KEY_M))
+        this->_isMusicPlaying = !this->_isMusicPlaying;
+}
+
 /** @brief Met à jour les éléments de la scène.
  *
  * Met à jour le rendu de la carte, le ciel et la musique.
@@ -55,7 +66,9 @@ void zappy::gui::raylib::AScene::update()
 {
     this->_mapRenderer->update(this->_gameState->getFrequency());
     this->_skybox.update();
-    this->_music.update();
+
+    if (this->_isMusicPlaying)
+        this->_music.update();
 }
 
 /** @brief Dessine la scène à l'écran.
@@ -64,7 +77,8 @@ void zappy::gui::raylib::AScene::update()
  */
 void zappy::gui::raylib::AScene::render() const
 {
-    this->_music.render();
+    if (this->_isMusicPlaying)
+        this->_music.render();
 
     BeginMode3D(getCamera());
 
@@ -72,15 +86,6 @@ void zappy::gui::raylib::AScene::render() const
     this->_mapRenderer->render();
 
     EndMode3D();
-}
-
-/** @brief Gère les entrées utilisateur.
- *
- * @param inputManager Le gestionnaire d'entrée.
- */
-void zappy::gui::raylib::AScene::handleInput(InputManager &inputManager)
-{
-    (void)inputManager;
 }
 
 /** @brief Ajoute un œuf à la scène.

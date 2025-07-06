@@ -242,8 +242,26 @@ void zappy::gui::raylib::GameMenu::_renderBroadcasts(const int &screenWidth, con
     DrawText("Broadcasts", boxX + paddingX, boxY + paddingY / 2, fontSize, WHITE);
 
     int y = boxY + titleHeight;
+    const float maxTextWidth = static_cast<float>(boxWidth - 2 * paddingX);
     for (const auto &broadcast : _broadcasts) {
-        DrawTextEx(GetFontDefault(), broadcast.c_str(),
+        std::string text = broadcast;
+        Vector2 textSizeVec = MeasureTextEx(GetFontDefault(), text.c_str(), static_cast<float>(textSize), 1);
+
+        if (textSizeVec.x > maxTextWidth) {
+            std::string truncated = text;
+            const std::string ellipsis = "...";
+            const float ellipsisWidth = MeasureTextEx(GetFontDefault(), ellipsis.c_str(), static_cast<float>(textSize), 1).x;
+
+            while (!truncated.empty()) {
+                truncated.pop_back();
+                Vector2 currentSize = MeasureTextEx(GetFontDefault(), truncated.c_str(), static_cast<float>(textSize), 1);
+                if (currentSize.x + ellipsisWidth <= maxTextWidth)
+                    break;
+            }
+            text = truncated + ellipsis;
+        }
+
+        DrawTextEx(GetFontDefault(), text.c_str(),
             {static_cast<float>(boxX + paddingX), static_cast<float>(y)},
             static_cast<float>(textSize), 1, _textColor);
         y += lineHeight + paddingY;

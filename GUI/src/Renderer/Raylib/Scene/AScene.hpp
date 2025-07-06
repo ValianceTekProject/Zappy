@@ -60,6 +60,7 @@ namespace zappy {
                     Camera _camera;
 
                     MusicGame _music;
+                    bool _isMusicPlaying;
 
                     const std::shared_ptr<game::GameState> _gameState;
 

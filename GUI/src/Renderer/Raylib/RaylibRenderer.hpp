@@ -86,6 +86,15 @@ namespace zappy {
                     { raylib::SceneType::BASIC, [](const std::shared_ptr<game::GameState> &g) { return std::make_unique<raylib::BasicScene>(g); } },
                     { raylib::SceneType::POKEMON, [](const std::shared_ptr<game::GameState> &g) { return std::make_unique<raylib::PokemonScene>(g); } }
                 };
+
+                const std::map<int, size_t> _defaultKeysFrequencies = {
+                    { KEY_ONE, 1 },
+                    { KEY_TWO, 50 },
+                    { KEY_THREE, 100 },
+                    { KEY_FOUR, 200 },
+                    { KEY_FIVE, 500 },
+                    { KEY_SEVEN, 7 },
+                };
         };
     }
 }
