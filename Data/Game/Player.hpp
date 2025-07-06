@@ -40,7 +40,6 @@ namespace zappy {
                     Orientation orientation = Orientation::NORTH,
                     size_t level = 1
                 );
-                
                 ~Player() = default;
 
                 /**

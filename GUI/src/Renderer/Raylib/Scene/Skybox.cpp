@@ -8,6 +8,9 @@
 #include "Skybox.hpp"
 #include "AssetPaths.hpp"
 
+/// @brief Initialise le skybox avec l'image donnée.
+/// @param imagePath Chemin de l'image HDR utilisée pour le skybox.
+/// @return true si le skybox est correctement initialisé, false sinon.
 bool zappy::gui::raylib::Skybox::init(const std::string &imagePath)
 {
     this->_mesh = GenMeshCube(1.0f, 1.0f, 1.0f);
@@ -63,6 +66,7 @@ bool zappy::gui::raylib::Skybox::init(const std::string &imagePath)
     return true;
 }
 
+/// @brief Met à jour le skybox. Si un nouveau fichier est déposé, charge l'image en tant que nouveau skybox.
 void zappy::gui::raylib::Skybox::update()
 {
     if (IsFileDropped()) {
@@ -82,6 +86,7 @@ void zappy::gui::raylib::Skybox::update()
     }
 }
 
+/// @brief Affiche le skybox dans la scène.
 void zappy::gui::raylib::Skybox::render() const
 {
     rlDisableBackfaceCulling();
@@ -91,16 +96,80 @@ void zappy::gui::raylib::Skybox::render() const
     rlEnableDepthMask();
 }
 
+/// @brief Affiche des informations sur le fichier utilisé pour le skybox (en bas de l'écran).
 void zappy::gui::raylib::Skybox::renderInfo() const
 {
     DrawText(TextFormat("Skybox image: %s", GetFileName(this->_skyboxFileName.c_str())),
     10, GetScreenHeight() - 20, 10, BLACK);
 }
 
+/// @brief Libère toutes les ressources associées au skybox (shader, textures, modèle).
 void zappy::gui::raylib::Skybox::unload()
 {
     if (this->_model.materialCount > 0)
         UnloadShader(this->_model.materials[0].shader);
     UnloadTexture(this->_model.materials[0].maps[MATERIAL_MAP_CUBEMAP].texture);
     UnloadModel(this->_model);
+}
+
+/**
+ * @brief Génère un cubemap à partir d'une texture HDR.
+ * 
+ * @param panorama Texture2D contenant l'image HDR.
+ * @param shader Shader utilisé pour le rendu.
+ * @param size Taille du cubemap.
+ * @param format Format de la texture.
+ * @return TextureCubemap généré.
+ */
+TextureCubemap zappy::gui::raylib::Skybox::_genCubemapFromHDR(const Texture2D &panorama, Shader shader, int size, int format) {
+    TextureCubemap cubemap = {};
+
+    rlDisableBackfaceCulling();
+
+    unsigned int rbo = rlLoadTextureDepth(size, size, true);
+    cubemap.id = rlLoadTextureCubemap(nullptr, size, format, 1);
+
+    unsigned int fbo = rlLoadFramebuffer();
+    rlFramebufferAttach(fbo, rbo, RL_ATTACHMENT_DEPTH, RL_ATTACHMENT_RENDERBUFFER, 0);
+    rlFramebufferAttach(fbo, cubemap.id, RL_ATTACHMENT_COLOR_CHANNEL0, RL_ATTACHMENT_CUBEMAP_POSITIVE_X, 0);
+
+    rlEnableShader(shader.id);
+    Matrix matProj = MatrixPerspective(90.0f * DEG2RAD, 1.0f, RL_CULL_DISTANCE_NEAR, RL_CULL_DISTANCE_FAR);
+    rlSetUniformMatrix(shader.locs[SHADER_LOC_MATRIX_PROJECTION], matProj);
+
+    Matrix fboViews[6] = {
+        MatrixLookAt({0,0,0}, {1,0,0}, {0,-1,0}),
+        MatrixLookAt({0,0,0}, {-1,0,0}, {0,-1,0}),
+        MatrixLookAt({0,0,0}, {0,1,0}, {0,0,1}),
+        MatrixLookAt({0,0,0}, {0,-1,0}, {0,0,-1}),
+        MatrixLookAt({0,0,0}, {0,0,1}, {0,-1,0}),
+        MatrixLookAt({0,0,0}, {0,0,-1}, {0,-1,0})
+    };
+
+    rlViewport(0, 0, size, size);
+    rlActiveTextureSlot(0);
+    rlEnableTexture(panorama.id);
+
+    for (int i = 0; i < 6; ++i) {
+        rlSetUniformMatrix(shader.locs[SHADER_LOC_MATRIX_VIEW], fboViews[i]);
+        rlFramebufferAttach(fbo, cubemap.id, RL_ATTACHMENT_COLOR_CHANNEL0, RL_ATTACHMENT_CUBEMAP_POSITIVE_X + i, 0);
+        rlEnableFramebuffer(fbo);
+        rlClearScreenBuffers();
+        rlLoadDrawCube();
+    }
+
+    rlDisableShader();
+    rlDisableTexture();
+    rlDisableFramebuffer();
+    rlUnloadFramebuffer(fbo);
+
+    rlViewport(0, 0, rlGetFramebufferWidth(), rlGetFramebufferHeight());
+    rlEnableBackfaceCulling();
+
+    cubemap.width = size;
+    cubemap.height = size;
+    cubemap.mipmaps = 1;
+    cubemap.format = format;
+
+    return cubemap;
 }

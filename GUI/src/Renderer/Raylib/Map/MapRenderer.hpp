@@ -129,3 +129,52 @@ namespace zappy {
         }
     }
 }
+/**
+ * @brief Initialise le renderer avec une texture de sol.
+ * @param tileTexturePath Chemin vers la texture des tuiles (par défaut : BASIC_FLOOR_PATH).
+ */
+
+/**
+ * @brief Met à jour l'état du renderer en fonction de la fréquence donnée.
+ * @param frequency Fréquence de mise à jour.
+ */
+
+/**
+ * @brief Rend la scène (joueurs, œufs, ressources, effets, etc.).
+ */
+
+/**
+ * @brief Définit le type d'effet de diffusion (broadcast).
+ * @param type Type d'effet à appliquer.
+ */
+
+/**
+ * @brief Définit la couleur de l'effet de diffusion (broadcast).
+ * @param color Couleur de l'effet.
+ */
+
+/**
+ * @brief Définit le type d'effet d'incantation.
+ * @param type Type d'effet d'incantation.
+ */
+
+/**
+ * @brief Définit la couleur de l'effet d'incantation.
+ * @param color Couleur de l'effet.
+ */
+
+/**
+ * @brief Ajoute un œuf dans la scène.
+ * @param egg Unique pointer vers le modèle d'œuf à ajouter.
+ */
+
+/**
+ * @brief Ajoute un joueur dans la scène.
+ * @param player Unique pointer vers le modèle de joueur à ajouter.
+ */
+
+/**
+ * @brief Ajoute un modèle de ressource.
+ * @param type Type de ressource.
+ * @param model Unique pointer vers le modèle de ressource à ajouter.
+ */

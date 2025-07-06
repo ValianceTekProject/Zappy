@@ -9,6 +9,14 @@
 
 static constexpr const char *defaultIp = "127.0.0.1";
 
+/**
+ * @brief Construct a new zappy::gui::Gui::Gui object
+ *
+ * initialize the gui
+ * debug is set to true if the -d or --debug argument is given
+ * ip is set to the 127.0.0.1 if no ip is given
+ * port is set to 4242 if no port is given
+ */
 zappy::gui::Gui::Gui() :
     _debug(false),
     _ip(defaultIp),
@@ -18,6 +26,14 @@ zappy::gui::Gui::Gui() :
     _renderer(nullptr)
 {}
 
+/**
+ * @brief Parse the arguments given to the program
+ *
+ * Parse the arguments given to the program
+ *
+ * @param argc number of arguments
+ * @param argv arguments
+ */
 void zappy::gui::Gui::parseArgs(int argc, char const *argv[])
 {
     if (argc < 3)
@@ -66,6 +82,11 @@ void zappy::gui::Gui::parseArgs(int argc, char const *argv[])
     }
 }
 
+/**
+ * @brief initialize the game
+ *
+ * initialize the game state and the renderer
+ */
 void zappy::gui::Gui::init()
 {
     this->_gameState = std::make_shared<game::GameState>();
@@ -78,6 +99,12 @@ void zappy::gui::Gui::init()
         this->_protocol->update();
 }
 
+/**
+ * @brief initialize the network
+ *
+ * initialize the network and send the first request to the server
+ * initialize the renderer requests to the server
+ */
 void zappy::gui::Gui::_initNetwork()
 {
     this->_protocol = std::make_unique<network::Protocol>(this->_renderer, this->_gameState, this->_debug);
@@ -99,12 +126,20 @@ void zappy::gui::Gui::_initNetwork()
     this->_renderer->setProtocolRequests(protocolRequests);
 }
 
+/**
+ * @brief Run the GUI
+ *
+ * initialize the network and the renderer
+ * then run the main loop
+ */
 void zappy::gui::Gui::run()
 {
     init();
 
     bool running = true;
     while (running) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+
         this->_renderer->handleInput();
 
         this->_protocol->update();

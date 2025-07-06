@@ -22,6 +22,10 @@ zappy::gui::raylib::MapRenderer::MapRenderer(const std::shared_ptr<game::Map> ma
     _players()
 {}
 
+/**
+ * @brief Initialise le renderer avec une texture de sol.
+ * @param tileTexturePath Chemin vers la texture des tuiles (par défaut : BASIC_FLOOR_PATH).
+ */
 void zappy::gui::raylib::MapRenderer::init(const std::string &tileTexturePath)
 {
     // Init la carte
@@ -31,6 +35,10 @@ void zappy::gui::raylib::MapRenderer::init(const std::string &tileTexturePath)
     this->_lastTime = std::chrono::steady_clock::now();
 }
 
+/**
+ * @brief Met à jour l'état du renderer en fonction de la fréquence donnée.
+ * @param frequency Fréquence de mise à jour.
+ */
 void zappy::gui::raylib::MapRenderer::update(const int &frequency)
 {
     // Mettre à jour la carte
@@ -47,6 +55,9 @@ void zappy::gui::raylib::MapRenderer::update(const int &frequency)
     _updateActions(deltaUnits);
 }
 
+/**
+ * @brief Rend la scène (joueurs, œufs, ressources, effets, etc.).
+ */
 void zappy::gui::raylib::MapRenderer::render()
 {
     // Dessiner la carte
@@ -59,21 +70,37 @@ void zappy::gui::raylib::MapRenderer::render()
     _renderAnimActions();
 }
 
+/**
+ * @brief Définit le type d'effet de diffusion (broadcast).
+ * @param type Type d'effet à appliquer.
+ */
 void zappy::gui::raylib::MapRenderer::setBroadcastType(const zappy::gui::raylib::EffectType &type)
 {
     this->_broadcastType = type;
 }
 
+/**
+ * @brief Définit la couleur de l'effet de diffusion (broadcast).
+ * @param color Couleur de l'effet.
+ */
 void zappy::gui::raylib::MapRenderer::setIncantationType(const zappy::gui::raylib::EffectType &type)
 {
     this->_incantationType = type;
 }
 
+/**
+ * @brief Définit le type d'effet d'incantation.
+ * @param type Type d'effet d'incantation.
+ */
 void zappy::gui::raylib::MapRenderer::setIncantationColor(const Color &color)
 {
     this->_incantationColor = color;
 }
 
+/**
+ * @brief Définit la couleur de l'effet d'incantation.
+ * @param color Couleur de l'effet.
+ */
 void zappy::gui::raylib::MapRenderer::addEgg(std::unique_ptr<AEggModel> egg)
 {
     egg->init();
@@ -81,6 +108,10 @@ void zappy::gui::raylib::MapRenderer::addEgg(std::unique_ptr<AEggModel> egg)
     _eggs.push_back(std::move(egg));
 }
 
+/**
+ * @brief Ajoute un œuf dans la scène.
+ * @param egg Unique pointer vers le modèle d'œuf à ajouter.
+ */
 void zappy::gui::raylib::MapRenderer::addPlayer(std::unique_ptr<APlayerModel> player)
 {
     player->init();
@@ -88,6 +119,10 @@ void zappy::gui::raylib::MapRenderer::addPlayer(std::unique_ptr<APlayerModel> pl
     this->_players.push_back(std::move(player));
 }
 
+/**
+ * @brief Ajoute un joueur dans la scène.
+ * @param player Unique pointer vers le modèle de joueur à ajouter.
+ */
 void zappy::gui::raylib::MapRenderer::addResourceModel(const zappy::game::Resource &type, std::unique_ptr<AResourceModel> model)
 {
     if (model)
@@ -95,6 +130,11 @@ void zappy::gui::raylib::MapRenderer::addResourceModel(const zappy::game::Resour
     _resourceModels[static_cast<size_t>(type)] = std::move(model);
 }
 
+/**
+ * @brief Ajoute un modèle de ressource.
+ * @param type Type de ressource.
+ * @param model Unique pointer vers le modèle de ressource à ajouter.
+ */
 void zappy::gui::raylib::MapRenderer::setEggPosition(const int &id, const int &x, const int &y)
 {
     if (_eggs.empty())
@@ -112,6 +152,12 @@ void zappy::gui::raylib::MapRenderer::setEggPosition(const int &id, const int &x
     egg.setPosition(position3D);
 }
 
+/**
+ * @brief Positionne un œuf sur la carte.
+ * @param id Identifiant de l'œuf.
+ * @param x Position x.
+ * @param y Position y.
+ */
 void zappy::gui::raylib::MapRenderer::setPlayerPosition(const int &id, const int &x, const int &y, const game::Orientation &orientation)
 {
     if (this->_players.empty())
@@ -129,6 +175,13 @@ void zappy::gui::raylib::MapRenderer::setPlayerPosition(const int &id, const int
     player.look(orientation);
 }
 
+/**
+ * @brief Positionne un joueur sur la carte avec une orientation donnée.
+ * @param id Identifiant du joueur.
+ * @param x Position x.
+ * @param y Position y.
+ * @param orientation Orientation du joueur.
+ */
 void zappy::gui::raylib::MapRenderer::playerLook(const int &id, const game::Orientation &orientation)
 {
     if (this->_players.empty())
@@ -139,6 +192,11 @@ void zappy::gui::raylib::MapRenderer::playerLook(const int &id, const game::Orie
     player.look(orientation);
 }
 
+/**
+ * @brief Change la direction du regard du joueur.
+ * @param id Identifiant du joueur.
+ * @param orientation Nouvelle orientation.
+ */
 void zappy::gui::raylib::MapRenderer::playerLookLeft(const int &id, const game::Orientation &orientation)
 {
     if (this->_players.empty())
@@ -159,6 +217,17 @@ void zappy::gui::raylib::MapRenderer::playerLookLeft(const int &id, const game::
     _addRotation(player, rotationAngle, player.getOrientation());
 }
 
+/**
+ * @brief Fait regarder le joueur vers la gauche.
+ * @param id Identifiant du joueur.
+ * @param orientation Orientation vers laquelle le joueur regarde.
+ */
+
+/**
+ * @brief Fait regarder le joueur vers la droite.
+ * @param id Identifiant du joueur.
+ * @param orientation Orientation vers laquelle le joueur regarde.
+ */
 void zappy::gui::raylib::MapRenderer::playerLookRight(const int &id, const game::Orientation &orientation)
 {
     if (this->_players.empty())
@@ -179,6 +248,15 @@ void zappy::gui::raylib::MapRenderer::playerLookRight(const int &id, const game:
     _addRotation(player, rotationAngle, player.getOrientation());
 }
 
+/**
+ * @brief Déplace le joueur vers l'avant selon sa position et orientation, en tenant compte des dimensions de la carte.
+ * @param id Identifiant du joueur.
+ * @param x Position cible x.
+ * @param y Position cible y.
+ * @param orientation Orientation du joueur.
+ * @param mapWidth Largeur de la carte.
+ * @param mapHeight Hauteur de la carte.
+ */
 void zappy::gui::raylib::MapRenderer::playerForward(
     const int &id,
     const int &x,
@@ -228,6 +306,12 @@ void zappy::gui::raylib::MapRenderer::playerForward(
     player.setGamePosition(Vector2{ static_cast<float>(x), static_cast<float>(y) });
 }
 
+/**
+ * @brief Gère l'expulsion d'un joueur à une position donnée.
+ * @param id Identifiant du joueur expulsé.
+ * @param x Position x.
+ * @param y Position y.
+ */
 void zappy::gui::raylib::MapRenderer::playerExpulsion(const int &id, const int &x, const int &y)
 {
     if (this->_players.empty())
@@ -248,6 +332,10 @@ void zappy::gui::raylib::MapRenderer::playerExpulsion(const int &id, const int &
     player.setGamePosition(Vector2{ static_cast<float>(x), static_cast<float>(y) });
 }
 
+/**
+ * @brief Déclenche la diffusion d'un message par un joueur.
+ * @param id Identifiant du joueur qui diffuse.
+ */
 void zappy::gui::raylib::MapRenderer::playerBroadcast(const int &id)
 {
     std::shared_ptr<IPlayerAction> action = PlayerActionFactory::createBroadcast(
@@ -261,6 +349,12 @@ void zappy::gui::raylib::MapRenderer::playerBroadcast(const int &id)
     this->_playerAnimAction.push_back(std::move(std::dynamic_pointer_cast<APlayerAnimAction>(action)));
 }
 
+/**
+ * @brief Démarre une incantation sur une case donnée avec les joueurs concernés.
+ * @param x Position x de l'incantation.
+ * @param y Position y de l'incantation.
+ * @param playerIds Identifiants des joueurs participants.
+ */
 void zappy::gui::raylib::MapRenderer::startIncantation(const int &x, const int &y, const std::vector<int> &playerIds)
 {
     Vector2 incantationPos = Vector2{static_cast<float>(x), static_cast<float>(y)};
@@ -282,6 +376,12 @@ void zappy::gui::raylib::MapRenderer::startIncantation(const int &x, const int &
     this->_incantationMap[animAction.getAnimationId()] = incantationPos;
 }
 
+/**
+ * @brief Termine une incantation sur une case donnée avec le résultat.
+ * @param x Position x de l'incantation.
+ * @param y Position y de l'incantation.
+ * @param result Résultat de l'incantation (true = succès, false = échec).
+ */
 void zappy::gui::raylib::MapRenderer::endIncantation(const int &x, const int &y, const bool &result)
 {
     Vector2 targetPos = Vector2{static_cast<float>(x), static_cast<float>(y)};
@@ -325,6 +425,10 @@ void zappy::gui::raylib::MapRenderer::endIncantation(const int &x, const int &y,
         incantation->startAction();
 }
 
+/**
+ * @brief Supprime un joueur de la scène.
+ * @param id Identifiant du joueur à supprimer.
+ */
 void zappy::gui::raylib::MapRenderer::removeEgg(const int &id)
 {
     for (auto it = _eggs.begin(); it != _eggs.end(); it++) {
@@ -335,6 +439,10 @@ void zappy::gui::raylib::MapRenderer::removeEgg(const int &id)
     }
 }
 
+/**
+ * @brief Supprime un œuf de la scène.
+ * @param id Identifiant de l'œuf à supprimer.
+ */
 void zappy::gui::raylib::MapRenderer::removePlayer(const int &id)
 {
     for (auto it = this->_players.begin(); it != this->_players.end(); it++) {
@@ -345,6 +453,10 @@ void zappy::gui::raylib::MapRenderer::removePlayer(const int &id)
     }
 }
 
+/**
+ * @brief Supprime toutes les actions de translation pour un joueur donné.
+ * @param id Identifiant du joueur.
+ */
 void zappy::gui::raylib::MapRenderer::removeAllTranslations(const int &id)
 {
     std::queue<std::shared_ptr<IPlayerAction>> &queue = this->_playerActionQueues[id];
@@ -361,6 +473,10 @@ void zappy::gui::raylib::MapRenderer::removeAllTranslations(const int &id)
     queue = std::move(newQueue);
 }
 
+/**
+ * @brief Supprime toutes les actions de rotation pour un joueur donné.
+ * @param id Identifiant du joueur.
+ */
 void zappy::gui::raylib::MapRenderer::removeAllRotations(const int &id)
 {
     std::queue<std::shared_ptr<IPlayerAction>> &queue = this->_playerActionQueues[id];
@@ -376,6 +492,11 @@ void zappy::gui::raylib::MapRenderer::removeAllRotations(const int &id)
     queue = std::move(newQueue);
 }
 
+/**
+ * @brief Récupère une référence non-const au modèle joueur correspondant à l'identifiant.
+ * @param id Identifiant du joueur.
+ * @return Référence au modèle joueur.
+ */
 zappy::gui::raylib::APlayerModel &zappy::gui::raylib::MapRenderer::_getPlayer(const int &id)
 {
     for (auto &player : this->_players) {
@@ -385,6 +506,11 @@ zappy::gui::raylib::APlayerModel &zappy::gui::raylib::MapRenderer::_getPlayer(co
     throw RendererError("Player " + std::to_string(id) + " not found", "MapRenderer");
 }
 
+/**
+ * @brief Récupère une référence const au modèle joueur correspondant à l'identifiant.
+ * @param id Identifiant du joueur.
+ * @return Référence const au modèle joueur.
+ */
 const zappy::gui::raylib::APlayerModel &zappy::gui::raylib::MapRenderer::_getPlayer(const int &id) const
 {
     for (const auto &player : this->_players) {
@@ -394,6 +520,11 @@ const zappy::gui::raylib::APlayerModel &zappy::gui::raylib::MapRenderer::_getPla
     throw RendererError("Player " + std::to_string(id) + " not found", "MapRenderer");
 }
 
+/**
+ * @brief Récupère une référence non-const au modèle œuf correspondant à l'identifiant.
+ * @param id Identifiant de l'œuf.
+ * @return Référence au modèle œuf.
+ */
 zappy::gui::raylib::AEggModel &zappy::gui::raylib::MapRenderer::_getEgg(const int &id)
 {
     for (auto &egg : _eggs) {
@@ -403,6 +534,11 @@ zappy::gui::raylib::AEggModel &zappy::gui::raylib::MapRenderer::_getEgg(const in
     throw RendererError("Egg " + std::to_string(id) + " not found", "MapRenderer");
 }
 
+/**
+ * @brief Récupère une référence const au modèle œuf correspondant à l'identifiant.
+ * @param id Identifiant de l'œuf.
+ * @return Référence const au modèle œuf.
+ */
 const zappy::gui::raylib::AEggModel &zappy::gui::raylib::MapRenderer::_getEgg(const int &id) const
 {
     for (const auto &egg : _eggs) {
@@ -412,6 +548,12 @@ const zappy::gui::raylib::AEggModel &zappy::gui::raylib::MapRenderer::_getEgg(co
     throw RendererError("Egg " + std::to_string(id) + " not found", "MapRenderer");
 }
 
+/**
+ * @brief Ajoute une rotation à un joueur avec un angle donné et une orientation.
+ * @param player Référence au modèle joueur.
+ * @param angle Angle de rotation en radians ou degrés.
+ * @param orientation Nouvelle orientation du joueur.
+ */
 void zappy::gui::raylib::MapRenderer::_addRotation(
     const APlayerModel &player,
     const float &angle,
@@ -439,6 +581,10 @@ void zappy::gui::raylib::MapRenderer::_addRotation(
     this->_playerActionQueues[player.getId()].push(std::move(action));
 }
 
+/**
+ * @brief Met à jour les positions des joueurs et œufs en fonction du temps écoulé.
+ * @param deltaUnits Temps écoulé depuis la dernière mise à jour.
+ */
 void zappy::gui::raylib::MapRenderer::_updatePlayersAndEggs(const float &deltaUnits)
 {
     for (auto &player : this->_players)
@@ -448,6 +594,10 @@ void zappy::gui::raylib::MapRenderer::_updatePlayersAndEggs(const float &deltaUn
         egg->update(deltaUnits);
 }
 
+/**
+ * @brief Met à jour les actions en cours des joueurs.
+ * @param deltaUnits Temps écoulé depuis la dernière mise à jour.
+ */
 void zappy::gui::raylib::MapRenderer::_updateActions(const float &deltaUnits)
 {
     for (auto it = this->_playerActionQueues.begin(); it != this->_playerActionQueues.end(); ) {
@@ -475,6 +625,11 @@ void zappy::gui::raylib::MapRenderer::_updateActions(const float &deltaUnits)
     this->_updateAnimActions(deltaUnits);
 }
 
+/**
+ * @brief Met à jour un joueur après l'exécution de ses actions.
+ * @param player Référence au modèle joueur à mettre à jour.
+ * @param actions Queue des actions du joueur.
+ */
 void zappy::gui::raylib::MapRenderer::_updatePlayerAfterAction(APlayerModel &player, const std::queue<std::shared_ptr<IPlayerAction>> &actions)
 {
     if (actions.empty()) {
@@ -488,6 +643,10 @@ void zappy::gui::raylib::MapRenderer::_updatePlayerAfterAction(APlayerModel &pla
         player.idle();
 }
 
+/**
+ * @brief Met à jour les animations liées aux actions des joueurs.
+ * @param deltaUnits Temps écoulé depuis la dernière mise à jour.
+ */
 void zappy::gui::raylib::MapRenderer::_updateAnimActions(const float &deltaUnits)
 {
     for (auto it = this->_playerAnimAction.begin(); it != this->_playerAnimAction.end(); ++it) {
@@ -501,6 +660,9 @@ void zappy::gui::raylib::MapRenderer::_updateAnimActions(const float &deltaUnits
     }
 }
 
+/**
+ * @brief Rend les joueurs et œufs sur la scène.
+ */
 void zappy::gui::raylib::MapRenderer::_renderPlayersAndEggs()
 {
     for (auto &player : this->_players)
@@ -510,6 +672,9 @@ void zappy::gui::raylib::MapRenderer::_renderPlayersAndEggs()
         egg->render();
 }
 
+/**
+ * @brief Rend les ressources sur la scène.
+ */
 void zappy::gui::raylib::MapRenderer::_renderResources()
 {
     constexpr float uniformHeight = 0.1f;
@@ -543,6 +708,9 @@ void zappy::gui::raylib::MapRenderer::_renderResources()
     }
 }
 
+/**
+ * @brief Rend les animations liées aux actions des joueurs.
+ */
 void zappy::gui::raylib::MapRenderer::_renderAnimActions()
 {
     auto it = _playerAnimAction.begin();

@@ -15,6 +15,11 @@ zappy::gui::raylib::AScene::AScene(const std::shared_ptr<game::GameState> &gameS
     _mapRenderer(std::make_unique<MapRenderer>(this->_gameState->getMap()))
 {}
 
+/** @brief Initialise la scène.
+ *
+ * Configure la caméra en fonction de la taille de la carte
+ * et initialise l'audio.
+ */
 void zappy::gui::raylib::AScene::init()
 {
     constexpr Vector3 up = { 0.0f, 1.0f, 0.0f };
@@ -42,6 +47,10 @@ void zappy::gui::raylib::AScene::init()
     SetMasterVolume(0.5f);
 }
 
+/** @brief Met à jour les éléments de la scène.
+ *
+ * Met à jour le rendu de la carte, le ciel et la musique.
+ */
 void zappy::gui::raylib::AScene::update()
 {
     this->_mapRenderer->update(this->_gameState->getFrequency());
@@ -49,6 +58,10 @@ void zappy::gui::raylib::AScene::update()
     this->_music.update();
 }
 
+/** @brief Dessine la scène à l'écran.
+ *
+ * Affiche la musique, le ciel et la carte en mode 3D.
+ */
 void zappy::gui::raylib::AScene::render() const
 {
     this->_music.render();
@@ -61,11 +74,19 @@ void zappy::gui::raylib::AScene::render() const
     EndMode3D();
 }
 
+/** @brief Gère les entrées utilisateur.
+ *
+ * @param inputManager Le gestionnaire d'entrée.
+ */
 void zappy::gui::raylib::AScene::handleInput(InputManager &inputManager)
 {
     (void)inputManager;
 }
 
+/** @brief Ajoute un œuf à la scène.
+ *
+ * @param id L'identifiant de l'œuf à ajouter.
+ */
 void zappy::gui::raylib::AScene::addEgg(const int &id)
 {
     // Egg supposed to be added to the map
@@ -74,6 +95,10 @@ void zappy::gui::raylib::AScene::addEgg(const int &id)
     this->_mapRenderer->setEggPosition(id, egg.x, egg.y);
 }
 
+/** @brief Ajoute un joueur à la scène.
+ *
+ * @param id L'identifiant du joueur à ajouter.
+ */
 void zappy::gui::raylib::AScene::addPlayer(const int &id)
 {
     game::Player &player = this->_gameState->getPlayerById(id);
@@ -81,6 +106,13 @@ void zappy::gui::raylib::AScene::addPlayer(const int &id)
     this->_mapRenderer->setPlayerPosition(id, player.x, player.y, player.orientation);
 }
 
+/** @brief Met à jour la position et l’orientation d’un joueur.
+ *
+ * @param id L’identifiant du joueur.
+ * @param x La nouvelle position en x.
+ * @param y La nouvelle position en y.
+ * @param orientation La nouvelle orientation du joueur.
+ */
 void zappy::gui::raylib::AScene::updatePlayerPosition(const int &id, const int &x, const int &y, const game::Orientation &orientation)
 {
     game::Player player = this->_gameState->getPlayerById(id);
@@ -125,6 +157,10 @@ void zappy::gui::raylib::AScene::updatePlayerPosition(const int &id, const int &
     }
 }
 
+/** @brief Déclenche l’expulsion des autres joueurs autour d’un joueur.
+ *
+ * @param id L’identifiant du joueur qui expulse.
+ */
 void zappy::gui::raylib::AScene::playerExpulsion(const int &id)
 {
     game::Player &playerThatExpelled = this->_gameState->getPlayerById(id);
@@ -153,12 +189,24 @@ void zappy::gui::raylib::AScene::playerExpulsion(const int &id)
     }
 }
 
+/** @brief Déclenche une animation de broadcast pour un joueur.
+ *
+ * @param id L’identifiant du joueur.
+ * @param message Le message broadcasté (non utilisé ici).
+ */
 void zappy::gui::raylib::AScene::playerBroadcast(const int &id, const std::string &message)
 {
     this->_mapRenderer->playerBroadcast(id);
     (void)message;
 }
 
+/** @brief Lance une incantation sur une case.
+ *
+ * @param x Coordonnée x de la case.
+ * @param y Coordonnée y de la case.
+ * @param level Le niveau de l'incantation.
+ * @param playerIds Liste des identifiants des joueurs impliqués.
+ */
 void zappy::gui::raylib::AScene::startIncantation(
     const int &x, const int &y,
     const int &level,
@@ -168,21 +216,41 @@ void zappy::gui::raylib::AScene::startIncantation(
     (void)level;
 }
 
+/** @brief Termine une incantation.
+ *
+ * @param x Coordonnée x de la case.
+ * @param y Coordonnée y de la case.
+ * @param result Résultat de l'incantation (réussie ou échouée).
+ */
 void zappy::gui::raylib::AScene::endIncantation(const int &x, const int &y, const bool &result)
 {
     this->_mapRenderer->endIncantation(x, y, result);
 }
 
+
+/** @brief Fait éclore un œuf.
+ *
+ * @param id L'identifiant de l'œuf.
+ */
 void zappy::gui::raylib::AScene::hatchEgg(const int &id)
 {
     this->removeEgg(id);
 }
 
+/** @brief Supprime un œuf de la scène.
+ *
+ * @param id L'identifiant de l'œuf à retirer.
+ */
 void zappy::gui::raylib::AScene::removeEgg(const int &id)
 {
     this->_mapRenderer->removeEgg(id);
 }
 
+
+/** @brief Supprime un joueur de la scène.
+ *
+ * @param id L'identifiant du joueur à retirer.
+ */
 void zappy::gui::raylib::AScene::removePlayer(const int &id)
 {
     this->_mapRenderer->removePlayer(id);
