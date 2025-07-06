@@ -8,11 +8,13 @@ ZAPPY is a multiplayer real-time strategy game where several teams compete on a 
 - `zappy_gui/` — Graphical interface written in C++ (using Raylib)
 - `zappy_ai/` — AI client written in your language of choice (Python)
 
-All three components are compiled via the Makefile:
+Gui and Server are compiled via makefile
 ```bash
-make zappy_server
-make zappy_gui
-make zappy_ai
+./build.sh
+```
+The Client can be compiled thanks to the following command
+```bash
+python3 Client/client.py --port [PORT] --team [TEAM]
 ```
 
 ## 🧠 Concept
