@@ -35,6 +35,20 @@ namespace zappy {
                     void endGame(const std::string &teamName) override;
 
                 private:
+                    Color _getColor(const game::Player &player);
+
+                    const std::vector<Color> _colors = {
+                        WHITE,
+                        RED,
+                        BLUE,
+                        GREEN,
+                        YELLOW,
+                        PURPLE,
+                        ORANGE,
+                        PINK,
+                        BROWN,
+                    };
+                    std::vector<std::string> _teamNames;
             };
         } // namespace raylib
     } // namespace gui
