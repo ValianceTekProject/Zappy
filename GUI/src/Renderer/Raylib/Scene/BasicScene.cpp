@@ -66,8 +66,3 @@ void zappy::gui::raylib::BasicScene::addPlayer(const int &id)
 
     AScene::addPlayer(id);
 }
-
-void zappy::gui::raylib::BasicScene::endGame(const std::string &teamName)
-{
-    DrawText(TextFormat("Team %s wins!", teamName.c_str()), 10, 10, 20, GREEN);
-}

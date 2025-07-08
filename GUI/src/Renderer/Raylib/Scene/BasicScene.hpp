@@ -32,8 +32,6 @@ namespace zappy {
                     void addEgg(const int &id) override;
                     void addPlayer(const int &id) override;
 
-                    void endGame(const std::string &teamName) override;
-
                 private:
                     Color _getColor(const game::Player &player);
 

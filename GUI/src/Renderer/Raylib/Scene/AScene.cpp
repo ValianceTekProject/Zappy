@@ -13,7 +13,9 @@ zappy::gui::raylib::AScene::AScene(const std::shared_ptr<game::GameState> &gameS
     _isMusicPlaying(true),
     _gameState(gameState),
     _skybox(),
-    _mapRenderer(std::make_unique<MapRenderer>(this->_gameState->getMap()))
+    _mapRenderer(std::make_unique<MapRenderer>(this->_gameState->getMap())),
+    _hasGameEnded(false),
+    _wonTeamName("NO TEAM NAME FOR NOW GO **** ********")
 {}
 
 /** @brief Initialise la scène.
@@ -86,6 +88,22 @@ void zappy::gui::raylib::AScene::render() const
     this->_mapRenderer->render();
 
     EndMode3D();
+
+    if (this->_hasGameEnded) {
+        constexpr int fontSize = 50;
+        int stringWidth = MeasureText(
+            TextFormat("Team \"%s\" wins!", this->_wonTeamName.c_str()),
+            fontSize
+        );
+
+        DrawText(
+            TextFormat("Team \"%s\" wins!", this->_wonTeamName.c_str()),
+            GetRenderWidth() / 2 - stringWidth / 2,
+            GetRenderHeight() / 2 - fontSize / 2,
+            fontSize,
+            GREEN
+        );
+    }
 }
 
 /** @brief Ajoute un œuf à la scène.
@@ -259,4 +277,10 @@ void zappy::gui::raylib::AScene::removeEgg(const int &id)
 void zappy::gui::raylib::AScene::removePlayer(const int &id)
 {
     this->_mapRenderer->removePlayer(id);
+}
+
+void zappy::gui::raylib::AScene::endGame(const std::string &teamName)
+{
+    this->_hasGameEnded = true;
+    this->_wonTeamName = teamName;
 }
