@@ -48,10 +48,10 @@ Color zappy::gui::raylib::BasicScene::_getColor(const game::Player &player)
 {
     for (size_t i = 0; i < _teamNames.size(); ++i) {
         if (player.teamName == _teamNames[i])
-            return _colors[i];
+            return _colors[i % _colors.size()];
     }
     _teamNames.push_back(player.teamName);
-    return _colors[_teamNames.size() - 1];
+    return _colors[(_teamNames.size() - 1) % _colors.size()];
 }
 
 void zappy::gui::raylib::BasicScene::addPlayer(const int &id)

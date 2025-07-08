@@ -39,9 +39,9 @@ namespace zappy {
 
                     const std::vector<Color> _colors = {
                         WHITE,
-                        RED,
-                        BLUE,
                         GREEN,
+                        BLUE,
+                        RED,
                         YELLOW,
                         PURPLE,
                         ORANGE,
