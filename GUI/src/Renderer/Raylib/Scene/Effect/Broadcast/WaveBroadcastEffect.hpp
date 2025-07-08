@@ -41,8 +41,8 @@ namespace zappy {
                     float _pulseTimer;
 
                     constexpr static float PULSE_INTERVAL = 2.0f;
-                    constexpr static float PULSE_SPEED = 3.0f;
-                    constexpr static float PULSE_LIFETIME = 3.0f;
+                    constexpr static float PULSE_SPEED = 1.0f;
+                    constexpr static float PULSE_LIFETIME = 9.0f;
             };
         } // namespace raylib
     } // namespace gui

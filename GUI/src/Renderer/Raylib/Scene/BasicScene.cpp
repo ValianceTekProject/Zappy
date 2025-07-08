@@ -44,23 +44,25 @@ void zappy::gui::raylib::BasicScene::addEgg(const int &id)
     AScene::addEgg(id);
 }
 
+Color zappy::gui::raylib::BasicScene::_getColor(const game::Player &player)
+{
+    for (size_t i = 0; i < _teamNames.size(); ++i) {
+        if (player.teamName == _teamNames[i])
+            return _colors[i % _colors.size()];
+    }
+    _teamNames.push_back(player.teamName);
+    return _colors[(_teamNames.size() - 1) % _colors.size()];
+}
+
 void zappy::gui::raylib::BasicScene::addPlayer(const int &id)
 {
     auto player = std::make_unique<BasicPlayerModel>(id);
 
-    player->setColor(Color{
-        static_cast<uint8_t>(GetRandomValue(0, 255)),
-        static_cast<uint8_t>(GetRandomValue(0, 255)),
-        static_cast<uint8_t>(GetRandomValue(0, 255)),
-        255
-    });
+    game::Player gP = _gameState->getPlayerById(id);
+
+    player->setColor(_getColor(gP));
 
     _mapRenderer->addPlayer(std::move(player));
 
     AScene::addPlayer(id);
-}
-
-void zappy::gui::raylib::BasicScene::endGame(const std::string &teamName)
-{
-    DrawText(TextFormat("Team %s wins!", teamName.c_str()), 10, 10, 20, GREEN);
 }

@@ -129,13 +129,10 @@ void zappy::gui::raylib::GameMenu::removePlayer(const int &id)
         }
     }
 
-    if (this->_displayedPlayersIndex >= static_cast<int>(_playersIds.size()))
-        this->_displayedPlayersIndex = this->_displayedPlayersIndex % static_cast<int>(_playersIds.size());
-
     if (this->_playersIds.empty()) {
         this->_displayedPlayersIndex = -1;
-        this->_numberPlayerDisplayed = 0;
-    }
+    } else if (this->_displayedPlayersIndex > static_cast<int>(_playersIds.size()))
+        this->_displayedPlayersIndex = this->_displayedPlayersIndex % static_cast<int>(_playersIds.size());
 }
 
 std::string zappy::gui::raylib::GameMenu::_decryptBroadcast(
@@ -346,7 +343,7 @@ void zappy::gui::raylib::GameMenu::_renderPlayersInfos(const int &screenWidth, c
     const int x = screenWidth - paddingX;
     const int y = paddingY;
 
-    if (this->_numberPlayerDisplayed <= 0) {
+    if (this->_numberPlayerDisplayed <= 0 || this->_displayedPlayersIndex < 0) {
         const std::string text = "There is actually no player";
         const int textWidth = MeasureText(text.c_str(), textSize);
         DrawText(text.c_str(), x - textWidth, y, textSize, WHITE);

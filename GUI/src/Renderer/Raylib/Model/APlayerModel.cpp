@@ -79,13 +79,19 @@ void zappy::gui::raylib::APlayerModel::update(const float &deltaUnits)
     if (this->_modelAnimations == nullptr || this->_animsCount == 0)
         return;
 
-    ModelAnimation anim = this->_modelAnimations[this->_animationIndexMap[this->_state]];
-    float speed = (this->_animationFrameSpeedMap[this->_state]);
+    int currentAnimIndex = this->_animationIndexMap[this->_state];
 
-    this->_frameAccumulator += deltaUnits * speed;
+    if (currentAnimIndex < 0 || currentAnimIndex >= this->_animsCount)
+        return;
+
+    ModelAnimation anim = this->_modelAnimations[currentAnimIndex];
 
     if (anim.frameCount <= 0)
         return;
+
+    float speed = this->_animationFrameSpeedMap[this->_state];
+
+    this->_frameAccumulator += deltaUnits * speed;
 
     if (this->_frameAccumulator >= 1.0f) {
         const int frameAdvance = static_cast<int>(this->_frameAccumulator);

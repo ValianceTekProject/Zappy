@@ -56,6 +56,8 @@ namespace zappy {
                     virtual void removeEgg(const int &id) override;
                     virtual void removePlayer(const int &id) override;
 
+                    virtual void endGame(const std::string &teamName) override;
+
                 protected:
                     Camera _camera;
 
@@ -66,6 +68,9 @@ namespace zappy {
 
                     Skybox _skybox;
                     const std::unique_ptr<MapRenderer> _mapRenderer;
+
+                    bool _hasGameEnded;
+                    std::string _wonTeamName;
             };
         } // namespace raylib
     } // namespace gui
